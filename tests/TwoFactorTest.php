@@ -243,7 +243,7 @@ class TwoFactorTest extends TestCase
 
     public function test_doesnt_adds_safe_device_when_input_not_filled(): void
     {
-        $this->app->make('config')->set('laraguard.safe_devices.enabled', true);
+        $this->app->make('config')->set('twofactor.safe_devices.enabled', true);
 
         Cookie::partialMock()->shouldNotReceive('queue');
 

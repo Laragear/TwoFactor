@@ -2,7 +2,6 @@
     "name": "laragear/twofactor",
     "description": "On-premises 2FA Authentication for out-of-the-box.",
     "keywords": [
-        "laraguard",
         "laravel",
         "authentication",
         "2fa",
