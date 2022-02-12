@@ -1,0 +1,68 @@
+{
+    "name": "laragear/twofactor",
+    "description": "On-premises 2FA Authentication for out-of-the-box.",
+    "keywords": [
+        "laraguard",
+        "laravel",
+        "authentication",
+        "2fa",
+        "two-factor",
+        "authentication"
+    ],
+    "homepage": "https://github.com/laragear/twofactor",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "proprietary",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Italo Israel Baeza Cabrera",
+            "email": "darkghosthunter@gmail.com",
+            "homepage": "https://patreon.com/packagesforlaravel"
+        }
+    ],
+    "require": {
+        "php": ">=8.0.2",
+        "ext-json": "*",
+        "bacon/bacon-qr-code": "^2.0",
+        "paragonie/constant_time_encoding": "^2.5",
+        "illuminate/config": "9.*",
+        "illuminate/validation": "9.*",
+        "illuminate/database": "9.*",
+        "illuminate/support": "9.*",
+        "illuminate/http": "9.*",
+        "illuminate/auth": "9.*"
+    },
+    "require-dev": {
+        "doctrine/dbal": "^3.3",
+        "mockery/mockery": "^1.5",
+        "orchestra/testbench": "7.*",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laragear\\TwoFactor\\": "src",
+            "Database\\Factories\\Laragear\\TwoFactor\\": "database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --coverage-clover build/logs/clover.xml",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+              "Laragear\\TwoFactor\\TwoFactorServiceProvider"
+            ]
+        }
+    }
+}
