@@ -245,7 +245,7 @@ You can implement the view easily with the one included in this package, optiona
 ```php
 use Illuminate\Support\Facades\Route;
 
-Route::view('2fa-required', 'twofactor::notice', [
+Route::view('2fa-required', 'two-factor::notice', [
     'url' => url('settings/2fa')
 ])->name('2fa.notice');
 ```
@@ -314,13 +314,13 @@ public function disableTwoFactorAuth()
 {
     // ...
 
-    session()->flash('message', trans('twofactor::messages.success'));
+    session()->flash('message', trans('two-factor::messages.success'));
 
     return back();
 }
 ```
 
-To add your own language, publish the translation files. These will be located in `lang/vendor/twofactor`:
+To add your own language, publish the translation files. These will be located in `lang/vendor/two-factor`:
 
 ```shell
 php artisan vendor:publish --provider="Laragear\TwoFactor\TwoFactorServiceProvider" --tag="translations"
@@ -334,7 +334,7 @@ To further configure the package, publish the configuration file:
 php artisan vendor:publish --provider="Laragear\TwoFactor\TwoFactorServiceProvider" --tag="config"
 ```
 
-You will receive the `config/twofactor.php` config file with the following contents:
+You will receive the `config/two-factor.php` config file with the following contents:
 
 ```php
 return [
