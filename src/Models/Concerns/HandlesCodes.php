@@ -39,7 +39,7 @@ trait HandlesCodes
      */
     protected function initializeHandlesCodes(): void
     {
-        ['store' => $store, 'prefix' => $this->prefix] = config('twofactor.cache');
+        ['store' => $store, 'prefix' => $this->prefix] = config('two-factor.cache');
 
         $this->cache = $this->useCacheStore($store);
     }

@@ -38,7 +38,7 @@ trait TwoFactorAuthentication
     {
         return $this->morphOne(Models\TwoFactorAuthentication::class, 'authenticatable')
             ->withDefault(static function (Models\TwoFactorAuthentication $model): Models\TwoFactorAuthentication {
-                return $model->fill(config('twofactor.totp'));
+                return $model->fill(config('two-factor.totp'));
             });
     }
 
@@ -62,7 +62,7 @@ trait TwoFactorAuthentication
     {
         $this->twoFactorAuth->enabled_at = now();
 
-        if (config('twofactor.recovery.enabled')) {
+        if (config('two-factor.recovery.enabled')) {
             $this->generateRecoveryCodes();
         }
 
@@ -196,11 +196,11 @@ trait TwoFactorAuthentication
     public function generateRecoveryCodes(): Collection
     {
         [
-            'twofactor.model' => $model,
-            'twofactor.recovery.codes' => $amount,
-            'twofactor.recovery.length' => $length
+            'two-factor.model' => $model,
+            'two-factor.recovery.codes' => $amount,
+            'two-factor.recovery.length' => $length
         ] = config()->get([
-            'twofactor.model', 'twofactor.recovery.codes', 'twofactor.recovery.length'
+            'two-factor.model', 'two-factor.recovery.codes', 'two-factor.recovery.length'
         ]);
 
         $this->twoFactorAuth->recovery_codes = $model::generateRecoveryCodes($amount, $length);
@@ -244,7 +244,7 @@ trait TwoFactorAuthentication
     public function addSafeDevice(Request $request): string
     {
         [$name, $expiration] = array_values(config()->get([
-            'twofactor.safe_devices.cookie', 'twofactor.safe_devices.expiration_days'
+            'two-factor.safe_devices.cookie', 'two-factor.safe_devices.expiration_days'
         ]));
 
         $this->twoFactorAuth->safe_devices = $this->safeDevices()
@@ -254,7 +254,7 @@ trait TwoFactorAuthentication
                 'added_at'     => $this->freshTimestamp()->getTimestamp(),
             ])
             ->sortByDesc('added_at') // Ensure the last is the first, so we can slice it.
-            ->slice(0, config('twofactor.safe_devices.max_devices', 3))
+            ->slice(0, config('two-factor.safe_devices.max_devices', 3))
             ->values();
 
         $this->twoFactorAuth->save();
@@ -271,7 +271,7 @@ trait TwoFactorAuthentication
      */
     protected function generateTwoFactorRemember(): string
     {
-        return config('twofactor.model')::generateDefaultTwoFactorRemember();
+        return config('two-factor.model')::generateDefaultTwoFactorRemember();
     }
 
     /**
@@ -306,7 +306,7 @@ trait TwoFactorAuthentication
         $timestamp = $this->twoFactorAuth->getSafeDeviceTimestamp($this->getTwoFactorRememberFromRequest($request));
 
         if ($timestamp) {
-            return $timestamp->addDays(config('twofactor.safe_devices.expiration_days'))->isFuture();
+            return $timestamp->addDays(config('two-factor.safe_devices.expiration_days'))->isFuture();
         }
 
         return false;
@@ -321,7 +321,7 @@ trait TwoFactorAuthentication
      */
     protected function getTwoFactorRememberFromRequest(Request $request): ?string
     {
-        return $request->cookie(config('twofactor.safe_devices.cookie', '2fa_remember'));
+        return $request->cookie(config('two-factor.safe_devices.cookie', '2fa_remember'));
     }
 
     /**

@@ -6,7 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.*/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <title>{{ trans('twofactor::messages.title') }}</title>
+    <title>{{ trans('two-factor::messages.title') }}</title>
     <style>
         #box-container {
             min-height: 100vh;
@@ -30,14 +30,14 @@
         <div id="form-container" class="col-lg-6 col-md-8 col-sm-10 col-12">
             <div id="box" class="card border-0 cool-shadow">
                 <section class="card-body">
-                    <h2 class="card-title h5 text-center">{{ trans('twofactor::messages.required') }}</h2>
+                    <h2 class="card-title h5 text-center">{{ trans('two-factor::messages.required') }}</h2>
                     <hr>
                     @yield('card-body')
                 </section>
             </div>
             <div class="text-black-50 small text-center">
                 <a href="javascript:history.back()" class="btn btn-sm text-secondary btn-link">
-                    &laquo; {{ trans('twofactor::messages.back') }}
+                    &laquo; {{ trans('two-factor::messages.back') }}
                 </a>
             </div>
         </div>

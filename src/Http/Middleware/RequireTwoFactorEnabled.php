@@ -27,7 +27,7 @@ class RequireTwoFactorEnabled
         }
 
         return $request->expectsJson()
-            ? response()->json(['message' => trans('twofactor::messages.enable')], 403)
+            ? response()->json(['message' => trans('two-factor::messages.enable')], 403)
             : response()->redirectToRoute($route);
     }
 }

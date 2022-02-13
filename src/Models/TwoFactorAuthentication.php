@@ -124,7 +124,7 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
         $this->safe_devices = null;
         $this->enabled_at = null;
 
-        $this->attributes = array_merge($this->attributes, config('twofactor.totp'));
+        $this->attributes = array_merge($this->attributes, config('two-factor.totp'));
 
         $this->shared_secret = static::generateRandomSecret();
         $this->recovery_codes = null;
@@ -140,7 +140,7 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     public static function generateRandomSecret(): string
     {
         return Base32::encodeUpper(
-            random_bytes(config('twofactor.secret_length'))
+            random_bytes(config('two-factor.secret_length'))
         );
     }
 

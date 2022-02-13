@@ -9,7 +9,7 @@ use Illuminate\Support\ServiceProvider;
 
 class TwoFactorServiceProvider extends ServiceProvider
 {
-    public const CONFIG = __DIR__ . '/../config/twofactor.php';
+    public const CONFIG = __DIR__.'/../config/two-factor.php';
     public const VIEWS = __DIR__ . '/../resources/views';
     public const LANG = __DIR__.'/../lang';
     public const DB = __DIR__.'/../database/migrations';
@@ -21,7 +21,7 @@ class TwoFactorServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(static::CONFIG, 'twofactor');
+        $this->mergeConfigFrom(static::CONFIG, 'two-factor');
     }
 
     /**
@@ -32,8 +32,8 @@ class TwoFactorServiceProvider extends ServiceProvider
      */
     public function boot(Router $router): void
     {
-        $this->loadViewsFrom(static::VIEWS, 'twofactor');
-        $this->loadTranslationsFrom(static::LANG, 'twofactor');
+        $this->loadViewsFrom(static::VIEWS, 'two-factor');
+        $this->loadTranslationsFrom(static::LANG, 'two-factor');
         $this->loadMigrationsFrom(static::DB);
 
         $this->registerMiddleware($router);
@@ -67,7 +67,7 @@ class TwoFactorServiceProvider extends ServiceProvider
             $validator->extendImplicit(
                 'totp',
                 Rules\Totp::class,
-                $app->make('translator')->get('twofactor::validation.totp_code')
+                $app->make('translator')->get('two-factor::validation.totp_code')
             );
         });
     }
@@ -79,8 +79,8 @@ class TwoFactorServiceProvider extends ServiceProvider
      */
     protected function publishFiles(): void
     {
-        $this->publishes([static::CONFIG => $this->app->configPath('twofactor.php')], 'config');
-        $this->publishes([static::VIEWS => $this->app->viewPath('vendor/twofactor')], 'views');
-        $this->publishes([static::LANG => $this->app->langPath('vendor/twofactor')], 'translations');
+        $this->publishes([static::CONFIG => $this->app->configPath('two-factor.php')], 'config');
+        $this->publishes([static::VIEWS => $this->app->viewPath('vendor/two-factor')], 'views');
+        $this->publishes([static::LANG => $this->app->langPath('vendor/two-factor')], 'translations');
     }
 }

@@ -88,10 +88,10 @@ class TwoFactorAuthenticationTest extends TestCase
         static::assertNull($tfa->enabled_at);
         static::assertNotNull($tfa->label);
         static::assertEquals($label, $tfa->label);
-        static::assertEquals(config('twofactor.totp.digits'), $tfa->digits);
-        static::assertEquals(config('twofactor.totp.seconds'), $tfa->seconds);
-        static::assertEquals(config('twofactor.totp.window'), $tfa->window);
-        static::assertEquals(config('twofactor.totp.algorithm'), $tfa->algorithm);
+        static::assertEquals(config('two-factor.totp.digits'), $tfa->digits);
+        static::assertEquals(config('two-factor.totp.seconds'), $tfa->seconds);
+        static::assertEquals(config('two-factor.totp.window'), $tfa->window);
+        static::assertEquals(config('two-factor.totp.algorithm'), $tfa->algorithm);
         static::assertNull($tfa->recovery_codes_generated_at);
         static::assertNull($tfa->safe_devices);
     }
@@ -100,7 +100,7 @@ class TwoFactorAuthenticationTest extends TestCase
     {
         $secret = TwoFactorAuthentication::generateRandomSecret();
 
-        static::assertEquals(config('twofactor.secret_length'), strlen(Base32::decodeUpper($secret)));
+        static::assertEquals(config('two-factor.secret_length'), strlen(Base32::decodeUpper($secret)));
     }
 
     public function test_makes_code(): void
@@ -253,7 +253,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_serializes_to_uri(): void
     {
-        $this->app->make('config')->set('twofactor.issuer', 'quz');
+        $this->app->make('config')->set('two-factor.issuer', 'quz');
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
             'label'         => 'test@foo.com',
@@ -269,7 +269,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_serializes_to_qr_and_renders_to_qr(): void
     {
-        $this->app->make('config')->set('twofactor.issuer', 'quz');
+        $this->app->make('config')->set('two-factor.issuer', 'quz');
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
             'label'         => 'test@foo.com',
@@ -285,8 +285,8 @@ class TwoFactorAuthenticationTest extends TestCase
     public function test_serializes_to_qr_and_renders_to_qr_with_custom_values(): void
     {
         $this->app->make('config')->set([
-            'twofactor.issuer' => 'quz',
-            'twofactor.qr_code' => [
+            'two-factor.issuer' => 'quz',
+            'two-factor.qr_code' => [
                 'size' => 600,
                 'margin' => 10
             ]
@@ -305,7 +305,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_serializes_uri_to_json(): void
     {
-        $this->app->make('config')->set('twofactor.issuer', 'quz');
+        $this->app->make('config')->set('two-factor.issuer', 'quz');
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
             'label'         => 'test@foo.com',
@@ -322,7 +322,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_changes_issuer(): void
     {
-        $this->app->make('config')->set('twofactor.issuer', 'foo bar');
+        $this->app->make('config')->set('two-factor.issuer', 'foo bar');
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
             'label'         => 'test@foo.com',

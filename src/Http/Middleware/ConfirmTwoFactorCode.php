@@ -29,7 +29,7 @@ class ConfirmTwoFactorCode
         }
 
         return $request->expectsJson()
-            ? response()->json(['message' => trans('twofactor::messages.required')], 403)
+            ? response()->json(['message' => trans('two-factor::messages.required')], 403)
             : response()->redirectGuest(url()->route($route));
     }
 
@@ -41,7 +41,7 @@ class ConfirmTwoFactorCode
      */
     protected function recentlyConfirmed(Request $request): bool
     {
-        $key = config('twofactor.confirm.key');
+        $key = config('two-factor.confirm.key');
 
         return $request->session()->get("$key.confirm.expires_at") >= now()->getTimestamp();
     }

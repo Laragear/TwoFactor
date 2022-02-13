@@ -14,18 +14,18 @@ class ServiceProviderTest extends TestCase
     {
         static::assertSame(
             $this->app->make('files')->getRequire(TwoFactorServiceProvider::CONFIG),
-            $this->app->make('config')->get('twofactor')
+            $this->app->make('config')->get('two-factor')
         );
     }
 
     public function test_load_views(): void
     {
-        static::assertArrayHasKey('twofactor', $this->app->make('view')->getFinder()->getHints());
+        static::assertArrayHasKey('two-factor', $this->app->make('view')->getFinder()->getHints());
     }
 
     public function test_loads_translations(): void
     {
-        static::assertArrayHasKey('twofactor', $this->app->make('translator')->getLoader()->namespaces());
+        static::assertArrayHasKey('two-factor', $this->app->make('translator')->getLoader()->namespaces());
     }
 
     public function test_loads_migrations(): void
@@ -61,7 +61,7 @@ class ServiceProviderTest extends TestCase
     public function test_publishes_config(): void
     {
         static::assertSame(
-            [TwoFactorServiceProvider::CONFIG => $this->app->configPath('twofactor.php')],
+            [TwoFactorServiceProvider::CONFIG => $this->app->configPath('two-factor.php')],
             ServiceProvider::pathsToPublish(TwoFactorServiceProvider::class, 'config')
         );
     }
@@ -69,7 +69,7 @@ class ServiceProviderTest extends TestCase
     public function test_publishes_views(): void
     {
         static::assertSame(
-            [TwoFactorServiceProvider::VIEWS => $this->app->viewPath('vendor/twofactor')],
+            [TwoFactorServiceProvider::VIEWS => $this->app->viewPath('vendor/two-factor')],
             ServiceProvider::pathsToPublish(TwoFactorServiceProvider::class, 'views')
         );
     }
@@ -77,7 +77,7 @@ class ServiceProviderTest extends TestCase
     public function test_publishes_translation(): void
     {
         static::assertSame(
-            [TwoFactorServiceProvider::LANG => $this->app->langPath('vendor/twofactor')],
+            [TwoFactorServiceProvider::LANG => $this->app->langPath('vendor/two-factor')],
             ServiceProvider::pathsToPublish(TwoFactorServiceProvider::class, 'translations')
         );
     }

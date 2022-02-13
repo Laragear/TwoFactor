@@ -221,7 +221,7 @@ class TwoFactorTest extends TestCase
 
     public function test_saves_safe_device(): void
     {
-        $this->app->make('config')->set('twofactor.safe_devices.enabled', true);
+        $this->app->make('config')->set('two-factor.safe_devices.enabled', true);
 
         Cookie::partialMock()->shouldReceive('queue')
             ->with('_2fa_remember', Mockery::type('string'), 14 * 1440)
@@ -243,7 +243,7 @@ class TwoFactorTest extends TestCase
 
     public function test_doesnt_adds_safe_device_when_input_not_filled(): void
     {
-        $this->app->make('config')->set('twofactor.safe_devices.enabled', true);
+        $this->app->make('config')->set('two-factor.safe_devices.enabled', true);
 
         Cookie::partialMock()->shouldNotReceive('queue');
 
@@ -263,7 +263,7 @@ class TwoFactorTest extends TestCase
 
     public function test_doesnt_bypasses_totp_if_safe_devices(): void
     {
-        $this->app->make('config')->set('twofactor.safe_devices.enabled', true);
+        $this->app->make('config')->set('two-factor.safe_devices.enabled', true);
 
         $credentials = [
             'email' => $this->user->email,

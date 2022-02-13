@@ -27,7 +27,7 @@ class TwoFactorAuthenticationFactory extends Factory
      */
     public function definition(): array
     {
-        $config = config('twofactor');
+        $config = config('two-factor');
 
         $array = array_merge([
             'shared_secret' => TwoFactorAuthentication::generateRandomSecret(),
@@ -53,9 +53,9 @@ class TwoFactorAuthenticationFactory extends Factory
     public function withRecovery(): static
     {
         [
-            'twofactor.recovery.codes' => $amount,
-            'twofactor.recovery.length' => $length
-        ] = config()->get(['twofactor.recovery.codes', 'twofactor.recovery.length']);
+            'two-factor.recovery.codes' => $amount,
+            'two-factor.recovery.length' => $length
+        ] = config()->get(['two-factor.recovery.codes', 'two-factor.recovery.length']);
 
         return $this->state([
             'recovery_codes' => TwoFactorAuthentication::generateRecoveryCodes($amount, $length),
@@ -70,11 +70,11 @@ class TwoFactorAuthenticationFactory extends Factory
      */
     public function withSafeDevices(): static
     {
-        $max = config('twofactor.safe_devices.max_devices');
+        $max = config('two-factor.safe_devices.max_devices');
 
         return $this->state([
             'safe_devices' => Collection::times($max, function ($step) use ($max) {
-                $expiration_days = config('twofactor.safe_devices.expiration_days');
+                $expiration_days = config('two-factor.safe_devices.expiration_days');
 
                 $added_at = $max !== $step
                     ? now()

@@ -42,7 +42,7 @@ class TwoFactor
             }
 
             throw InvalidCodeException::withMessages([
-                $input => $message ?? trans('twofactor::validation.totp_code'),
+                $input => $message ?? trans('two-factor::validation.totp_code'),
             ]);
         };
     }
@@ -99,7 +99,7 @@ class TwoFactor
      */
     protected function isSafeDevicesEnabled(): bool
     {
-        return $this->config->get('twofactor.safe_devices.enabled', false);
+        return $this->config->get('two-factor.safe_devices.enabled', false);
     }
 
     /**

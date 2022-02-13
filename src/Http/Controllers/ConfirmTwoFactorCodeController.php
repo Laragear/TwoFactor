@@ -33,7 +33,7 @@ class ConfirmTwoFactorCodeController extends Controller
      */
     public function form(): Response
     {
-        return response()->view('twofactor::confirm');
+        return response()->view('two-factor::confirm');
     }
 
     /**
@@ -50,7 +50,7 @@ class ConfirmTwoFactorCodeController extends Controller
         $this->extendTotpConfirmationTimeout($request, $config);
 
         return $request->wantsJson()
-            ? response()->json(['message' => trans('twofactor::messages.success')])
+            ? response()->json(['message' => trans('two-factor::messages.success')])
             : response()->redirectToIntended();
     }
 
@@ -64,11 +64,11 @@ class ConfirmTwoFactorCodeController extends Controller
     protected function extendTotpConfirmationTimeout(Request $request, ConfigContract $config): void
     {
         [
-            'twofactor.confirm.key' => $key,
-            'twofactor.confirm.time' => $time
+            'two-factor.confirm.key' => $key,
+            'two-factor.confirm.time' => $time
         ] = $config->get([
-            'twofactor.confirm.key',
-            'twofactor.confirm.time',
+            'two-factor.confirm.key',
+            'two-factor.confirm.time',
         ]);
 
         // This will let the developer remember the confirmation indefinitely.

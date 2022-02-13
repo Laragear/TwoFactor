@@ -343,7 +343,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
         $this->assertTrue($this->user->safeDevices()->contains('ip', $old_request_ip));
 
-        $max_devices = $this->app->make('config')->get('twofactor.safe_devices.max_devices');
+        $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices');
 
         for ($i = 0 ; $i <= $max_devices ; ++$i) {
             Date::setTestNow(Date::create(2020, 01, 01, 18, 30, $i));
@@ -362,7 +362,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_flushes_safe_devices(): void
     {
-        $max_devices = $this->app->make('config')->get('twofactor.safe_devices.max_devices') + 4;
+        $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices') + 4;
 
         for ($i = 0 ; $i < $max_devices ; ++$i) {
             Date::setTestNow(Date::create(2020, 01, 01, 18, 30, $i));
@@ -383,7 +383,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_is_safe_device_and_safe_with_other_ip(): void
     {
-        $max_devices = $this->app->make('config')->get('twofactor.safe_devices.max_devices');
+        $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices');
 
         for ($i = 0 ; $i < $max_devices ; ++$i) {
             Date::setTestNow(Date::create(2020, 01, 01, 18, 30, $i));
@@ -407,7 +407,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_not_safe_device_if_remember_code_doesnt_match(): void
     {
-        $max_devices = $this->app->make('config')->get('twofactor.safe_devices.max_devices');
+        $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices');
 
         for ($i = 0 ; $i < $max_devices ; ++$i) {
             Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30, $i));
@@ -431,7 +431,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_not_safe_device_if_expired(): void
     {
-        $max_devices = $this->app->make('config')->get('twofactor.safe_devices.max_devices');
+        $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices');
 
         Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30));
 
@@ -452,12 +452,12 @@ class TwoFactorAuthenticationTest extends TestCase
         $this->assertTrue($this->user->isSafeDevice($request));
         $this->assertFalse($this->user->isNotSafeDevice($request));
 
-        Date::setTestNow($now->clone()->addDays($this->app->make('config')->get('twofactor.safe_devices.expiration_days'))->subSecond());
+        Date::setTestNow($now->clone()->addDays($this->app->make('config')->get('two-factor.safe_devices.expiration_days'))->subSecond());
 
         $this->assertTrue($this->user->isSafeDevice($request));
         $this->assertFalse($this->user->isNotSafeDevice($request));
 
-        Date::setTestNow($now->clone()->addDays($this->app->make('config')->get('twofactor.safe_devices.expiration_days'))->addSecond());
+        Date::setTestNow($now->clone()->addDays($this->app->make('config')->get('two-factor.safe_devices.expiration_days'))->addSecond());
 
         $this->assertTrue($this->user->isNotSafeDevice($request));
         $this->assertFalse($this->user->isSafeDevice($request));

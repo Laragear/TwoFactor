@@ -71,9 +71,9 @@ class ConfirmTwoFactorEnabledTest extends TestCase
     {
         $this->actingAs($this->user);
 
-        $this->followingRedirects()->get('intended')->assertViewIs('twofactor::confirm');
+        $this->followingRedirects()->get('intended')->assertViewIs('two-factor::confirm');
 
-        $this->getJson('intended')->assertJson(['message' => trans('twofactor::messages.required')]);
+        $this->getJson('intended')->assertJson(['message' => trans('two-factor::messages.required')]);
     }
 
     public function test_redirects_to_intended_when_code_valid(): void
@@ -83,7 +83,7 @@ class ConfirmTwoFactorEnabledTest extends TestCase
         $this->followingRedirects()
             ->get('intended')
             ->assertSessionMissing('_2fa.confirm.expires_at')
-            ->assertViewIs('twofactor::confirm');
+            ->assertViewIs('two-factor::confirm');
 
         $this->followingRedirects()
             ->post('confirm', [
@@ -120,7 +120,7 @@ class ConfirmTwoFactorEnabledTest extends TestCase
 
         $this->followingRedirects()
             ->get('intended')
-            ->assertViewIs('twofactor::confirm');
+            ->assertViewIs('two-factor::confirm');
 
         $this->post('confirm', [
             '2fa_code' => 'invalid',
@@ -148,7 +148,7 @@ class ConfirmTwoFactorEnabledTest extends TestCase
 
         $this->followingRedirects()
             ->get('intended')
-            ->assertViewIs('twofactor::confirm');
+            ->assertViewIs('two-factor::confirm');
     }
 
     public function test_throttles_totp(): void
@@ -159,7 +159,7 @@ class ConfirmTwoFactorEnabledTest extends TestCase
 
         $this->followingRedirects()
             ->get('intended')
-            ->assertViewIs('twofactor::confirm');
+            ->assertViewIs('two-factor::confirm');
 
         for ($i = 0; $i < 60; $i++) {
             $this->post('confirm', [

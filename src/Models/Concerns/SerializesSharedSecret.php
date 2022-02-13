@@ -23,7 +23,7 @@ trait SerializesSharedSecret
      */
     public function toUri() : string
     {
-        $issuer = config('twofactor.issuer', config('app.name'));
+        $issuer = config('two-factor.issuer', config('app.name'));
 
         $query = http_build_query([
             'issuer'    => $issuer,
@@ -43,7 +43,7 @@ trait SerializesSharedSecret
      */
     public function toQr() : string
     {
-        [$size, $margin] = array_values(config('twofactor.qr_code'));
+        [$size, $margin] = array_values(config('two-factor.qr_code'));
 
         return (
             new Writer((new ImageRenderer(new RendererStyle($size, $margin), new SvgImageBackEnd())))
