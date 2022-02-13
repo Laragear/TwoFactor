@@ -20,7 +20,7 @@ This package enables TOTP authentication using 6 digits codes. No need for exter
 
 Fire up Composer and require this package in your project.
 
-    composer require laragear/twofactor
+    composer require laragear/two-factor
 
 That's it.
 

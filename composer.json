@@ -1,5 +1,5 @@
 {
-    "name": "laragear/twofactor",
+    "name": "laragear/two-factor",
     "description": "On-premises 2FA Authentication for out-of-the-box.",
     "keywords": [
         "laravel",
@@ -8,7 +8,7 @@
         "two-factor",
         "authentication"
     ],
-    "homepage": "https://github.com/laragear/twofactor",
+    "homepage": "https://github.com/laragear/two-factor",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "license": "proprietary",
