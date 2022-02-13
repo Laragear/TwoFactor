@@ -33,7 +33,6 @@
         "illuminate/auth": "9.*"
     },
     "require-dev": {
-        "doctrine/dbal": "^3.3",
         "mockery/mockery": "^1.5",
         "orchestra/testbench": "7.*",
         "phpunit/phpunit": "^9.5"
