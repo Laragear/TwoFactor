@@ -1,6 +1,10 @@
 {
     "name": "laragear/two-factor",
     "description": "On-premises 2FA Authentication for out-of-the-box.",
+    "type": "library",
+    "license": "propietary",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "keywords": [
         "laravel",
         "authentication",
@@ -8,11 +12,6 @@
         "two-factor",
         "authentication"
     ],
-    "homepage": "https://github.com/laragear/two-factor",
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "license": "proprietary",
-    "type": "library",
     "authors": [
         {
             "name": "Italo Israel Baeza Cabrera",
@@ -20,6 +19,10 @@
             "homepage": "https://patreon.com/packagesforlaravel"
         }
     ],
+    "support": {
+        "source": "https://github.com/laragear/rut",
+        "issues": "https://github.com/laragear/rut/issues"
+    },
     "require": {
         "php": ">=8.0.2",
         "ext-json": "*",
@@ -51,7 +54,6 @@
     "scripts": {
         "test": "vendor/bin/phpunit --coverage-clover build/logs/clover.xml",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
-
     },
     "config": {
         "sort-packages": true
@@ -62,5 +64,19 @@
               "Laragear\\TwoFactor\\TwoFactorServiceProvider"
             ]
         }
-    }
+    },
+    "funding": [
+        {
+            "type": "Patreon",
+            "url": "https://patreon.com/PackagesForLaravel"
+        },
+        {
+            "type": "Ko-Fi",
+            "url": "https://ko-fi.com/DarkGhostHunter"
+        },
+        {
+            "type": "Paypal",
+            "url": "https://paypal.me/darkghosthunter"
+        }
+    ]
 }
