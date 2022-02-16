@@ -2,16 +2,16 @@
 
 namespace Laragear\TwoFactor\Models;
 
+use function array_merge;
+use function config;
 use Database\Factories\Laragear\TwoFactor\TwoFactorAuthenticationFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use function json_encode;
 use Laragear\TwoFactor\Contracts\TwoFactorTotp;
 use ParagonIE\ConstantTime\Base32;
-use function array_merge;
-use function config;
-use function json_encode;
 use function random_bytes;
 use function strtolower;
 
@@ -19,9 +19,7 @@ use function strtolower;
  * @mixin \Illuminate\Database\Eloquent\Builder
  *
  * @property-read int $id
- *
  * @property-read null|\Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable $authenticatable
- *
  * @property string $shared_secret
  * @property string $label
  * @property int $digits
@@ -33,7 +31,6 @@ use function strtolower;
  * @property null|\Illuminate\Support\Collection $safe_devices
  * @property null|\Illuminate\Support\Carbon|\DateTime $enabled_at
  * @property null|\Illuminate\Support\Carbon|\DateTime $recovery_codes_generated_at
- *
  * @property null|\Illuminate\Support\Carbon|\DateTime $updated_at
  * @property null|\Illuminate\Support\Carbon|\DateTime $created_at
  *
@@ -85,7 +82,6 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
      * Sets the Algorithm to lowercase.
      *
      * @param $value
-     *
      * @return void
      */
     protected function setAlgorithmAttribute($value): void
@@ -110,7 +106,7 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
      */
     public function isDisabled(): bool
     {
-        return !$this->isEnabled();
+        return ! $this->isEnabled();
     }
 
     /**

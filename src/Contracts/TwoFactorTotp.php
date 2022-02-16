@@ -14,7 +14,6 @@ interface TwoFactorTotp extends Renderable, Stringable
      * @param  string  $code
      * @param  \DateTimeInterface|int|string  $at
      * @param  int|null  $window
-     *
      * @return bool
      */
     public function validateCode(string $code, DateTimeInterface|int|string $at = 'now', int $window = null): bool;
@@ -24,7 +23,6 @@ interface TwoFactorTotp extends Renderable, Stringable
      *
      * @param  \DateTimeInterface|int|string  $at
      * @param  int  $offset
-     *
      * @return string
      */
     public function makeCode(DateTimeInterface|int|string $at = 'now', int $offset = 0): string;

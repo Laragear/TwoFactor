@@ -12,7 +12,7 @@ class RequireTwoFactorEnabledTest extends TestCase
     use RefreshDatabase;
     use CreatesTwoFactorUser;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->afterApplicationCreated([$this, 'createTwoFactorUser']);
         parent::setUp();

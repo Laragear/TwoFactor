@@ -2,15 +2,15 @@
 
 namespace Laragear\TwoFactor;
 
+use function collect;
+use function config;
+use function cookie;
 use DateTimeInterface;
+use function event;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
-use function collect;
-use function config;
-use function cookie;
-use function event;
 use function now;
 
 /**
@@ -91,7 +91,7 @@ trait TwoFactorAuthentication
     public function createTwoFactorAuth(): Contracts\TwoFactorTotp
     {
         $this->twoFactorAuth->flushAuth()->forceFill([
-            'label' => $this->twoFactorLabel()
+            'label' => $this->twoFactorLabel(),
         ])->save();
 
         return $this->twoFactorAuth;
@@ -111,7 +111,6 @@ trait TwoFactorAuthentication
      * Confirms the Shared Secret and fully enables the Two-Factor Authentication.
      *
      * @param  string  $code
-     *
      * @return bool
      */
     public function confirmTwoFactorAuth(string $code): bool
@@ -123,6 +122,7 @@ trait TwoFactorAuthentication
 
         if ($this->validateCode($code)) {
             $this->enableTwoFactorAuth();
+
             return true;
         }
 
@@ -132,8 +132,7 @@ trait TwoFactorAuthentication
     /**
      * Verifies the Code against the Shared Secret.
      *
-     * @param  string|int $code
-     *
+     * @param  string|int  $code
      * @return bool
      */
     protected function validateCode(string|int $code): bool
@@ -160,7 +159,6 @@ trait TwoFactorAuthentication
      *
      * @param  \DateTimeInterface|int|string  $at
      * @param  int  $offset
-     *
      * @return string
      */
     public function makeTwoFactorCode(DateTimeInterface|int|string $at = 'now', int $offset = 0): string
@@ -200,7 +198,7 @@ trait TwoFactorAuthentication
             'two-factor.recovery.codes' => $amount,
             'two-factor.recovery.length' => $length
         ] = config()->get([
-            'two-factor.model', 'two-factor.recovery.codes', 'two-factor.recovery.length'
+            'two-factor.model', 'two-factor.recovery.codes', 'two-factor.recovery.length',
         ]);
 
         $this->twoFactorAuth->recovery_codes = $model::generateRecoveryCodes($amount, $length);
@@ -216,18 +214,17 @@ trait TwoFactorAuthentication
      * Uses a one-time Recovery Code if there is one available.
      *
      * @param  string  $code
-     *
      * @return mixed
      */
     protected function useRecoveryCode(string $code): bool
     {
-        if (!$this->twoFactorAuth->setRecoveryCodeAsUsed($code)) {
+        if (! $this->twoFactorAuth->setRecoveryCodeAsUsed($code)) {
             return false;
         }
 
         $this->twoFactorAuth->save();
 
-        if (!$this->hasRecoveryCodes()) {
+        if (! $this->hasRecoveryCodes()) {
             event(new Events\TwoFactorRecoveryCodesDepleted($this));
         }
 
@@ -238,13 +235,12 @@ trait TwoFactorAuthentication
      * Adds a "safe" Device from the Request, and returns the token used.
      *
      * @param  \Illuminate\Http\Request  $request
-     *
      * @return string
      */
     public function addSafeDevice(Request $request): string
     {
         [$name, $expiration] = array_values(config()->get([
-            'two-factor.safe_devices.cookie', 'two-factor.safe_devices.expiration_days'
+            'two-factor.safe_devices.cookie', 'two-factor.safe_devices.expiration_days',
         ]));
 
         $this->twoFactorAuth->safe_devices = $this->safeDevices()
@@ -298,7 +294,6 @@ trait TwoFactorAuthentication
      * Determines if the Request has been made through a previously used "safe" device.
      *
      * @param  \Illuminate\Http\Request  $request
-     *
      * @return bool
      */
     public function isSafeDevice(Request $request): bool
@@ -316,7 +311,6 @@ trait TwoFactorAuthentication
      * Returns the Two-Factor Remember Token of the request.
      *
      * @param  \Illuminate\Http\Request  $request
-     *
      * @return string|null
      */
     protected function getTwoFactorRememberFromRequest(Request $request): ?string
@@ -328,11 +322,10 @@ trait TwoFactorAuthentication
      * Determines if the Request has been made through a not-previously-known device.
      *
      * @param  \Illuminate\Http\Request  $request
-     *
      * @return bool
      */
     public function isNotSafeDevice(Request $request): bool
     {
-        return !$this->isSafeDevice($request);
+        return ! $this->isSafeDevice($request);
     }
 }

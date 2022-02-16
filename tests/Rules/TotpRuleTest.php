@@ -36,9 +36,9 @@ class TotpRuleTest extends TestCase
     public function test_validation_fails_if_guest(): void
     {
         $fails = $this->app->make('validator')->make([
-            'code' => '123456'
+            'code' => '123456',
         ], [
-            'code' => 'totp'
+            'code' => 'totp',
         ])->fails();
 
         static::assertTrue($fails);
@@ -53,9 +53,9 @@ class TotpRuleTest extends TestCase
         ]));
 
         $fails = $this->app->make('validator')->make([
-            'code' => '123456'
+            'code' => '123456',
         ], [
-            'code' => 'totp'
+            'code' => 'totp',
         ])->fails();
 
         static::assertTrue($fails);
@@ -66,9 +66,9 @@ class TotpRuleTest extends TestCase
         $this->actingAs(tap($this->user)->disableTwoFactorAuth());
 
         $fails = $this->app->make('validator')->make([
-            'code' => '123456'
+            'code' => '123456',
         ], [
-            'code' => 'totp'
+            'code' => 'totp',
         ])->fails();
 
         static::assertTrue($fails);
@@ -79,9 +79,9 @@ class TotpRuleTest extends TestCase
         $this->actingAs($this->user);
 
         $fails = $this->app->make('validator')->make([
-            'code' => '123456'
+            'code' => '123456',
         ], [
-            'code' => 'totp'
+            'code' => 'totp',
         ])->fails();
 
         static::assertTrue($fails);
@@ -94,9 +94,9 @@ class TotpRuleTest extends TestCase
         $this->actingAs($this->user);
 
         $fails = $this->app->make('validator')->make([
-            'code' => $this->user->makeTwoFactorCode($now, -2)
+            'code' => $this->user->makeTwoFactorCode($now, -2),
         ], [
-            'code' => 'totp'
+            'code' => 'totp',
         ])->fails();
 
         static::assertTrue($fails);
@@ -109,9 +109,9 @@ class TotpRuleTest extends TestCase
         $this->actingAs($this->user);
 
         $fails = validator([
-            'code' => $this->user->makeTwoFactorCode($now)
+            'code' => $this->user->makeTwoFactorCode($now),
         ], [
-            'code' => 'totp'
+            'code' => 'totp',
         ])->fails();
 
         static::assertFalse($fails);
@@ -122,9 +122,9 @@ class TotpRuleTest extends TestCase
         $this->actingAs($this->user);
 
         $fails = $this->app->make('validator')->make([
-            'code' => $this->user->generateRecoveryCodes()->first()['code']
+            'code' => $this->user->generateRecoveryCodes()->first()['code'],
         ], [
-            'code' => 'totp'
+            'code' => 'totp',
         ])->fails();
 
         static::assertFalse($fails);
@@ -133,9 +133,9 @@ class TotpRuleTest extends TestCase
     public function test_validator_fails_if_code_is_recovery_and_excludes_recovery_codes(): void
     {
         $validator = $this->app->make('validator')->make([
-            'code' => $this->user->generateRecoveryCodes()->first()['code']
+            'code' => $this->user->generateRecoveryCodes()->first()['code'],
         ], [
-            'code' => 'totp:code'
+            'code' => 'totp:code',
         ]);
 
         static::assertSame('The Code is invalid or has expired.', $validator->errors()->first('code'));
@@ -144,9 +144,9 @@ class TotpRuleTest extends TestCase
     public function test_validator_rule_uses_translation(): void
     {
         $validator = $this->app->make('validator')->make([
-            'code' => 'invalid'
+            'code' => 'invalid',
         ], [
-            'code' => 'totp'
+            'code' => 'totp',
         ]);
 
         static::assertSame('The Code is invalid or has expired.', $validator->errors()->first('code'));
