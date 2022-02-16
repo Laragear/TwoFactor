@@ -45,11 +45,6 @@ jobs:
       - name: Run Tests
         run: composer run-script test
 
-      - name: Upload Coverage to Coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          COVERALLS_SERVICE_NAME: github
-        run: |
-          rm -rf composer.* vendor/
-          composer require php-coveralls/php-coveralls
-          vendor/bin/php-coveralls
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v2
+
