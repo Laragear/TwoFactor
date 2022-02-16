@@ -9,3 +9,4 @@
 /.scrutinizer.yml   export-ignore
 /tests              export-ignore
 /.editorconfig      export-ignore
+/.assets            export-ignore
