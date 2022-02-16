@@ -1,5 +1,5 @@
 # Two Factor
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/two-factor.svg)](https://packagist.org/packages/laragear/two-factor) [![](https://github.com/Laragear/TwoFactor/workflows/Tests/badge.svg)](https://github.com/Laragear/TwoFactor/actions) [![codecov](https://codecov.io/gh/Laragear/TwoFactor/branch/1.x/graph/badge.svg?token=BJMBVZNPM8)](https://codecov.io/gh/Laragear/TwoFactor) [![Maintainability](https://api.codeclimate.com/v1/badges/64241e25adb0f55d7ba1/maintainability)](https://codeclimate.com/github/Laragear/TwoFactor/maintainability) [![Laravel Octane Compatible](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://github.com/laravel/octane)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/two-factor.svg)](https://packagist.org/packages/laragear/two-factor) [![](https://github.com/Laragear/TwoFactor/workflows/Tests/badge.svg)](https://github.com/Laragear/TwoFactor/actions) [![codecov](https://codecov.io/gh/Laragear/TwoFactor/branch/1.x/graph/badge.svg?token=BJMBVZNPM8)](https://codecov.io/gh/Laragear/TwoFactor) [![Maintainability](https://api.codeclimate.com/v1/badges/64241e25adb0f55d7ba1/maintainability)](https://codeclimate.com/github/Laragear/TwoFactor/maintainability) [![Laravel Octane Compatible](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
 
 On-premises Two-Factor Authentication for all your users out of the box.
 
@@ -498,6 +498,15 @@ return [
 ```
 
 This controls the size and margin used to create the QR Code, which are created as SVG.
+
+## Laravel Octane Compatibility
+
+- There are no singletons using a stale application instance. 
+- There are no singletons using a stale config instance. 
+- There are no singletons using a stale request instance. 
+- There are no static properties written during a request.
+
+There should be no problems using this package with Laravel Octane.
 
 ## Security
 
