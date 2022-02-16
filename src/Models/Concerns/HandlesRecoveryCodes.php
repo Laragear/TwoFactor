@@ -23,7 +23,6 @@ trait HandlesRecoveryCodes
      * Returns the key of the not-used Recovery Code.
      *
      * @param  string  $code
-     *
      * @return int|bool|null
      */
     protected function getUnusedRecoveryCodeIndex(string $code): int|null|bool

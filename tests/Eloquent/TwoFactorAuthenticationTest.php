@@ -117,7 +117,7 @@ class TwoFactorAuthenticationTest extends TestCase
         static::assertEquals('716347', $tfa->makeCode());
         static::assertEquals('779186', $tfa->makeCode('now', -1));
 
-        for ($i = 0 ; $i < 30 ; ++$i) {
+        for ($i = 0; $i < 30; $i++) {
             $this->travelTo(Date::create(2020, 1, 1, 20, 30, $i));
             static::assertEquals('716347', $tfa->makeCode());
         }
@@ -239,7 +239,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
         static::assertEquals(static::SECRET, $tfa->toString());
         static::assertEquals(static::SECRET, $tfa->__toString());
-        static::assertEquals(static::SECRET, (string)$tfa);
+        static::assertEquals(static::SECRET, (string) $tfa);
     }
 
     public function test_serializes_to_grouped_string(): void
@@ -278,8 +278,8 @@ class TwoFactorAuthenticationTest extends TestCase
             'digits'        => 14,
         ]);
 
-        static::assertStringEqualsFile(__DIR__ . '/../Stubs/QrStub.svg', $tfa->toQr());
-        static::assertStringEqualsFile(__DIR__ . '/../Stubs/QrStub.svg', $tfa->render());
+        static::assertStringEqualsFile(__DIR__.'/../Stubs/QrStub.svg', $tfa->toQr());
+        static::assertStringEqualsFile(__DIR__.'/../Stubs/QrStub.svg', $tfa->render());
     }
 
     public function test_serializes_to_qr_and_renders_to_qr_with_custom_values(): void
@@ -288,8 +288,8 @@ class TwoFactorAuthenticationTest extends TestCase
             'two-factor.issuer' => 'quz',
             'two-factor.qr_code' => [
                 'size' => 600,
-                'margin' => 10
-            ]
+                'margin' => 10,
+            ],
         ]);
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
@@ -299,8 +299,8 @@ class TwoFactorAuthenticationTest extends TestCase
             'digits'        => 14,
         ]);
 
-        static::assertStringEqualsFile(__DIR__ . '/../Stubs/CustomQrStub.svg', $tfa->toQr());
-        static::assertStringEqualsFile(__DIR__ . '/../Stubs/CustomQrStub.svg', $tfa->render());
+        static::assertStringEqualsFile(__DIR__.'/../Stubs/CustomQrStub.svg', $tfa->toQr());
+        static::assertStringEqualsFile(__DIR__.'/../Stubs/CustomQrStub.svg', $tfa->render());
     }
 
     public function test_serializes_uri_to_json(): void

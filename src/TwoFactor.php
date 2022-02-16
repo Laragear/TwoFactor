@@ -2,13 +2,13 @@
 
 namespace Laragear\TwoFactor;
 
+use function app;
 use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\Request;
 use Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
-use function app;
 use function trans;
 use function validator;
 
@@ -65,7 +65,6 @@ class TwoFactor
      * If the user does not use TOTP, no checks will be done.
      *
      * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
-     *
      * @return bool
      */
     public function validate(Authenticatable $user): bool
@@ -109,7 +108,7 @@ class TwoFactor
      */
     protected function requestHasCode(): bool
     {
-        return !validator($this->request->only($this->input), [
+        return ! validator($this->request->only($this->input), [
             $this->input => 'required|alpha_num',
         ])->fails();
     }

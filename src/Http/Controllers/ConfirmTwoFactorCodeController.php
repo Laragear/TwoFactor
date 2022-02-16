@@ -8,10 +8,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use const INF;
 use function now;
 use function response;
 use function trans;
-use const INF;
 
 class ConfirmTwoFactorCodeController extends Controller
 {

@@ -2,11 +2,11 @@
 
 namespace Laragear\TwoFactor\Models\Concerns;
 
+use function array_values;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
-use function array_values;
 use function chunk_split;
 use function config;
 use function http_build_query;
@@ -21,7 +21,7 @@ trait SerializesSharedSecret
      *
      * @return string
      */
-    public function toUri() : string
+    public function toUri(): string
     {
         $issuer = config('two-factor.issuer', config('app.name'));
 
@@ -33,7 +33,7 @@ trait SerializesSharedSecret
             'digits'     => $this->attributes['digits'],
         ], null, '&', PHP_QUERY_RFC3986);
 
-        return 'otpauth://totp/' . rawurlencode($issuer) . '%3A' . $this->attributes['label'] . "?$query";
+        return 'otpauth://totp/'.rawurlencode($issuer).'%3A'.$this->attributes['label']."?$query";
     }
 
     /**
@@ -41,7 +41,7 @@ trait SerializesSharedSecret
      *
      * @return string
      */
-    public function toQr() : string
+    public function toQr(): string
     {
         [$size, $margin] = array_values(config('two-factor.qr_code'));
 
@@ -65,7 +65,7 @@ trait SerializesSharedSecret
      *
      * @return string
      */
-    public function toString() : string
+    public function toString(): string
     {
         return $this->shared_secret;
     }
@@ -75,7 +75,7 @@ trait SerializesSharedSecret
      *
      * @return string
      */
-    public function toGroupedString() : string
+    public function toGroupedString(): string
     {
         return trim(chunk_split($this->toString(), 4, ' '));
     }

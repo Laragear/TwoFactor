@@ -24,7 +24,7 @@ class TwoFactorAuthenticationTest extends TestCase
     use RegistersLoginRoute;
     use WithFaker;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->afterApplicationCreated([$this, 'createTwoFactorUser']);
         parent::setUp();
@@ -345,7 +345,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
         $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices');
 
-        for ($i = 0 ; $i <= $max_devices ; ++$i) {
+        for ($i = 0; $i <= $max_devices; $i++) {
             Date::setTestNow(Date::create(2020, 01, 01, 18, 30, $i));
 
             $this->user->addSafeDevice(
@@ -364,7 +364,7 @@ class TwoFactorAuthenticationTest extends TestCase
     {
         $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices') + 4;
 
-        for ($i = 0 ; $i < $max_devices ; ++$i) {
+        for ($i = 0; $i < $max_devices; $i++) {
             Date::setTestNow(Date::create(2020, 01, 01, 18, 30, $i));
 
             $this->user->addSafeDevice(
@@ -385,7 +385,7 @@ class TwoFactorAuthenticationTest extends TestCase
     {
         $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices');
 
-        for ($i = 0 ; $i < $max_devices ; ++$i) {
+        for ($i = 0; $i < $max_devices; $i++) {
             Date::setTestNow(Date::create(2020, 01, 01, 18, 30, $i));
 
             $this->user->addSafeDevice(
@@ -409,7 +409,7 @@ class TwoFactorAuthenticationTest extends TestCase
     {
         $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices');
 
-        for ($i = 0 ; $i < $max_devices ; ++$i) {
+        for ($i = 0; $i < $max_devices; $i++) {
             Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30, $i));
 
             $this->user->addSafeDevice(
@@ -435,7 +435,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
         Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30));
 
-        for ($i = 0 ; $i < $max_devices ; ++$i) {
+        for ($i = 0; $i < $max_devices; $i++) {
             $this->user->addSafeDevice(
                 Request::create('/', 'GET', [], [], [], [
                     'REMOTE_ADDR' => $this->faker->ipv4,

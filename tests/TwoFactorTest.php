@@ -11,9 +11,9 @@ use Illuminate\Validation\ValidationException;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
 use Laragear\TwoFactor\TwoFactor;
 use Mockery;
+use function now;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
-use function now;
 
 class TwoFactorTest extends TestCase
 {
@@ -22,7 +22,7 @@ class TwoFactorTest extends TestCase
     use RegistersLoginRoute;
     use WithFaker;
 
-    protected function setUp() : void
+    protected function setUp(): void
     {
         $this->afterApplicationCreated([$this, 'createTwoFactorUser']);
         $this->afterApplicationCreated(function (): void {
@@ -42,11 +42,11 @@ class TwoFactorTest extends TestCase
     {
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', Request::create('test', 'POST', [
-            '2fa_code' => $this->user->makeTwoFactorCode()
+            '2fa_code' => $this->user->makeTwoFactorCode(),
         ]));
 
         static::assertTrue(Auth::attemptWhen($credentials, TwoFactor::hasCode()));
@@ -56,11 +56,11 @@ class TwoFactorTest extends TestCase
     {
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', Request::create('test', 'POST', [
-            '2fa_code' => $this->user->makeTwoFactorCode()
+            '2fa_code' => $this->user->makeTwoFactorCode(),
         ]));
 
         static::assertTrue(Auth::attemptWhen($credentials, TwoFactor::hasCodeOrFails()));
@@ -70,11 +70,11 @@ class TwoFactorTest extends TestCase
     {
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', Request::create('test', 'POST', [
-            '2fa_code' => $this->user->getRecoveryCodes()->first()['code']
+            '2fa_code' => $this->user->getRecoveryCodes()->first()['code'],
         ]));
 
         $this->travelTo($now = now());
@@ -87,11 +87,11 @@ class TwoFactorTest extends TestCase
     {
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', Request::create('test', 'POST', [
-            '2fa_code' => $this->user->getRecoveryCodes()->first()['code']
+            '2fa_code' => $this->user->getRecoveryCodes()->first()['code'],
         ]));
 
         $this->travelTo($now = now());
@@ -104,11 +104,11 @@ class TwoFactorTest extends TestCase
     {
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', Request::create('test', 'POST', [
-            'foo_bar' => $this->user->makeTwoFactorCode()
+            'foo_bar' => $this->user->makeTwoFactorCode(),
         ]));
 
         static::assertTrue(Auth::attemptWhen($credentials, TwoFactor::hasCode('foo_bar')));
@@ -118,11 +118,11 @@ class TwoFactorTest extends TestCase
     {
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', Request::create('test', 'POST', [
-            '2fa_code' => 'invalid'
+            '2fa_code' => 'invalid',
         ]));
 
         static::assertFalse(Auth::attemptWhen($credentials, TwoFactor::hasCode()));
@@ -134,7 +134,7 @@ class TwoFactorTest extends TestCase
 
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', Request::create('test', 'POST'));
@@ -146,7 +146,7 @@ class TwoFactorTest extends TestCase
     {
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->user->disableTwoFactorAuth();
@@ -162,11 +162,11 @@ class TwoFactorTest extends TestCase
 
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', Request::create('test', 'POST', [
-            '2fa_code' => 'invalid'
+            '2fa_code' => 'invalid',
         ]));
 
         try {
@@ -183,11 +183,11 @@ class TwoFactorTest extends TestCase
 
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', Request::create('test', 'POST', [
-            '2fa_code' => ''
+            '2fa_code' => '',
         ]));
 
         try {
@@ -204,11 +204,11 @@ class TwoFactorTest extends TestCase
 
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', Request::create('test', 'POST', [
-            '2fa_code' => 'invalid'
+            '2fa_code' => 'invalid',
         ]));
 
         try {
@@ -229,7 +229,7 @@ class TwoFactorTest extends TestCase
 
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', Request::create('test', 'POST', [
@@ -249,7 +249,7 @@ class TwoFactorTest extends TestCase
 
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', Request::create('test', 'POST', [
@@ -267,7 +267,7 @@ class TwoFactorTest extends TestCase
 
         $credentials = [
             'email' => $this->user->email,
-            'password' => 'secret'
+            'password' => 'secret',
         ];
 
         $this->instance('request', $request = Request::create('test', 'POST'));

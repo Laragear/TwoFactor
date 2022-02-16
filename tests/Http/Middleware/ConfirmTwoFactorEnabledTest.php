@@ -135,7 +135,7 @@ class ConfirmTwoFactorEnabledTest extends TestCase
         $this->actingAs($this->user);
 
         $this->session([
-            '_2fa.confirm.expires_at' => $now->getTimestamp()
+            '_2fa.confirm.expires_at' => $now->getTimestamp(),
         ]);
 
         $this->followingRedirects()
@@ -143,7 +143,7 @@ class ConfirmTwoFactorEnabledTest extends TestCase
             ->assertSee('ok');
 
         $this->session([
-            '_2fa.confirm.expires_at' => $now->getTimestamp() - 1
+            '_2fa.confirm.expires_at' => $now->getTimestamp() - 1,
         ]);
 
         $this->followingRedirects()

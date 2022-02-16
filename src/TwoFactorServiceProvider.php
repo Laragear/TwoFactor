@@ -10,7 +10,7 @@ use Illuminate\Support\ServiceProvider;
 class TwoFactorServiceProvider extends ServiceProvider
 {
     public const CONFIG = __DIR__.'/../config/two-factor.php';
-    public const VIEWS = __DIR__ . '/../resources/views';
+    public const VIEWS = __DIR__.'/../resources/views';
     public const LANG = __DIR__.'/../lang';
     public const DB = __DIR__.'/../database/migrations';
 
