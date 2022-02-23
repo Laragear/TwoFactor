@@ -20,8 +20,8 @@
         }
     ],
     "support": {
-        "source": "https://github.com/laragear/rut",
-        "issues": "https://github.com/laragear/rut/issues"
+        "source": "https://github.com/Laragear/TwoFactor",
+        "issues": "https://github.com/Laragear/TwoFactor/issues"
     },
     "require": {
         "php": ">=8.0.2",
