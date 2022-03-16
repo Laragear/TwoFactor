@@ -79,9 +79,11 @@ class TwoFactorAuthenticationTest extends TestCase
         static::assertNotNull($tfa->seconds);
         static::assertNotNull($tfa->window);
         static::assertNotNull($tfa->algorithm);
+        static::assertNotNull($tfa->recovery_codes);
         static::assertNotNull($tfa->recovery_codes_generated_at);
         static::assertNotNull($tfa->safe_devices);
 
+        $this->app->make('config')->set('two-factor.recovery.enabled', false);
         $tfa->flushAuth()->save();
 
         static::assertNotEquals($old, $tfa->shared_secret);
@@ -92,8 +94,15 @@ class TwoFactorAuthenticationTest extends TestCase
         static::assertEquals(config('two-factor.totp.seconds'), $tfa->seconds);
         static::assertEquals(config('two-factor.totp.window'), $tfa->window);
         static::assertEquals(config('two-factor.totp.algorithm'), $tfa->algorithm);
-        static::assertNull($tfa->recovery_codes_generated_at);
+        static::assertNotNull($tfa->recovery_codes);
+        static::assertNotNull($tfa->recovery_codes_generated_at);
         static::assertNull($tfa->safe_devices);
+
+        $this->app->make('config')->set('two-factor.recovery.enabled', true);
+        $tfa->flushAuth()->save();
+
+        static::assertNull($tfa->recovery_codes);
+        static::assertNull($tfa->recovery_codes_generated_at);
     }
 
     public function test_generates_random_secret(): void

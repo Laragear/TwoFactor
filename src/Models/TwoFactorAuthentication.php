@@ -116,14 +116,16 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
      */
     public function flushAuth(): static
     {
-        $this->recovery_codes_generated_at = null;
+        if (config('two-factor.recovery.enabled')) {
+            $this->recovery_codes = null;
+            $this->recovery_codes_generated_at = null;
+        }
         $this->safe_devices = null;
         $this->enabled_at = null;
 
         $this->attributes = array_merge($this->attributes, config('two-factor.totp'));
 
         $this->shared_secret = static::generateRandomSecret();
-        $this->recovery_codes = null;
 
         return $this;
     }
