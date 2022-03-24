@@ -14,7 +14,7 @@ return [
     */
 
     'model' => \Laragear\TwoFactor\Models\TwoFactorAuthentication::class,
-    
+
     /*
     |--------------------------------------------------------------------------
     | Cache Store
