@@ -41,13 +41,12 @@ Works without middleware or new guards, but you can go full manual if you want.
 
 ## Set up
 
-1. First, run the migration in your application. 
+1. First, publish the migration file into your application, and use `migrate` to create the table that handles the Two-Factor Authentication information for each model you want to attach to 2FA.
 
 ```shell
+php artisan vendor:publish --provider="Laragear\TwoFactor\TwoFactorServiceProvider" --tag="migrations"
 php artisan migrate
 ```
-
-> This will create a table to handle the Two-Factor Authentication information for each model you want to attach to 2FA.
 
 2. Add the `TwoFactorAuthenticatable` _contract_ and the `TwoFactorAuthentication` trait to the User model, or any other model you want to make Two-Factor Authentication available. 
 
@@ -177,6 +176,7 @@ public function login(Request $request)
 
 Behind the scenes, once the User is retrieved and validated from your guard of choice, it makes an additional check for a valid TOTP code. If it's invalid, it will return false and no authentication will happen.
 
+> For [Laravel UI](https://github.com/laravel/ui), override the `attemptLogin()` method in your Login controller.
 > For [Laravel Breeze](https://laravel.com/docs/starter-kits#laravel-breeze), you may need to edit the `LoginRequest::authenticate()` call.
 > For [Laravel Fortify](https://laravel.com/docs/fortify) and [Jetstream](https://jetstream.laravel.com/), you may need to set a custom callback with the `Fortify::authenticateUsing()` method.
 
