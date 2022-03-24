@@ -17,8 +17,8 @@
                 </div>
             @endif
             <div class="col-sm-8 col-8 mb-3">
-                <input type="text" name="2fa_code" id="{{ $input }}"
-                       class="@error($input) is-invalid @enderror form-control form-control-lg"
+                <input type="text" name="2fa_code" id="2fa_code"
+                       class="@error('2fa_code') is-invalid @enderror form-control form-control-lg"
                        minlength="6" placeholder="123456" required>
             </div>
             <div class="w-100"></div>
