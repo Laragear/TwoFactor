@@ -277,7 +277,7 @@ The middleware will redirect the user to the named route `2fa.confirm` by defaul
 use Illuminate\Support\Facades\Route;
 use Laragear\TwoFactor\Http\Controllers\ConfirmTwoFactorCodeController;
 
-Route::get('2fa-confirm', [ConfirmTwoFactorCodeController::class, 'show'])
+Route::get('2fa-confirm', [ConfirmTwoFactorCodeController::class, 'form'])
     ->name('2fa.confirm');
 
 Route::post('2fa-confirm', [ConfirmTwoFactorCodeController::class, 'confirm']);
