@@ -37,11 +37,6 @@ class RequireTwoFactorEnabledTest extends TestCase
         })->middleware('auth')->name('custom-notice');
     }
 
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
-    }
-
     public function test_guest_cant_access(): void
     {
         $this->get('test')->assertRedirect('login');

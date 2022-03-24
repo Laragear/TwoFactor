@@ -18,11 +18,6 @@ class TwoFactorAuthenticationTest extends TestCase
 
     use RefreshDatabase;
 
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
-    }
-
     public function test_returns_authenticatable(): void
     {
         $user = UserTwoFactorStub::create([

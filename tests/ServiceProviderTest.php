@@ -3,6 +3,7 @@
 namespace Tests;
 
 use Illuminate\Support\ServiceProvider;
+use Laragear\Meta\Testing\InteractsWithServiceProvider;
 use Laragear\TwoFactor\Http\Middleware\ConfirmTwoFactorCode;
 use Laragear\TwoFactor\Http\Middleware\RequireTwoFactorEnabled;
 use Laragear\TwoFactor\Rules\Totp;
@@ -10,6 +11,8 @@ use Laragear\TwoFactor\TwoFactorServiceProvider;
 
 class ServiceProviderTest extends TestCase
 {
+    use InteractsWithServiceProvider;
+
     public function test_merges_config(): void
     {
         static::assertSame(
@@ -28,9 +31,9 @@ class ServiceProviderTest extends TestCase
         static::assertArrayHasKey('two-factor', $this->app->make('translator')->getLoader()->namespaces());
     }
 
-    public function test_loads_migrations(): void
+    public function test_publishes_migrations(): void
     {
-        static::assertContains(TwoFactorServiceProvider::DB, $this->app->make('migrator')->paths());
+        $this->assertPublishesMigrations(TwoFactorServiceProvider::DB);
     }
 
     public function test_publishes_middleware(): void

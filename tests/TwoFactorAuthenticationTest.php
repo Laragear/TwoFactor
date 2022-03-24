@@ -30,11 +30,6 @@ class TwoFactorAuthenticationTest extends TestCase
         parent::setUp();
     }
 
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
-    }
-
     public function test_hides_relation_from_serialization(): void
     {
         $array = $this->user->toArray();

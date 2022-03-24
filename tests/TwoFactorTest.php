@@ -11,9 +11,9 @@ use Illuminate\Validation\ValidationException;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
 use Laragear\TwoFactor\TwoFactor;
 use Mockery;
-use function now;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
+use function now;
 
 class TwoFactorTest extends TestCase
 {
@@ -31,11 +31,6 @@ class TwoFactorTest extends TestCase
         });
 
         parent::setUp();
-    }
-
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
     }
 
     public function test_authenticates_with_when(): void

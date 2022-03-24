@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('two_factor_authentications', function (Blueprint $table) {
+        Schema::create('two_factor_authentications', static function (Blueprint $table): void {
             $table->id();
             $table->morphs('authenticatable', '2fa_auth_type_auth_id_index');
             $table->text('shared_secret');

@@ -35,11 +35,6 @@ class ConfirmTwoFactorEnabledTest extends TestCase
         $router->post('confirm', [ConfirmTwoFactorCodeController::class, 'confirm']);
     }
 
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
-    }
-
     public function test_guest_cant_access(): void
     {
         $this->assertGuest();
