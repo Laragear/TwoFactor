@@ -15,6 +15,8 @@ return [
 
     'model' => \Laragear\TwoFactor\Models\TwoFactorAuthentication::class,
 
+    'input' => '2fa_code',
+    
     /*
     |--------------------------------------------------------------------------
     | Cache Store
