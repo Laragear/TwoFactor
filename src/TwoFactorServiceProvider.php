@@ -3,7 +3,6 @@
 namespace Laragear\TwoFactor;
 
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Laragear\Meta\BootHelpers;
 use Laragear\Meta\PublishesMigrations;
@@ -31,10 +30,9 @@ class TwoFactorServiceProvider extends ServiceProvider
     /**
      * Bootstrap the application services.
      *
-     * @param  \Illuminate\Routing\Router  $router
      * @return void
      */
-    public function boot(Router $router): void
+    public function boot(): void
     {
         $this->loadViewsFrom(static::VIEWS, 'two-factor');
         $this->loadTranslationsFrom(static::LANG, 'two-factor');
