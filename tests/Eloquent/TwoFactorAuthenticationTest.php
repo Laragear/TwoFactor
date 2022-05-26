@@ -18,11 +18,6 @@ class TwoFactorAuthenticationTest extends TestCase
 
     use RefreshDatabase;
 
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
-    }
-
     public function test_returns_authenticatable(): void
     {
         $user = UserTwoFactorStub::create([
@@ -334,5 +329,29 @@ class TwoFactorAuthenticationTest extends TestCase
         $uri = 'otpauth://totp/foo%20bar%3Atest@foo.com?issuer=foo%20bar&label=test%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14';
 
         static::assertSame($uri, $tfa->toUri());
+    }
+
+    public function test_uses_custom_generator(): void
+    {
+        $i = 0;
+
+        TwoFactorAuthentication::generateRecoveryCodesUsing(function ($length, $item, $amount) use (&$i) {
+            static::assertSame(8, $length);
+            static::assertSame(++$i, $item);
+            static::assertSame(10, $amount);
+
+            return 'foo';
+        });
+
+        TwoFactorAuthentication::factory()->make()->recovery_codes->each(static function (array $code): void {
+            static::assertSame('foo', $code['code']);
+        });
+    }
+
+    protected function tearDown(): void
+    {
+        TwoFactorAuthentication::generateRecoveryCodesUsing();
+
+        parent::tearDown();
     }
 }

@@ -33,11 +33,6 @@ class TwoFactorTest extends TestCase
         parent::setUp();
     }
 
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
-    }
-
     public function test_authenticates_with_when(): void
     {
         $credentials = [

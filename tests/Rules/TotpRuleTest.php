@@ -21,11 +21,6 @@ class TotpRuleTest extends TestCase
         parent::setUp();
     }
 
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
-    }
-
     protected function defineWebRoutes($router)
     {
         $router->get('intended', static function (): string {

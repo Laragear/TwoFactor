@@ -37,13 +37,10 @@ class TwoFactor
     public static function hasCodeOrFails(string $input = '2fa_code', string $message = null): Closure
     {
         return static function ($user) use ($input, $message): bool {
-            if (app(__CLASS__, ['input' => $input])->validate($user)) {
-                return true;
-            }
-
-            throw InvalidCodeException::withMessages([
-                $input => $message ?? trans('two-factor::validation.totp_code'),
-            ]);
+            return app(__CLASS__, ['input' => $input])->validate($user)
+                ?: throw InvalidCodeException::withMessages([
+                    $input => $message ?? trans('two-factor::validation.totp_code'),
+                ]);
         };
     }
 

@@ -6,9 +6,17 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use function is_int;
 use function now;
+use function strtoupper;
 
 trait HandlesRecoveryCodes
 {
+    /**
+     * The custom generator to make recovery codes.
+     *
+     * @var (callable(int, int $iteration, int $amount): \Illuminate\Support\Collection<int, int|string>)  $callback
+     */
+    protected static $generator;
+
     /**
      * Returns if there are Recovery Codes available.
      *
@@ -56,6 +64,17 @@ trait HandlesRecoveryCodes
     }
 
     /**
+     * Registers a callback to generate recovery codes.
+     *
+     * @param  (callable(int $length, int $iteration, int $amount): \Illuminate\Support\Collection<int, int|string>)|null  $callback
+     * @return void
+     */
+    public static function generateRecoveryCodesUsing(callable $callback = null): void
+    {
+        static::$generator = $callback;
+    }
+
+    /**
      * Generates a new batch of Recovery Codes.
      *
      * @param  int  $amount
@@ -64,9 +83,13 @@ trait HandlesRecoveryCodes
      */
     public static function generateRecoveryCodes(int $amount, int $length): Collection
     {
-        return Collection::times($amount, static function () use ($length): array {
+        $generator = static::$generator ?? static function ($length): string {
+            return strtoupper(Str::random($length));
+        };
+
+        return Collection::times($amount, static function (int $iteration) use ($generator, $amount, $length): array {
             return [
-                'code'    => strtoupper(Str::random($length)),
+                'code'    => $generator($length, $iteration, $amount),
                 'used_at' => null,
             ];
         });

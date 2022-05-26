@@ -24,11 +24,6 @@ class EventsTest extends TestCase
         parent::setUp();
     }
 
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadLaravelMigrations();
-    }
-
     public function test_fires_two_factor_enabled_event(): void
     {
         $event = Event::fake();
