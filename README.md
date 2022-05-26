@@ -4,10 +4,19 @@
 On-premises Two-Factor Authentication for all your users out of the box.
 
 ```php
-use Illuminate\Support\Facades\Auth;
-use Laragear\TwoFactor\TwoFactor;
+use Illuminate\Http\Request;
+use Laragear\TwoFactor\Facades\Auth2FA;
 
-Auth::attemptWhen($request->only('email', 'password'), TwoFactor::hasCode());
+public function login(Request $request)
+{
+    $attempt = Auth2FA::attempt($request->only('email', 'password'));
+    
+    if ($attempt) {
+        return 'You are logged in!';
+    }
+    
+    return 'Hey, you should make an account!';
+}
 ```
 
 This package enables TOTP authentication using 6 digits codes. No need for external APIs.
