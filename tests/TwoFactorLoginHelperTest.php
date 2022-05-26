@@ -2,6 +2,8 @@
 
 namespace Tests;
 
+use function app;
+use function config;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -17,8 +19,6 @@ use Laragear\TwoFactor\Facades\Auth2FA;
 use Mockery;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
-use function app;
-use function config;
 use function today;
 use function trans;
 
@@ -160,7 +160,7 @@ class TwoFactorLoginHelperTest extends TestCase
         $view = Mockery::mock(\Illuminate\View\View::class);
 
         $view->expects('withErrors')->with([
-            '2fa_code' => [trans('two-factor::validation.totp_code')]
+            '2fa_code' => [trans('two-factor::validation.totp_code')],
         ])->andReturnSelf();
         $view->expects('render')->andReturn('baz');
         $view->expects('name')->andReturn('bar');
@@ -192,7 +192,7 @@ class TwoFactorLoginHelperTest extends TestCase
         $view = Mockery::mock(\Illuminate\View\View::class);
 
         $view->expects('withErrors')->with([
-            'baz' => ['bar']
+            'baz' => ['bar'],
         ])->andReturnSelf();
         $view->expects('render')->andReturn('baz');
         $view->expects('name')->andReturn('bar');
