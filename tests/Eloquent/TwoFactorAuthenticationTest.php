@@ -330,4 +330,28 @@ class TwoFactorAuthenticationTest extends TestCase
 
         static::assertSame($uri, $tfa->toUri());
     }
+
+    public function test_uses_custom_generator(): void
+    {
+        $i = 0;
+
+        TwoFactorAuthentication::generateRecoveryCodesUsing(function ($length, $item, $amount) use (&$i) {
+            static::assertSame(8, $length);
+            static::assertSame(++$i, $item);
+            static::assertSame(10, $amount);
+
+            return 'foo';
+        });
+
+        TwoFactorAuthentication::factory()->make()->recovery_codes->each(static function (array $code): void {
+            static::assertSame('foo', $code['code']);
+        });
+    }
+
+    protected function tearDown(): void
+    {
+        TwoFactorAuthentication::generateRecoveryCodesUsing();
+
+        parent::tearDown();
+    }
 }

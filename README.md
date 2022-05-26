@@ -48,6 +48,8 @@ php artisan vendor:publish --provider="Laragear\TwoFactor\TwoFactorServiceProvid
 php artisan migrate
 ```
 
+> You can edit the migration by adding new columns before persisting it to the database.
+
 2. Add the `TwoFactorAuthenticatable` _contract_ and the `TwoFactorAuthentication` trait to the User model, or any other model you want to make Two-Factor Authentication available. 
 
 ```php
@@ -77,7 +79,7 @@ To enable Two-Factor Authentication for the User, he must sync the Shared Secret
 
 > Some free Authenticator Apps are [iOS Authenticator](https://www.apple.com/ios/ios-15-preview/features), [FreeOTP](https://freeotp.github.io/), [Authy](https://authy.com/), [andOTP](https://github.com/andOTP/andOTP), [Google](https://apps.apple.com/app/google-authenticator/id388497605) [Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en), and [Microsoft Authenticator](https://www.microsoft.com/en-us/account/authenticator), to name a few.
 
-To start, generate the needed data using the `createTwoFactorAuth()` method. Once you do, you can show the Shared Secret to the User as a string or QR Code (encoded as SVG) in your view.
+To start, generate the needed data using the `createTwoFactorAuth()` method. This returns a serializable _Shared Secret_ that you can show to the User as a string or QR Code (encoded as SVG) in your view.
 
 ```php
 use Illuminate\Http\Request;
@@ -151,61 +153,77 @@ public function showRecoveryCodes(Request $request)
 
 > If the User depletes his recovery codes without disabling Two-Factor Authentication, or Recovery Codes are deactivated, **he may be locked out forever without his Authenticator app**. Ensure you have countermeasures in these cases.
 
+#### Custom Recovery Codes
+
+While it's not recommended, as the included logic will suffice for the vast majority of situations, you can create your own generator for recovery codes. Just add a callback using the  `generateRecoveryCodesUsing()` of the `TwoFactorAuthentication` model.
+
+This method receives a callback that should return a random alphanumeric code, and is invoked on each code to generate.
+
+```php
+use Laragear\TwoFactor\Models\TwoFactorAuthentication;
+use MyRandomGenerator;
+
+$generator = function ($length, $iteration, $amount) {
+    return MyRandomGenerator::random($length)->make();
+}
+
+TwoFactorAuthentication::generateRecoveryCodesUsing($generator);
+```
+
 ### Logging in
 
-To login, the user must issue a TOTP code along their credentials. Simply use `Auth::attemptWhen()` with TwoFactor, which will automatically do the checks for you. By default, it checks for the `2fa_code` input name, but you can issue your own.
+The easiest way to login users in your application is to use the `Auth2FA` facade. It comes with everything you would need to handle a user that requires a 2FA Code:
+
+- Only works if the user has 2FA enabled.
+- Shows a custom form if the 2FA code is required.
+- Credentials are encrypted and flashed in the session to re-use them. 
+
+In your Login Controller, use the `Auth2FA::attempt()` method with the credentials. If the user requires a 2FA Code, it will automatically stop the authentication and show a form to use it.
 
 ```php
+use Laragear\TwoFactor\Facades\Auth2FA;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Laragear\TwoFactor\TwoFactor;
 
 public function login(Request $request)
 {
-    // ...
+    $credentials = $request->only('email', 'password')
     
-    $credentials = $request->only('email', 'password');
+    $attempt = Auth2FA::attempt($credentials, $request->filled('remember'));
     
-    if (Auth::attemptWhen($credentials, TwoFactor::hasCode(), $request->filled('remember'))) {
-        return redirect()->home(); 
+    if ($attempt) {
+        return redirect()->home();
     }
     
-    return back()->withErrors(['email' => 'Bad credentials'])
+    return back()->withErrors(['email' => 'There is no existing user for these credentials'])
 }
 ```
 
-Behind the scenes, once the User is retrieved and validated from your guard of choice, it makes an additional check for a valid TOTP code. If it's invalid, it will return false and no authentication will happen.
+You can further customize how to handle the 2FA code authentication procedure with the following fluent methods:
 
-> For [Laravel UI](https://github.com/laravel/ui), override the `attemptLogin()` method in your Login controller.
-> For [Laravel Breeze](https://laravel.com/docs/starter-kits#laravel-breeze), you may need to edit the `LoginRequest::authenticate()` call.
-> For [Laravel Fortify](https://laravel.com/docs/fortify) and [Jetstream](https://jetstream.laravel.com/), you may need to set a custom callback with the `Fortify::authenticateUsing()` method.
+| Method            | Description                                                                       |
+|-------------------|-----------------------------------------------------------------------------------|
+| guard($guard)     | The guard to use for authentication. Defaults to the application default (`web`). |
+| view($view)       | Return a custom view to handle the 2FA Code retry.                                |
+| message($message) | Return a custom message when the 2FA code fails or is not present.                |
+| input($input)     | Sets the input where the TOTP code is in the request. Defaults to `2fa_code`.     |
+| sessionKey($key)  | The key used to flash the encrypted credentials. Defaults to `_2fa_login`.        |
 
-#### Separating the TOTP requirement
+> * For [Laravel UI](https://github.com/laravel/ui), override the `attemptLogin()` method in your Login controller.
+> * For [Laravel Breeze](https://laravel.com/docs/starter-kits#laravel-breeze), you may need to extend the `LoginRequest::authenticate()` call.
+> * For [Laravel Fortify](https://laravel.com/docs/fortify) and [Jetstream](https://jetstream.laravel.com/), you may need to set a custom callback with the [`Fortify::authenticateUsing()`](https://laravel.com/docs/9.x/fortify#customizing-user-authentication) method.
 
-In some occasions you will want to tell the user the authentication failed not because the credentials were incorrect, but because of the TOTP code was invalid.
+Alternatively, you may use `Auth::attemptWhen()` with TwoFactor helper methods, which returns a callback to check if the user needs a 2FA Code before proceeding using `TwoFactor::hasCode()`.
+
+```php
+use Illuminate\Support\Facades\Auth;
+use Laragear\TwoFactor\TwoFactor;
+
+$attempt = Auth::attemptWhen(
+    [/* Credentials... */], TwoFactor::hasCode(), $request->filled('remember')
+);
+```
 
 You can use the `hasCodeOrFails()` method that does the same, but throws a validation exception, which is handled gracefully by the framework. It even accepts a custom message in case of failure, otherwise a default [translation](#translations) line will be used.
-
-```php
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Laragear\TwoFactor\TwoFactor;
-
-public function login(Request $request)
-{
-    // ...
-    
-    $credentials = $request->only('email', 'password');
-    
-    if (Auth::attemptWhen($credentials, TwoFactor::hasCodeOrFails(), $request->filled('remember'))) {
-        return redirect()->home(); 
-    }
-    
-    return back()->withErrors(['email', 'Authentication failed!']);
-}
-```
-
-Since `InvalidCodeException` extends the `ValidationException`, you can catch it and do more complex things, like those fancy views that hold the login procedure until the correct TOTP code is issued. 
 
 ### Deactivation
 
@@ -271,7 +289,7 @@ Route::post('api/token/delete', function () {
 })->middleware('2fa.confirm');
 ```
 
-The middleware will redirect the user to the named route `2fa.confirm` by default, but you can change it in the first parameter. To implement the receiving routes, TwoFactor comes with the `Confirm2FACodeController` anda view you can use for a quick start.
+The middleware will redirect the user to the named route `2fa.confirm` by default, but you can change it in the first parameter. To implement the receiving routes, TwoFactor comes with the `Confirm2FACodeController` and a view you can use for a quick start.
 
 ```php
 use Illuminate\Support\Facades\Route;

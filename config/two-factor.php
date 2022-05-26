@@ -86,6 +86,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Two-Factor Login Helper
+    |--------------------------------------------------------------------------
+    |
+    | When using the Login Helper, these defaults will be used to show the 2FA
+    | form, and hold the encrypted login credentials in the session for only
+    | the next request. You can also override them at run-time on attempt.
+    |
+    */
+
+    'login' => [
+        'view' => 'two-factor::login',
+        'key' => '_2fa_login',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Secret Length
     |--------------------------------------------------------------------------
     |

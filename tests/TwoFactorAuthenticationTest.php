@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
@@ -40,7 +39,6 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_returns_two_factor_relation(): void
     {
-        $this->assertInstanceOf(MorphOne::class, $this->user->twoFactorAuth());
         $this->assertInstanceOf(TwoFactorAuthentication::class, $this->user->twoFactorAuth);
     }
 

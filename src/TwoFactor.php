@@ -2,13 +2,13 @@
 
 namespace Laragear\TwoFactor;
 
-use function app;
 use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\Request;
 use Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
+use function app;
 use function trans;
 use function validator;
 
@@ -37,13 +37,10 @@ class TwoFactor
     public static function hasCodeOrFails(string $input = '2fa_code', string $message = null): Closure
     {
         return static function ($user) use ($input, $message): bool {
-            if (app(__CLASS__, ['input' => $input])->validate($user)) {
-                return true;
-            }
-
-            throw InvalidCodeException::withMessages([
-                $input => $message ?? trans('two-factor::validation.totp_code'),
-            ]);
+            return app(__CLASS__, ['input' => $input])->validate($user)
+                ?: throw InvalidCodeException::withMessages([
+                    $input => $message ?? trans('two-factor::validation.totp_code'),
+                ]);
         };
     }
 

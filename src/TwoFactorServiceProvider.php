@@ -25,6 +25,18 @@ class TwoFactorServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(static::CONFIG, 'two-factor');
+
+        $this->app->bind(TwoFactorLoginHelper::class, static function (Application $app): TwoFactorLoginHelper {
+            $config = $app->make('config');
+
+            return new TwoFactorLoginHelper(
+                $app->make('auth'),
+                $app->make('session.store'),
+                $app->make('request'),
+                $config->get('two-factor.login.view'),
+                $config->get('two-factor.login.key'),
+            );
+        });
     }
 
     /**
