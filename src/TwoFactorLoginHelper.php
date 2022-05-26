@@ -2,6 +2,7 @@
 
 namespace Laragear\TwoFactor;
 
+use function array_merge;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Session\Session;
@@ -10,7 +11,6 @@ use Illuminate\Support\Facades\Crypt;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
-use function array_merge;
 use function response;
 use function view;
 
@@ -155,7 +155,7 @@ class TwoFactorLoginHelper
     {
         $guard = $this->auth->guard($this->guard);
 
-        if (!$guard instanceof SessionGuard) {
+        if (! $guard instanceof SessionGuard) {
             throw new InvalidArgumentException('The authentication guard must be a instance of SessionGuard.');
         }
 
