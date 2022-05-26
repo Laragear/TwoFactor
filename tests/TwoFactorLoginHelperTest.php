@@ -82,7 +82,7 @@ class TwoFactorLoginHelperTest extends TestCase
             'password' => 'invalid',
         ])->assertSee('is unauthenticated');
 
-        $this->assertAuthenticatedAs($this->user);
+        $this->assertGuest();
     }
 
     public function test_authenticates_2fa_user_with_credentials_and_2fa_disabled(): void
