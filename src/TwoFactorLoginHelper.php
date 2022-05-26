@@ -195,8 +195,7 @@ class TwoFactorLoginHelper
             $credentials[$key] = Crypt::encryptString($value);
         }
 
-        $this->session->flash("$this->sessionKey.credentials", $credentials);
-        $this->session->flash("$this->sessionKey.remember", $remember);
+        $this->session->flash($this->sessionKey, ['credentials' => $credentials, 'remember' => $remember]);
     }
 
     /**
