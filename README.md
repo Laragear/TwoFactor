@@ -21,6 +21,8 @@ public function login(Request $request)
 
 This package enables TOTP authentication using 6 digits codes. No need for external APIs.
 
+> Want to authenticate users with fingerprints, patterns or biometric data? Check out [Laragear WebAuthn](https://github.com/Laragear/WebAuthn).
+
 ## Keep this package free
 
 [![](.assets/patreon.png)](https://patreon.com/packagesforlaravel)[![](.assets/ko-fi.png)](https://ko-fi.com/DarkGhostHunter)[![](.assets/buymeacoffee.png)](https://www.buymeacoffee.com/darkghosthunter)[![](.assets/paypal.png)](https://www.paypal.com/paypalme/darkghosthunter)
