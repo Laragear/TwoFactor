@@ -2,6 +2,9 @@
 
 namespace Tests;
 
+use function app;
+use function config;
+use function get_class;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -18,9 +21,6 @@ use Laragear\TwoFactor\Facades\Auth2FA;
 use Mockery;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
-use function app;
-use function config;
-use function get_class;
 use function today;
 use function trans;
 use function var_dump;
@@ -114,7 +114,7 @@ class TwoFactorLoginHelperTest extends TestCase
             ->assertViewIs('two-factor::login')
             ->assertViewHas('input', '2fa_code')
             ->assertViewHas('errors', static function (ViewErrorBag $errors): bool {
-                return !$errors->has('2fa_code');
+                return ! $errors->has('2fa_code');
             })
             ->assertSessionHas('_2fa_login.credentials.email', function (string $email): bool {
                 static::assertSame($this->user->email, Crypt::decryptString($email));
