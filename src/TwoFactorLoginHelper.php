@@ -142,7 +142,7 @@ class TwoFactorLoginHelper
         } catch (InvalidCodeException $e) {
             $this->flashData($credentials, $remember);
 
-            $this->throwConfirmView($this->input, $e->validator->getMessageBag()->getMessages());
+            $this->throwConfirmView($this->input, $this->request->has($this->input) ? $e->errors() : []);
         }
     }
 

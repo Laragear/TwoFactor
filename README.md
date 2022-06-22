@@ -191,21 +191,31 @@ The easiest way to login users in your application is to use the `Auth2FA` facad
 
 In your Login Controller, use the `Auth2FA::attempt()` method with the credentials. If the user requires a 2FA Code, it will automatically stop the authentication and show a form to use it.
 
+You can **blatantly copy-and-paste this code** in your log in controller:
+
 ```php
 use Laragear\TwoFactor\Facades\Auth2FA;
 use Illuminate\Http\Request;
 
 public function login(Request $request)
 {
-    $credentials = $request->only('email', 'password')
+    // If the user is trying for the first time, ensure both email and the password are
+    // required to log in. If it's not, then he would issue its 2FA code. This ensures
+    // the credentials are not required again when is just issuing his 2FA code alone.
+    if ($request->isNotFilled('2fa_code')) {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string'
+        ]);
+    }
     
-    $attempt = Auth2FA::attempt($credentials, $request->filled('remember'));
+    $attempt = Auth2FA::attempt($request->only('email', 'password'), $request->filled('remember'));
     
     if ($attempt) {
         return redirect()->home();
     }
     
-    return back()->withErrors(['email' => 'There is no existing user for these credentials'])
+    return back()->withErrors(['email' => 'There is no existing user for these credentials']);
 }
 ```
 
