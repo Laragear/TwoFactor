@@ -2,9 +2,6 @@
 
 namespace Tests;
 
-use function app;
-use function config;
-use function get_class;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -21,6 +18,9 @@ use Laragear\TwoFactor\Facades\Auth2FA;
 use Mockery;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
+use function app;
+use function config;
+use function get_class;
 use function today;
 use function trans;
 use function var_dump;
@@ -105,7 +105,7 @@ class TwoFactorLoginHelperTest extends TestCase
     {
         $this->post('login', $this->credentials + [
             '2fa_code' => $this->user->getRecoveryCodes()->first()['code'],
-        ])->assertSeeText('is authenticated')->dump();
+        ])->assertSeeText('is authenticated');
     }
 
     public function test_throws_response_for_2fa_code_if_no_2fa_code(): void
