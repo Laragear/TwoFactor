@@ -89,15 +89,20 @@ return [
     | Two-Factor Login Helper
     |--------------------------------------------------------------------------
     |
-    | When using the Login Helper, these defaults will be used to show the 2FA
+    | When using the Login Helper these defaults will be used to show the 2FA
     | form, and hold the encrypted login credentials in the session for only
-    | the next request. You can also override them at run-time on attempt.
+    | the next request. If flash is "false" the input will be kept forever.
+    |
+    | You may set "flash" to "false" if you are using Livewire or Inertia,
+    | because, these may make request before the 2FA Code is sent again,
+    | removing the credentials and invalidating the whole login flow.
     |
     */
 
     'login' => [
         'view' => 'two-factor::login',
         'key' => '_2fa_login',
+        'flash' => true,
     ],
 
     /*

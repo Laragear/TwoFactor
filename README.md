@@ -402,6 +402,11 @@ return [
         'key' => '_2fa',
         'time' => 60 * 3,
     ],
+    'login' => [
+        'view' => 'two-factor::login',
+        'key' => '_2fa_login',
+        'flash' => true,
+    ],
     'secret_length' => 20,
     'issuer' => env('OTP_TOTP_ISSUER'),
     'totp' => [
@@ -482,6 +487,22 @@ return [
 ```
 
 These control which key to use in the session for handling [`2fa.confirm` middleware](#confirm-2fa), and the expiration time in minutes.
+
+### Login Helper
+
+```php
+return [
+    'login' => [
+        'view' => 'two-factor::login',
+        'key' => '_2fa_login',
+        'flash' => true,
+    ],
+];
+```
+
+This controls the login helper configuration, like the Blade view to render, the session key to hold the login input (like email and password), and if it should store these credentials using `flash` or just `put`.
+
+About the use of `flash`, you may disable it if you expect other requests during login, like it may happen with Inertia.js or Livewire, but this may keep the login input forever in the session, which in some cases it may be undesirable.
 
 ### Secret length
 
