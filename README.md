@@ -202,7 +202,7 @@ public function login(Request $request)
     // If the user is trying for the first time, ensure both email and the password are
     // required to log in. The helper will automatically flash them encrypted into the
     // session, so the user won't need to issue them again when looking for his code.
-    if ($request->missing('2fa_code')) {
+    if ($request->isNotFilled('2fa_code')) {
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string'
