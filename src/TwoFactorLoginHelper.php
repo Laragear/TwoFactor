@@ -2,7 +2,6 @@
 
 namespace Laragear\TwoFactor;
 
-use function array_merge;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Session\Session;
@@ -11,6 +10,7 @@ use Illuminate\Support\Facades\Crypt;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
+use function array_merge;
 use function response;
 use function view;
 
@@ -142,7 +142,7 @@ class TwoFactorLoginHelper
         } catch (InvalidCodeException $e) {
             $this->flashData($credentials, $remember);
 
-            $this->throwConfirmView($this->input, $e->validator->getMessageBag()->getMessages());
+            $this->throwConfirmView($this->input, $this->request->has($this->input) ? $e->errors() : []);
         }
     }
 
