@@ -13,7 +13,7 @@ trait HandlesRecoveryCodes
     /**
      * The custom generator to make recovery codes.
      *
-     * @var (callable(int, int, int): \Illuminate\Support\Collection<int, int|string>)  $callback
+     * @var (callable(int, int, int): \Illuminate\Support\Collection<int, int|string>) 
      */
     protected static $generator;
 
