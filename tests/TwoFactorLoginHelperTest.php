@@ -2,6 +2,9 @@
 
 namespace Tests;
 
+use function app;
+use function config;
+use function get_class;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -18,12 +21,9 @@ use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use Laragear\TwoFactor\Facades\Auth2FA;
 use Mockery;
+use function redirect;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
-use function app;
-use function config;
-use function get_class;
-use function redirect;
 use function today;
 use function trans;
 use function var_dump;
@@ -238,12 +238,12 @@ class TwoFactorLoginHelperTest extends TestCase
         $store->expects('pull')->with('_2fa_login.credentials', [])->andReturn([]);
         $store->expects('pull')->with('_2fa_login.remember', false)->andReturn(false);
         $store->expects('put')->withArgs(function (string $key, array $input) {
-                static::assertSame('_2fa_login', $key);
-                static::assertSame($this->user->email, Crypt::decryptString($input['credentials']['email']));
-                static::assertSame('secret', Crypt::decryptString($input['credentials']['password']));
+            static::assertSame('_2fa_login', $key);
+            static::assertSame($this->user->email, Crypt::decryptString($input['credentials']['email']));
+            static::assertSame('secret', Crypt::decryptString($input['credentials']['password']));
 
-                return true;
-            })
+            return true;
+        })
             ->andReturnNull();
 
         $this->swap('session.store', $store);
