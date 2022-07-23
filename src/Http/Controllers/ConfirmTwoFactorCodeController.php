@@ -45,7 +45,7 @@ class ConfirmTwoFactorCodeController extends Controller
      */
     public function confirm(Request $request, ConfigContract $config): RedirectResponse|JsonResponse
     {
-        $request->validate(['2fa_code' => 'totp']);
+        $request->validate(['2fa_code' => 'required|totp']);
 
         $this->extendTotpConfirmationTimeout($request, $config);
 
