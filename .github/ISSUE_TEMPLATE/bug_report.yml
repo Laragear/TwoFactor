@@ -21,13 +21,13 @@ body:
   - type: input
     id: version-laravel
     attributes:
-      label: Laravel verion
+      label: Laravel version
       description: Exact Laravel version using this package.
       placeholder: 9.2.3
     validations:
       required: true
   - type: checkboxes
-    id: requeriments
+    id: requirements
     attributes:
       label: Have you done this?
       options:
@@ -61,9 +61,9 @@ body:
       render: php
       placeholder: |
         $test = Laragear::make()->break();
-        
+
         static::assertFalse($test);
-        
+
         // or comment with "https://github.com/my-name/my-bug-report"
     validations:
       required: true
