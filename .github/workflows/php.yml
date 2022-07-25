@@ -5,7 +5,7 @@ name: "Tests"
 on:
   push:
     branches:
-      - "1.x"
+      - "feat/improve-ci" # TODO: Remove once the PR is ready to be merged.
   pull_request:
 
 jobs:
