@@ -9,6 +9,7 @@ on:
   pull_request:
 
 jobs:
+
   byte_level:
     name: "0️⃣ Byte-level"
     runs-on: "ubuntu-latest"
@@ -19,11 +20,9 @@ jobs:
       - name: "Check file permissions"
         run: |
           test "$(find . -type f -not -path './.git/*' -executable)" == ""
-
       - name: "Find non-printable ASCII characters"
         run: |
           ! LC_ALL=C.UTF-8 find ./src -type f -name "*.php" -print0 | xargs -0 -- grep -PHn "[^ -~]"
-
   syntax_errors:
     name: "1️⃣ Syntax errors"
     runs-on: "ubuntu-latest"
@@ -31,7 +30,8 @@ jobs:
       - name: "Set up PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "latest"
+          php-version: "8.1"
+          tools: "parallel-lint"
 
       - name: "Checkout code"
         uses: "actions/checkout@v3"
@@ -43,10 +43,9 @@ jobs:
 
       - name: "Check source code for syntax errors"
         run: "composer exec -- parallel-lint src/"
-        # @TODO Check template files for syntax errors
 
   unit_tests:
-    name: "2️⃣ Unit and functional tests"
+    name: "2️⃣ Unit and Feature tests"
     needs:
       - "byte_level"
       - "syntax_errors"
@@ -54,7 +53,6 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.0"
           - "8.1"
         laravel-constrain:
           - "9.*"
@@ -66,6 +64,8 @@ jobs:
         uses: "shivammathur/setup-php@v2"
         with:
           php-version: "${{ matrix.php-version }}"
+          extensions: mbstring, intl
+          coverage: xdebug
 
       - name: "Checkout code"
         uses: "actions/checkout@v3"
@@ -91,7 +91,8 @@ jobs:
       - name: "Set up PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "latest"
+          php-version: "8.1"
+          tools: "phpstan"
 
       - name: "Checkout code"
         uses: "actions/checkout@v3"
@@ -106,7 +107,6 @@ jobs:
 
       - name: "Execute static analysis"
         run: "composer exec -- phpstan analyze -l 5 src/"
-        # @TODO Magic Number Detector, Copy-Paste Detector
 
   exported_files:
     name: "4️⃣ Exported files"
