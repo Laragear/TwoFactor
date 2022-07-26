@@ -131,13 +131,11 @@ class TwoFactorLoginHelper
         // Always try to get the existing credentials, and merge them with the new.
         [$credentials, $remember] = $this->getFlashedData($credentials, $remember);
 
-        $attempt = false;
-
         // Try to authenticate the user with the credentials. If these are wrong
         // it will return false but, if the credentials are valid, we can catch
         // a custom exception to know if the 2FA Code was the one that failed.
         try {
-            $attempt = $guard->attemptWhen(
+            return $guard->attemptWhen(
                 $credentials, TwoFactor::hasCodeOrFails($this->input, $this->message), $remember
             );
         } catch (InvalidCodeException $e) {
@@ -145,8 +143,6 @@ class TwoFactorLoginHelper
 
             $this->throwConfirmView($this->input, $this->request->has($this->input) ? $e->errors() : []);
         }
-
-        return $attempt;
     }
 
     /**
