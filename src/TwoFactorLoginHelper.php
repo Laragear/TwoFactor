@@ -136,7 +136,7 @@ class TwoFactorLoginHelper
         // it will return false but, if the credentials are valid, we can catch
         // a custom exception to know if the 2FA Code was the one that failed.
         try {
-            return $guard->attemptWhen(
+            $attempt = $guard->attemptWhen(
                 $credentials, TwoFactor::hasCodeOrFails($this->input, $this->message), $remember
             );
         } catch (InvalidCodeException $e) {
@@ -144,6 +144,8 @@ class TwoFactorLoginHelper
 
             $this->throwConfirmView($this->input, $this->request->has($this->input) ? $e->errors() : []);
         }
+
+        return $attempt;
     }
 
     /**
@@ -165,11 +167,10 @@ class TwoFactorLoginHelper
     /**
      * Retrieve the flashed credentials in the session, and merges with the new on top.
      *
-     * @param  array  $credentials
+     * @param  array{credentials:array, remember:bool}  $credentials
      * @param  mixed  $remember
      * @return array
      */
-    #[ArrayShape(['credentials' => 'array', 'remember' => 'bool'])]
     protected function getFlashedData(array $credentials, mixed $remember): array
     {
         $original = $this->session->get("$this->sessionKey.credentials", []);
@@ -194,7 +195,8 @@ class TwoFactorLoginHelper
         foreach ($credentials as $key => $value) {
             $credentials[$key] = Crypt::encryptString($value);
         }
-
+        
+        // @phpstan-ignore-next-line
         $this->session->flash($this->sessionKey, ['credentials' => $credentials, 'remember' => $remember]);
     }
 
@@ -207,6 +209,7 @@ class TwoFactorLoginHelper
      */
     protected function throwConfirmView(string $input, array $errors): void
     {
+        // @phpstan-ignore-next-line
         response(view($this->view, ['input' => $input])->withErrors($errors))->throwResponse();
     }
 }

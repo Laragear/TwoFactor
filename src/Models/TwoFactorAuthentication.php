@@ -34,7 +34,7 @@ use function strtolower;
  * @property null|\Illuminate\Support\Carbon|\DateTime $updated_at
  * @property null|\Illuminate\Support\Carbon|\DateTime $created_at
  *
- * @method static \Database\Factories\Laragear\TwoFactor\TwoFactorAuthenticationFactory factory()
+ * @method static \Database\Factories\Laragear\TwoFactor\TwoFactorAuthenticationFactory<static> factory($count = null, $state = [])
  */
 class TwoFactorAuthentication extends Model implements TwoFactorTotp
 {

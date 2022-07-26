@@ -31,7 +31,7 @@ trait SerializesSharedSecret
             'secret'    => $this->shared_secret,
             'algorithm' => strtoupper($this->attributes['algorithm']),
             'digits'     => $this->attributes['digits'],
-        ], null, '&', PHP_QUERY_RFC3986);
+        ], '', '&', PHP_QUERY_RFC3986);
 
         return 'otpauth://totp/'.rawurlencode($issuer).'%3A'.$this->attributes['label']."?$query";
     }
