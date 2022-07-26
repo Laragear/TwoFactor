@@ -9,7 +9,6 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\ArrayShape;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
 use function response;
 use function view;
@@ -195,7 +194,7 @@ class TwoFactorLoginHelper
         foreach ($credentials as $key => $value) {
             $credentials[$key] = Crypt::encryptString($value);
         }
-        
+
         // @phpstan-ignore-next-line
         $this->session->flash($this->sessionKey, ['credentials' => $credentials, 'remember' => $remember]);
     }
