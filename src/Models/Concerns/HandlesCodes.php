@@ -215,7 +215,7 @@ trait HandlesCodes
     {
         // We will safely set the cache key for the whole lifetime plus window just to be safe.
         $this->cache->set($this->cacheKey($code), true,
-            Carbon::createFromTimestamp($this->getTimestampFromPeriod($at, $this->window + 1))->diff()
+            Carbon::createFromTimestamp($this->getTimestampFromPeriod($at, $this->window + 1))
         );
     }
 }
