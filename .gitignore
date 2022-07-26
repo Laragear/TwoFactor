@@ -1,8 +1,7 @@
-build
+/build
+/vendor
+/.idea
+.php-cs-fixer.cache
+.phpunit.result.cache
 composer.lock
-docs
-vendor
-coverage
-.idea
-/.phpunit.result.cache
-/phpunit.xml.dist.bak
+phpunit.xml.bak

@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Session\EncryptedStore;
 use Illuminate\Support\Facades\Crypt;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\ArrayShape;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
 use function response;
 use function view;
@@ -147,6 +146,10 @@ class TwoFactorLoginHelper
 
             $this->throwConfirmView($this->input, $this->request->has($this->input) ? $e->errors() : []);
         }
+
+        // @codeCoverageIgnoreStart
+        return false;
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -168,11 +171,10 @@ class TwoFactorLoginHelper
     /**
      * Retrieve the flashed credentials in the session, and merges with the new on top.
      *
-     * @param  array  $credentials
+     * @param  array{credentials:array, remember:bool}  $credentials
      * @param  mixed  $remember
      * @return array
      */
-    #[ArrayShape(['credentials' => 'array', 'remember' => 'bool'])]
     protected function getFlashedData(array $credentials, mixed $remember): array
     {
         $original = $this->session->pull("$this->sessionKey.credentials", []);
@@ -208,6 +210,7 @@ class TwoFactorLoginHelper
         // It may disable this, which in turn will use put. This wil fix some apps
         // like Livewire or Inertia, but it may keep this request input forever.
         if ($this->useFlash) {
+            // @phpstan-ignore-next-line
             $this->session->flash($this->sessionKey, ['credentials' => $credentials, 'remember' => $remember]);
         } else {
             $this->session->put($this->sessionKey, ['credentials' => $credentials, 'remember' => $remember]);
@@ -223,6 +226,7 @@ class TwoFactorLoginHelper
      */
     protected function throwConfirmView(string $input, array $errors): void
     {
+        // @phpstan-ignore-next-line
         response(view($this->view, ['input' => $input])->withErrors($errors))->throwResponse();
     }
 }

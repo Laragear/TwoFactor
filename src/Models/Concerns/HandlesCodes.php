@@ -213,9 +213,10 @@ trait HandlesCodes
      */
     protected function setCodeAsUsed(string $code, DateTimeInterface|int|string $at = 'now'): void
     {
+        $timestamp = Carbon::createFromTimestamp($this->getTimestampFromPeriod($at, $this->window + 1));
+
         // We will safely set the cache key for the whole lifetime plus window just to be safe.
-        $this->cache->set($this->cacheKey($code), true,
-            Carbon::createFromTimestamp($this->getTimestampFromPeriod($at, $this->window + 1))
-        );
+        // @phpstan-ignore-next-line
+        $this->cache->set($this->cacheKey($code), true, $timestamp);
     }
 }
