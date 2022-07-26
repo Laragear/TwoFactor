@@ -35,6 +35,7 @@ class TwoFactorServiceProvider extends ServiceProvider
                 $app->make('request'),
                 $config->get('two-factor.login.view'),
                 $config->get('two-factor.login.key'),
+                $config->get('two-factor.login.flash')
             );
         });
     }

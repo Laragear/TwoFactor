@@ -7,6 +7,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
+use Illuminate\Session\EncryptedStore;
 use Illuminate\Support\Facades\Crypt;
 use InvalidArgumentException;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
@@ -37,6 +38,7 @@ class TwoFactorLoginHelper
      * @param  \Illuminate\Http\Request  $request
      * @param  string  $view
      * @param  string  $sessionKey
+     * @param  bool  $useFlash
      * @param  string  $input
      */
     public function __construct(
@@ -45,6 +47,7 @@ class TwoFactorLoginHelper
         protected Request $request,
         protected string $view,
         protected string $sessionKey,
+        protected bool $useFlash,
         protected string $input = '2fa_code',
     ) {
         //
@@ -174,11 +177,14 @@ class TwoFactorLoginHelper
      */
     protected function getFlashedData(array $credentials, mixed $remember): array
     {
-        $original = $this->session->get("$this->sessionKey.credentials", []);
-        $remember = $this->session->get("$this->sessionKey.remember", $remember);
+        $original = $this->session->pull("$this->sessionKey.credentials", []);
+        $remember = $this->session->pull("$this->sessionKey.remember", $remember);
 
-        foreach ($original as $index => $value) {
-            $original[$index] = Crypt::decryptString($value);
+        // If the session is not encrypted, we will need to decrypt the credentials manually.
+        if (! $this->session instanceof EncryptedStore) {
+            foreach ($original as $index => $value) {
+                $original[$index] = Crypt::decryptString($value);
+            }
         }
 
         return [array_merge($original, $credentials), $remember];
@@ -193,12 +199,22 @@ class TwoFactorLoginHelper
      */
     protected function flashData(array $credentials, bool $remember): void
     {
-        foreach ($credentials as $key => $value) {
-            $credentials[$key] = Crypt::encryptString($value);
+        // Don't encrypt the credentials twice.
+        if (! $this->session instanceof EncryptedStore) {
+            foreach ($credentials as $key => $value) {
+                $credentials[$key] = Crypt::encryptString($value);
+            }
         }
 
-        // @phpstan-ignore-next-line
-        $this->session->flash($this->sessionKey, ['credentials' => $credentials, 'remember' => $remember]);
+        // If the developer has set the login helper to use flash, we will use that.
+        // It may disable this, which in turn will use put. This wil fix some apps
+        // like Livewire or Inertia, but it may keep this request input forever.
+        if ($this->useFlash) {
+            // @phpstan-ignore-next-line
+            $this->session->flash($this->sessionKey, ['credentials' => $credentials, 'remember' => $remember]);
+        } else {
+            $this->session->put($this->sessionKey, ['credentials' => $credentials, 'remember' => $remember]);
+        }
     }
 
     /**

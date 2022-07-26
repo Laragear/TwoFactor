@@ -6,10 +6,12 @@ use function app;
 use function config;
 use function get_class;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
+use Illuminate\Session\EncryptedStore;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +21,7 @@ use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use Laragear\TwoFactor\Facades\Auth2FA;
 use Mockery;
+use function redirect;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
 use function today;
@@ -205,6 +208,48 @@ class TwoFactorLoginHelperTest extends TestCase
             'email' => $this->user->email,
             'password' => 'secret',
         ]);
+    }
+
+    public function test_does_not_encrypts_session_if_already_encrypted(): void
+    {
+        $store = Mockery::mock(EncryptedStore::class);
+
+        $store->expects('pull')->with('_2fa_login.credentials', [])->andReturn([]);
+        $store->expects('pull')->with('_2fa_login.remember', false)->andReturn(false);
+        $store->expects('flash')
+            ->with('_2fa_login', ['credentials' => $this->credentials, 'remember' => false])
+            ->andReturnNull();
+
+        $this->swap('session.store', $store);
+
+        $this->post('login', $this->credentials)
+            ->assertViewIs('two-factor::login');
+    }
+
+    public function test_authentication_attempt_doesnt_uses_flash_if_disabled(): void
+    {
+        // Boot the redirector to avoid mocking the session.
+        redirect();
+
+        config(['two-factor.login.flash' => false]);
+
+        $store = Mockery::mock(Session::class);
+
+        $store->expects('pull')->with('_2fa_login.credentials', [])->andReturn([]);
+        $store->expects('pull')->with('_2fa_login.remember', false)->andReturn(false);
+        $store->expects('put')->withArgs(function (string $key, array $input) {
+            static::assertSame('_2fa_login', $key);
+            static::assertSame($this->user->email, Crypt::decryptString($input['credentials']['email']));
+            static::assertSame('secret', Crypt::decryptString($input['credentials']['password']));
+
+            return true;
+        })
+            ->andReturnNull();
+
+        $this->swap('session.store', $store);
+
+        $this->post('login', $this->credentials)
+            ->assertViewIs('two-factor::login');
     }
 
     public function test_authenticates_with_encrypted_credentials_from_session(): void
