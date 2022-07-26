@@ -15,7 +15,7 @@ class Totp
     /**
      * Create a new "totp code" rule instance.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable|\Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable|null  $user
+     * @param  \Illuminate\Contracts\Auth\Authenticatable|null  $user
      */
     public function __construct(protected ?Authenticatable $user = null)
     {

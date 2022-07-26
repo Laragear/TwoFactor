@@ -9,7 +9,6 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\ArrayShape;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
 use function response;
 use function view;
@@ -144,6 +143,10 @@ class TwoFactorLoginHelper
 
             $this->throwConfirmView($this->input, $this->request->has($this->input) ? $e->errors() : []);
         }
+
+        // @codeCoverageIgnoreStart
+        return false;
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -165,11 +168,10 @@ class TwoFactorLoginHelper
     /**
      * Retrieve the flashed credentials in the session, and merges with the new on top.
      *
-     * @param  array  $credentials
+     * @param  array{credentials:array, remember:bool}  $credentials
      * @param  mixed  $remember
      * @return array
      */
-    #[ArrayShape(['credentials' => 'array', 'remember' => 'bool'])]
     protected function getFlashedData(array $credentials, mixed $remember): array
     {
         $original = $this->session->get("$this->sessionKey.credentials", []);
@@ -195,6 +197,7 @@ class TwoFactorLoginHelper
             $credentials[$key] = Crypt::encryptString($value);
         }
 
+        // @phpstan-ignore-next-line
         $this->session->flash($this->sessionKey, ['credentials' => $credentials, 'remember' => $remember]);
     }
 
@@ -207,6 +210,7 @@ class TwoFactorLoginHelper
      */
     protected function throwConfirmView(string $input, array $errors): void
     {
+        // @phpstan-ignore-next-line
         response(view($this->view, ['input' => $input])->withErrors($errors))->throwResponse();
     }
 }
