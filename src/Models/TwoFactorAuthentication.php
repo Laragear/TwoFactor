@@ -141,9 +141,7 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     }
 
     /**
-     * Create a new factory instance for the model.
-     *
-     * @return \Database\Factories\Laragear\TwoFactor\TwoFactorAuthenticationFactory<static>
+     * @inheritDoc
      */
     protected static function newFactory(): Factory
     {
