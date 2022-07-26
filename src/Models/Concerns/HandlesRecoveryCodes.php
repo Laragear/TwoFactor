@@ -15,7 +15,7 @@ trait HandlesRecoveryCodes
      *
      * @var (callable(int, int, int): \Illuminate\Support\Collection<int, int|string>)|null 
      */
-    protected ?static $generator = null;
+    protected static $generator = null;
 
     /**
      * Returns if there are Recovery Codes available.
