@@ -143,7 +143,7 @@ class TwoFactorLoginHelper
 
             $this->throwConfirmView($this->input, $this->request->has($this->input) ? $e->errors() : []);
         }
-        
+
         // @codeCoverageIgnoreStart
         return false;
         // @codeCoverageIgnoreEnd
