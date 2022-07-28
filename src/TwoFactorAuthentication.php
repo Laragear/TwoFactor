@@ -36,7 +36,7 @@ trait TwoFactorAuthentication
      */
     public function twoFactorAuth(): MorphOne
     {
-        return $this->morphOne(Models\TwoFactorAuthentication::class, 'authenticatable')
+        return $this->morphOne(config('two-factor.model'), 'authenticatable')
             ->withDefault(static function (Models\TwoFactorAuthentication $model): Models\TwoFactorAuthentication {
                 return $model->fill(config('two-factor.totp'));
             });
