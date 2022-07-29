@@ -372,24 +372,6 @@ To add your own language, publish the translation files. These will be located i
 php artisan vendor:publish --provider="Laragear\TwoFactor\TwoFactorServiceProvider" --tag="translations"
 ```
 
-## Custom Recovery Codes
-
-Recovery codes are automatically generated using [`Str::random()`](https://laravel.com/docs/9.x/helpers#method-str-random) with [small configuration](#recovery-codes). This will suffice for most applications, but you can also create your own random string code generator.
-
-To create your own generator, set a custom callback to generate a recovery code with `TwoFactorAuthentication::generateRecoveryCodesUsing()`. This callable will receive the configuration string length, iteration, and total amount of codes, and should return an alfa-numeric string. 
-
-```php
-use Laragear\TwoFactor\Models\TwoFactorAuthentication;
-use Illuminate\Support\Str;
-
-TwoFactorAuthentication::generateRecoveryCodesUsing(function ($length, $iteration, $total) {
-    // Append the index of the code before the string. 
-    return $iteration . Str::random($length);
-});
-```
-
-This package will handle the recovery code match and usage for you, so you don't need to worry about that.
-
 ## Configuration
 
 To further configure the package, publish the configuration file:
