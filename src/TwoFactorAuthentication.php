@@ -151,7 +151,7 @@ trait TwoFactorAuthentication
     {
         return null !== $code
             && $this->hasTwoFactorEnabled()
-            && ($this->validateCode($code) || $useRecoveryCodes && $this->useRecoveryCode($code));
+            && ($this->validateCode($code) || ($useRecoveryCodes && $this->useRecoveryCode($code)));
     }
 
     /**
@@ -194,14 +194,13 @@ trait TwoFactorAuthentication
     public function generateRecoveryCodes(): Collection
     {
         [
-            'two-factor.model' => $model,
             'two-factor.recovery.codes' => $amount,
             'two-factor.recovery.length' => $length
         ] = config()->get([
-            'two-factor.model', 'two-factor.recovery.codes', 'two-factor.recovery.length',
+            'two-factor.recovery.codes', 'two-factor.recovery.length',
         ]);
 
-        $this->twoFactorAuth->recovery_codes = $model::generateRecoveryCodes($amount, $length);
+        $this->twoFactorAuth->recovery_codes = Models\TwoFactorAuthentication::generateRecoveryCodes($amount, $length);
         $this->twoFactorAuth->recovery_codes_generated_at = now();
         $this->twoFactorAuth->save();
 
@@ -267,7 +266,7 @@ trait TwoFactorAuthentication
      */
     protected function generateTwoFactorRemember(): string
     {
-        return config('two-factor.model')::generateDefaultTwoFactorRemember();
+        return Models\TwoFactorAuthentication::generateDefaultTwoFactorRemember();
     }
 
     /**
