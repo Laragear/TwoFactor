@@ -1,20 +1,6 @@
 <?php
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | TwoFactorAuthentication Model
-    |--------------------------------------------------------------------------
-    |
-    | When using the "TwoFactorAuthentication" trait from this package, we need
-    | to know which Eloquent model should be used to retrieve your two factor
-    | authentication records. You can use your own for more advanced logic.
-    |
-    */
-
-    'model' => \Laragear\TwoFactor\Models\TwoFactorAuthentication::class,
-
     /*
     |--------------------------------------------------------------------------
     | Cache Store
