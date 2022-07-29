@@ -2,15 +2,15 @@
 
 namespace Laragear\TwoFactor;
 
+use function collect;
+use function config;
+use function cookie;
 use DateTimeInterface;
+use function event;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
-use function collect;
-use function config;
-use function cookie;
-use function event;
 use function now;
 
 /**
