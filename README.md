@@ -52,14 +52,16 @@ Works without middleware or new guards, but you can go full manual if you want.
 
 ## Set up
 
-1. First, publish the migration file into your application, and use `migrate` to create the table that handles the Two-Factor Authentication information for each model you want to attach to 2FA.
+1. First, publish the migration, translations, views and config into your application, and use `migrate` to create the table that handles the Two-Factor Authentication information for each model you want to attach to 2FA.
 
 ```shell
-php artisan vendor:publish --provider="Laragear\TwoFactor\TwoFactorServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="Laragear\TwoFactor\TwoFactorServiceProvider"
 php artisan migrate
 ```
 
-> You can edit the migration by adding new columns before persisting it to the database.
+Alternatively, you can use `--tag="migrations"` to only publish the migration files.
+
+> Remember that you can edit the migration by adding new columns before migrating.
 
 2. Add the `TwoFactorAuthenticatable` _contract_ and the `TwoFactorAuthentication` trait to the User model, or any other model you want to make Two-Factor Authentication available. 
 
