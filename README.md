@@ -1,5 +1,10 @@
 # Two Factor
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/two-factor.svg)](https://packagist.org/packages/laragear/two-factor) [![Latest stable test run](https://github.com/Laragear/TwoFactor/workflows/Tests/badge.svg)](https://github.com/Laragear/TwoFactor/actions) [![Codecov coverage](https://codecov.io/gh/Laragear/TwoFactor/branch/1.x/graph/badge.svg?token=BJMBVZNPM8)](https://codecov.io/gh/Laragear/TwoFactor) [![Maintainability](https://api.codeclimate.com/v1/badges/64241e25adb0f55d7ba1/maintainability)](https://codeclimate.com/github/Laragear/TwoFactor/maintainability) [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_TwoFactor&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_TwoFactor) [![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/two-factor.svg)](https://packagist.org/packages/laragear/two-factor)
+[![Latest stable test run](https://github.com/Laragear/TwoFactor/workflows/Tests/badge.svg)](https://github.com/Laragear/TwoFactor/actions)
+[![Codecov coverage](https://codecov.io/gh/Laragear/TwoFactor/branch/1.x/graph/badge.svg?token=BJMBVZNPM8)](https://codecov.io/gh/Laragear/TwoFactor)
+[![Maintainability](https://api.codeclimate.com/v1/badges/64241e25adb0f55d7ba1/maintainability)](https://codeclimate.com/github/Laragear/TwoFactor/maintainability)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_TwoFactor&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_TwoFactor)
+[![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
 
 On-premises Two-Factor Authentication for all your users out of the box.
 
@@ -23,9 +28,9 @@ This package enables TOTP authentication using 6 digits codes. No need for exter
 
 > Want to authenticate users with fingerprints, patterns or biometric data? Check out [Laragear WebAuthn](https://github.com/Laragear/WebAuthn).
 
-## Keep this package free
+## Become a sponsor
 
-[![](.github/assets/patreon.png)](https://patreon.com/packagesforlaravel)[![](.github/assets/ko-fi.png)](https://ko-fi.com/DarkGhostHunter)[![](.github/assets/buymeacoffee.png)](https://www.buymeacoffee.com/darkghosthunter)[![](.github/assets/paypal.png)](https://www.paypal.com/paypalme/darkghosthunter)
+[![](.github/assets/support.png)](https://github.com/sponsors/DarkGhostHunter)
 
 Your support allows me to keep this package free, up-to-date and maintainable. Alternatively, you can **[spread the word!](http://twitter.com/share?text=I%20am%20using%20this%20cool%20PHP%20package&url=https://github.com%2FLaragear%2FTwoFactor&hashtags=PHP,Laravel)**
 

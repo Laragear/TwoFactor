@@ -1,5 +1,8 @@
 name: Bug Report
-description: File a bug report
+description: |
+  File a bug report to be fixed.
+
+  Sponsors get priority issues, PRs, fixes and requests. Not a sponsor? [You're a just click away!](https://github.com/sponsors/DarkGhostHunter).
 title: "[X.x] What does happen that is considered an error or bug?"
 labels: ["bug"]
 assignees:
@@ -9,6 +12,7 @@ body:
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report!
+
         The more detailed this bug report is, the faster it can be reviewed and fixed.
   - type: input
     id: version-php-os
@@ -18,6 +22,14 @@ body:
       placeholder: 8.1.2 - Ubuntu 22.04 x64
     validations:
       required: true
+  - type: input
+    id: version-db
+    attributes:
+      label: Database
+      description: Exact DB version using this package, if applicable.
+      placeholder: MySQL 8.0.28
+    validations:
+      required: false
   - type: input
     id: version-laravel
     attributes:
@@ -31,7 +43,7 @@ body:
     attributes:
       label: Have you done this?
       options:
-        - label: I am willing to share my stack trace and logs
+        - label: I have checked my logs and I'm sure is a bug in this package.
           required: true
         - label: I can reproduce this bug in isolation (vanilla Laravel install)
           required: true
@@ -42,7 +54,7 @@ body:
     attributes:
       label: Expectation
       description: Write what you expect to (correctly) happen.
-      placeholder: When I do this, I expect to this to happen.
+      placeholder: When I do this, I expect to happen that.
     validations:
       required: true
   - type: textarea
@@ -57,7 +69,7 @@ body:
     id: reproduction
     attributes:
       label: Reproduction
-      description: Paste the code to assert in a test, or just comment with the repository with the bug.
+      description: Paste the code to assert in a test, or just comment with the repository with the bug to download.
       render: php
       placeholder: |
         $test = Laragear::make()->break();
@@ -71,18 +83,8 @@ body:
     id: logs
     attributes:
       label: Stack trace & logs
-      description: If you have a stack trace, you can copy it here. You may hide sensible information.
-      placeholder: This is automatically formatted into code, no need for backticks.
+      description: If you have a **full** stack trace, you can copy it here. You may hide sensible information.
+      placeholder: This is automatically formatted into code, no need for ``` backticks.
       render: shell
     validations:
       required: false
-  - type: dropdown
-    id: supporter
-    attributes:
-      label: Are you a Patreon supporter?
-      description: Patreon supporters get priority review, fixing and responses. Are you not? [Become one!](https://patreon.com/packagesforlaravel)
-      options:
-        - Yes, with my username
-        - No, don't give priority to this
-    validations:
-      required: true
