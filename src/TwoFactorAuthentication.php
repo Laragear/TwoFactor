@@ -104,7 +104,7 @@ trait TwoFactorAuthentication
      */
     protected function twoFactorLabel(): string
     {
-        return $this->getAttribute('email');
+        return config('two-factor.label', $this->getAttribute('email'));
     }
 
     /**
