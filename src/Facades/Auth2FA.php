@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\Facade;
 use Laragear\TwoFactor\TwoFactorLoginHelper;
 
 /**
- * @method bool attempt(array $credentials = [], mixed $remember = false)
- * @method \Laragear\TwoFactor\TwoFactorLoginHelper view(string $view)
- * @method \Laragear\TwoFactor\TwoFactorLoginHelper message(string $message)
- * @method \Laragear\TwoFactor\TwoFactorLoginHelper input(string $input)
- * @method \Laragear\TwoFactor\TwoFactorLoginHelper sessionKey(string $sessionKey)
- * @method \Laragear\TwoFactor\TwoFactorLoginHelper guard(string $guard)
+ * @method static bool attempt(array $credentials = [], mixed $remember = false)
+ * @method static \Laragear\TwoFactor\TwoFactorLoginHelper view(string $view)
+ * @method static \Laragear\TwoFactor\TwoFactorLoginHelper message(string $message)
+ * @method static \Laragear\TwoFactor\TwoFactorLoginHelper input(string $input)
+ * @method static \Laragear\TwoFactor\TwoFactorLoginHelper sessionKey(string $sessionKey)
+ * @method static \Laragear\TwoFactor\TwoFactorLoginHelper guard(string $guard)
  *
  * @see \Laragear\TwoFactor\TwoFactorLoginHelper
  */
