@@ -109,7 +109,7 @@ trait TwoFactorAuthentication
         // it to the user email so the authenticator shows the TOTP origin name.
         $issuer = config('two-factor.label') ?? config('two-factor.issuer');
         
-        return $issuer.':'.$this->getAttribute('email'));
+        return $issuer.':'.$this->getAttribute('email');
     }
 
     /**
