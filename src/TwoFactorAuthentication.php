@@ -103,13 +103,13 @@ trait TwoFactorAuthentication
      * @return string
      */
     protected function twoFactorLabel(): string
-    {   
+    {
         // If the developer has set acustom label for the app, use that. When not,
         // we will fallback to the issuer name. We will use that string to append
         // it to the user email so the authenticator shows the TOTP origin name.
         $issuer = config('two-factor.label') ?? config('two-factor.issuer');
-        
-        return $issuer.':'.$this->getAttribute('email'));
+
+        return $issuer.':'.$this->getAttribute('email');
     }
 
     /**

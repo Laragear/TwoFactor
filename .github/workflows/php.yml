@@ -29,7 +29,7 @@ jobs:
       - name: "Set up PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "8.1"
+          php-version: "8.2"
           tools: "parallel-lint"
 
       - name: "Checkout code"
@@ -48,15 +48,21 @@ jobs:
       - "syntax_errors"
     runs-on: "ubuntu-latest"
     strategy:
+      fail-fast: false
       matrix:
         php-version:
           - "8.0"
           - "8.1"
+          - "8.2"
         laravel-constrain:
           - "9.*"
+          - "10.*"
         dependencies:
           - "lowest"
           - "highest"
+        exclude:
+          - laravel-constrain: "10.*"
+            php-version: "8.0"
     steps:
       - name: "Set up PHP"
         uses: "shivammathur/setup-php@v2"
@@ -67,6 +73,18 @@ jobs:
 
       - name: "Checkout code"
         uses: "actions/checkout@v3"
+
+      - name: Set Minimum PHP 8.1 Version for ramsey/collection
+        run: composer require ramsey/collection:^1.2 --no-interaction --no-update
+        if: matrix.php-version >= 8.1
+
+      - name: Set Minimum PHP 8.2 Version for nesbot/carbon
+        run: composer require nesbot/carbon:^2.62.1 --no-interaction --no-update
+        if: matrix.php-version >= 8.2
+
+      - name: Set Minimum PHP 8.2 Version for orchestra/testbench
+        run: composer require --dev orchestra/testbench:^7.10 --no-interaction --no-update
+        if: matrix.php-version >= 8.2
 
       - name: "Install dependencies"
         uses: "ramsey/composer-install@v2"
