@@ -74,8 +74,8 @@ class TwoFactorServiceProvider extends ServiceProvider
         $this->publishesMigrations(static::DB);
 
         $this->publishes([static::CONFIG => $this->app->configPath('two-factor.php')], 'config');
-        $this->publishes([static::VIEWS => $this->app->viewPath('vendor/two-factor')], 'views');
         // @phpstan-ignore-next-line
+        $this->publishes([static::VIEWS => $this->app->viewPath('vendor/two-factor')], 'views');
         $this->publishes([static::LANG => $this->app->langPath('vendor/two-factor')], 'translations');
     }
 }
