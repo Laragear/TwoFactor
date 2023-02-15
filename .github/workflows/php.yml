@@ -48,6 +48,7 @@ jobs:
       - "syntax_errors"
     runs-on: "ubuntu-latest"
     strategy:
+      fail-fast: false
       matrix:
         php-version:
           - "8.0"
@@ -60,8 +61,8 @@ jobs:
           - "lowest"
           - "highest"
         exclude:
-          - laravel-constrain: 10.*
-            php-version: 8.0
+          - laravel-constrain: "10.*"
+            php-version: "8.0"
     steps:
       - name: "Set up PHP"
         uses: "shivammathur/setup-php@v2"
