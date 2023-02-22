@@ -26,7 +26,7 @@
     "require": {
         "php": "8.*",
         "ext-json": "*",
-        "laragear/meta": "^2.0.1",
+        "laragear/meta": "^2.0.2",
         "bacon/bacon-qr-code": "2.*",
         "paragonie/constant_time_encoding": "^2.5",
         "illuminate/config": "9.*|10.*",
