@@ -3,7 +3,7 @@
 namespace Tests;
 
 use Illuminate\Support\ServiceProvider;
-use Laragear\Meta\Testing\InteractsWithServiceProvider;
+use Laragear\MetaTesting\InteractsWithServiceProvider;
 use Laragear\TwoFactor\Http\Middleware\ConfirmTwoFactorCode;
 use Laragear\TwoFactor\Http\Middleware\RequireTwoFactorEnabled;
 use Laragear\TwoFactor\Rules\Totp;
