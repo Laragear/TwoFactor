@@ -577,7 +577,7 @@ There should be no problems using this package with Laravel Octane.
 
 ## Security
 
-When using the [Login Helper](#logging-in), credentials are saved encrypted into the session. This can be undersirable for some applications. While this tool exists for convenience, you are welcome to create your own 2FA authentication flow.
+When using the [Login Helper](#logging-in), credentials are saved encrypted into the session. This can be undesirable for some applications. While this tool exists for convenience, you are welcome to create your own 2FA authentication flow.
 
 If you discover any security related issues, please email darkghosthunter@gmail.com instead of using the issue tracker.
 
