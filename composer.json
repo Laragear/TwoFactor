@@ -26,7 +26,7 @@
     "require": {
         "php": "8.*",
         "ext-json": "*",
-        "laragear/meta": "^2.0.2",
+        "laragear/meta": "^2.1.0",
         "bacon/bacon-qr-code": "2.*",
         "paragonie/constant_time_encoding": "^2.5",
         "illuminate/config": "9.*|10.*",
@@ -37,7 +37,7 @@
         "illuminate/auth": "9.*|10.*"
     },
     "require-dev": {
-        "laragear/meta-testing": "^1.2.2",
+        "laragear/meta-testing": "^1.3.1",
         "orchestra/testbench": "^7.22|8.*"
     },
     "autoload": {
