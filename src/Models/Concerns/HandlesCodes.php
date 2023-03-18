@@ -2,17 +2,18 @@
 
 namespace Laragear\TwoFactor\Models\Concerns;
 
-use function cache;
-use function config;
 use DateTimeInterface;
-use function floor;
-use function hash_hmac;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\Carbon;
+use ParagonIE\ConstantTime\Base32;
+
+use function cache;
+use function config;
+use function floor;
+use function hash_hmac;
 use function implode;
 use function ord;
 use function pack;
-use ParagonIE\ConstantTime\Base32;
 use function str_pad;
 use function strlen;
 
@@ -116,11 +117,11 @@ trait HandlesCodes
         $offset = ord($hmac[strlen($hmac) - 1]) & 0xF;
 
         $number = (
-                ((ord($hmac[$offset + 0]) & 0x7F) << 24) |
-                ((ord($hmac[$offset + 1]) & 0xFF) << 16) |
-                ((ord($hmac[$offset + 2]) & 0xFF) << 8) |
-                (ord($hmac[$offset + 3]) & 0xFF)
-            ) % (10 ** $this->digits);
+            ((ord($hmac[$offset + 0]) & 0x7F) << 24) |
+            ((ord($hmac[$offset + 1]) & 0xFF) << 16) |
+            ((ord($hmac[$offset + 2]) & 0xFF) << 8) |
+            (ord($hmac[$offset + 3]) & 0xFF)
+        ) % (10 ** $this->digits);
 
         return str_pad((string) $number, $this->digits, '0', STR_PAD_LEFT);
     }
@@ -133,7 +134,7 @@ trait HandlesCodes
      */
     protected function getPeriodsFromTimestamp(int $timestamp): int
     {
-        return (int) (floor($timestamp / $this->seconds));
+        return (int) floor($timestamp / $this->seconds);
     }
 
     /**

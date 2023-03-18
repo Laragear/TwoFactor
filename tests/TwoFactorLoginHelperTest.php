@@ -2,9 +2,6 @@
 
 namespace Tests;
 
-use function app;
-use function config;
-use function get_class;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,9 +18,13 @@ use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use Laragear\TwoFactor\Facades\Auth2FA;
 use Mockery;
-use function redirect;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
+
+use function app;
+use function config;
+use function get_class;
+use function redirect;
 use function today;
 use function trans;
 use function var_dump;
