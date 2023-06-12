@@ -2,16 +2,17 @@
 
 namespace Laragear\TwoFactor\Models;
 
-use function array_merge;
-use function config;
 use Database\Factories\Laragear\TwoFactor\TwoFactorAuthenticationFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use function json_encode;
 use Laragear\TwoFactor\Contracts\TwoFactorTotp;
 use ParagonIE\ConstantTime\Base32;
+
+use function array_merge;
+use function config;
+use function json_encode;
 use function random_bytes;
 use function strtolower;
 
@@ -81,7 +82,7 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     /**
      * Sets the Algorithm to lowercase.
      *
-     * @param $value
+     * @param  $value
      * @return void
      */
     protected function setAlgorithmAttribute($value): void

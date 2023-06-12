@@ -11,9 +11,10 @@ use Illuminate\Validation\ValidationException;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
 use Laragear\TwoFactor\TwoFactor;
 use Mockery;
-use function now;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
+
+use function now;
 
 class TwoFactorTest extends TestCase
 {

@@ -2,7 +2,6 @@
 
 namespace Laragear\TwoFactor;
 
-use function array_merge;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Session\Session;
@@ -11,6 +10,8 @@ use Illuminate\Session\EncryptedStore;
 use Illuminate\Support\Facades\Crypt;
 use InvalidArgumentException;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
+
+use function array_merge;
 use function response;
 use function view;
 

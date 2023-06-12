@@ -2,13 +2,14 @@
 
 namespace Laragear\TwoFactor;
 
-use function app;
 use Closure;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\Request;
 use Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
+
+use function app;
 use function trans;
 use function validator;
 
