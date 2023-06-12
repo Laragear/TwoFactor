@@ -28,6 +28,7 @@ trait SerializesSharedSecret
         $issuer = config('two-factor.issuer')
                 ?: config('app.name')
                 ?: throw new InvalidArgumentException('The TOTP issuer cannot be empty.');
+
         $query = http_build_query([
             'issuer'    => $issuer,
             'label'     => $this->attributes['label'],
