@@ -6,6 +6,7 @@ use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
+
 use function array_values;
 use function chunk_split;
 use function config;
@@ -46,7 +47,7 @@ trait SerializesSharedSecret
         [$size, $margin] = array_values(config('two-factor.qr_code'));
 
         return (
-            new Writer((new ImageRenderer(new RendererStyle($size, $margin), new SvgImageBackEnd())))
+            new Writer(new ImageRenderer(new RendererStyle($size, $margin), new SvgImageBackEnd()))
         )->writeString($this->toUri());
     }
 
