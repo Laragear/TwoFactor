@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
+use InvalidArgumentException;
 use Laragear\TwoFactor\Models\TwoFactorAuthentication;
 use ParagonIE\ConstantTime\Base32;
 use Tests\Stubs\UserStub;
@@ -315,6 +316,20 @@ class TwoFactorAuthenticationTest extends TestCase
         static::assertEquals($uri, $tfa->toJson());
     }
 
+    public function test_uses_app_name_as_issuer(): void
+    {
+        $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
+            'label'         => 'test@foo.com',
+            'shared_secret' => static::SECRET,
+            'algorithm'     => 'sHa256',
+            'digits'        => 14,
+        ]);
+
+        $uri = 'otpauth://totp/Laravel%3Atest@foo.com?issuer=Laravel&label=test%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14';
+
+        static::assertSame($uri, $tfa->toUri());
+    }
+
     public function test_changes_issuer(): void
     {
         $this->app->make('config')->set('two-factor.issuer', 'foo bar');
@@ -329,6 +344,24 @@ class TwoFactorAuthenticationTest extends TestCase
         $uri = 'otpauth://totp/foo%20bar%3Atest@foo.com?issuer=foo%20bar&label=test%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14';
 
         static::assertSame($uri, $tfa->toUri());
+    }
+
+    public function test_throws_exception_when_issuer_is_empty(): void
+    {
+        $this->app->make('config')->set('app.name', '');
+        $this->app->make('config')->set('two-factor.issuer', '');
+
+        $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
+            'label'         => 'test@foo.com',
+            'shared_secret' => static::SECRET,
+            'algorithm'     => 'sHa256',
+            'digits'        => 14,
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The TOTP issuer cannot be empty.');
+
+        $tfa->toUri();
     }
 
     public function test_uses_custom_generator(): void

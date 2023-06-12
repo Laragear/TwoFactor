@@ -82,7 +82,7 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     /**
      * Sets the Algorithm to lowercase.
      *
-     * @param $value
+     * @param  $value
      * @return void
      */
     protected function setAlgorithmAttribute($value): void

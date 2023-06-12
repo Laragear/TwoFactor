@@ -6,6 +6,7 @@ use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
+use InvalidArgumentException;
 
 use function array_values;
 use function chunk_split;
@@ -24,8 +25,9 @@ trait SerializesSharedSecret
      */
     public function toUri(): string
     {
-        $issuer = config('two-factor.issuer', config('app.name'));
-
+        $issuer = config('two-factor.issuer')
+                ?: config('app.name')
+                ?: throw new InvalidArgumentException('The TOTP issuer cannot be empty.');
         $query = http_build_query([
             'issuer'    => $issuer,
             'label'     => $this->attributes['label'],
