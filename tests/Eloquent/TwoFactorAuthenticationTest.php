@@ -331,6 +331,22 @@ class TwoFactorAuthenticationTest extends TestCase
         static::assertSame($uri, $tfa->toUri());
     }
 
+    public function test_removes_issuer_when_empty(): void
+    {
+        $this->app->make('config')->set('two-factor.issuer', '');
+
+        $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
+            'label'         => 'test@foo.com',
+            'shared_secret' => static::SECRET,
+            'algorithm'     => 'sHa256',
+            'digits'        => 14,
+        ]);
+
+        $uri = 'otpauth://totp/Laravel%3Atest@foo.com?issuer=Laravel&label=test%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14';
+
+        static::assertSame($uri, $tfa->toUri());
+    }
+
     public function test_uses_custom_generator(): void
     {
         $i = 0;

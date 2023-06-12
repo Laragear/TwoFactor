@@ -2,11 +2,11 @@
 
 namespace Laragear\TwoFactor\Models\Concerns;
 
-use function array_values;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
+use function array_values;
 use function chunk_split;
 use function config;
 use function http_build_query;
@@ -23,7 +23,7 @@ trait SerializesSharedSecret
      */
     public function toUri(): string
     {
-        $issuer = config('two-factor.issuer', config('app.name'));
+        $issuer = config('two-factor.issuer') ?: config('app.name');
 
         $query = http_build_query([
             'issuer'    => $issuer,
