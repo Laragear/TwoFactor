@@ -236,7 +236,7 @@ You can further customize how to handle the 2FA code authentication procedure wi
 | input($input)     | Sets the input where the TOTP code is in the request. Defaults to `2fa_code`.     |
 | sessionKey($key)  | The key used to flash the encrypted credentials. Defaults to `_2fa_login`.        |
 
-> * For [Laravel UI](https://github.com/laravel/ui), override the `attemptLogin()` method in your Login controller.
+> * For [Laravel UI](https://github.com/laravel/ui), override the `attemptLogin()` method to replace the default guard attempt with `Auth2FA::attempt()` and `validateLogin` method to wrap in the `if ($request->isNotFilled('2fa_code'))` statement in your Login controller.
 > * For [Laravel Breeze](https://laravel.com/docs/starter-kits#laravel-breeze), you may need to extend the `LoginRequest::authenticate()` call.
 > * For [Laravel Fortify](https://laravel.com/docs/fortify) and [Jetstream](https://jetstream.laravel.com/), you may need to set a custom callback with the [`Fortify::authenticateUsing()`](https://laravel.com/docs/10.x/fortify#customizing-user-authentication) method.
 
