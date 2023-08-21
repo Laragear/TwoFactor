@@ -70,6 +70,16 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     protected $fillable = ['digits', 'seconds', 'window', 'algorithm'];
 
     /**
+     * Get the table associated with the model.
+     *
+     * @return string
+     */
+    public function getTable()
+    {
+        return config('two-factor.table_name') ?? parent::getTable();
+    }
+
+    /**
      * The model that uses Two-Factor Authentication.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo

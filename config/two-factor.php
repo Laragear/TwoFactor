@@ -3,6 +3,19 @@
 return [
     /*
     |--------------------------------------------------------------------------
+    | Database table name
+    |--------------------------------------------------------------------------
+    |
+    | If you have modified the default table name during your migration, then
+    | set this to your actual table name. Otherwise, leave this as null to use
+    | the default table name.
+    |
+    */
+
+    'table_name' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Cache Store
     |--------------------------------------------------------------------------
     |
