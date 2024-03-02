@@ -15,8 +15,6 @@ class Totp
 {
     /**
      * Create a new "totp code" rule instance.
-     *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable|null  $user
      */
     public function __construct(protected ?Authenticatable $user = null)
     {
@@ -25,11 +23,6 @@ class Totp
 
     /**
      * Validate that an attribute is a valid Two-Factor Authentication TOTP code.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @param  array  $parameters
-     * @return bool
      */
     public function validate(string $attribute, mixed $value, array $parameters): bool
     {

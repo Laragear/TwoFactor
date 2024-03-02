@@ -31,11 +31,6 @@ class ServiceProviderTest extends TestCase
         static::assertArrayHasKey('two-factor', $this->app->make('translator')->getLoader()->namespaces());
     }
 
-    public function test_publishes_migrations(): void
-    {
-        $this->assertPublishesMigrations(TwoFactorServiceProvider::DB);
-    }
-
     public function test_publishes_middleware(): void
     {
         $middleware = $this->app->make('router')->getMiddleware();

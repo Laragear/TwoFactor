@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\Pure;
-
 use function collect;
 use function config;
 use function cookie;
@@ -21,9 +19,14 @@ use function now;
 trait TwoFactorAuthentication
 {
     /**
-     * Initialize the current Trait.
+     * Determines if the last Two-Factor confirmation was bypassed under a Safe Device.
      *
-     * @return void
+     * @var bool
+     */
+    public bool $wasTwoFactorRecentlyBypassedUnderSafeDevice = false;
+
+    /**
+     * Initialize the current Trait.
      */
     public function initializeTwoFactorAuthentication(): void
     {
@@ -33,8 +36,6 @@ trait TwoFactorAuthentication
 
     /**
      * This connects the current Model to the Two-Factor Authentication model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
     public function twoFactorAuth(): MorphOne
     {
@@ -46,10 +47,7 @@ trait TwoFactorAuthentication
 
     /**
      * Determines if the User has Two-Factor Authentication enabled.
-     *
-     * @return bool
      */
-    #[Pure]
     public function hasTwoFactorEnabled(): bool
     {
         return $this->twoFactorAuth->isEnabled();
@@ -57,8 +55,6 @@ trait TwoFactorAuthentication
 
     /**
      * Enables Two-Factor Authentication for the given user.
-     *
-     * @return void
      */
     public function enableTwoFactorAuth(): void
     {
@@ -75,8 +71,6 @@ trait TwoFactorAuthentication
 
     /**
      * Disables Two-Factor Authentication for the given user.
-     *
-     * @return void
      */
     public function disableTwoFactorAuth(): void
     {
@@ -87,8 +81,6 @@ trait TwoFactorAuthentication
 
     /**
      * Creates a new Two-Factor Auth mechanisms from scratch, and returns a new Shared Secret.
-     *
-     * @return \Laragear\TwoFactor\Contracts\TwoFactorTotp
      */
     public function createTwoFactorAuth(): Contracts\TwoFactorTotp
     {
@@ -101,8 +93,6 @@ trait TwoFactorAuthentication
 
     /**
      * Returns the issuer name to use as part of the Two-Factor credential label.
-     *
-     * @return string
      */
     public function getTwoFactorIssuer(): string
     {
@@ -112,8 +102,6 @@ trait TwoFactorAuthentication
 
     /**
      * Returns the user identifier to use as part of the Two-Factor credential label.
-     *
-     * @return string
      */
     public function getTwoFactorUserIdentifier(): string
     {
@@ -122,8 +110,6 @@ trait TwoFactorAuthentication
 
     /**
      * Returns the label for TOTP URI.
-     *
-     * @return string
      */
     protected function twoFactorLabel(): string
     {
@@ -140,9 +126,6 @@ trait TwoFactorAuthentication
 
     /**
      * Confirms the Shared Secret and fully enables the Two-Factor Authentication.
-     *
-     * @param  string  $code
-     * @return bool
      */
     public function confirmTwoFactorAuth(string $code): bool
     {
@@ -162,9 +145,6 @@ trait TwoFactorAuthentication
 
     /**
      * Verifies the Code against the Shared Secret.
-     *
-     * @param  string|int  $code
-     * @return bool
      */
     protected function validateCode(string|int $code): bool
     {
@@ -173,10 +153,6 @@ trait TwoFactorAuthentication
 
     /**
      * Validates the TOTP Code or Recovery Code.
-     *
-     * @param  string|null  $code
-     * @param  bool  $useRecoveryCodes
-     * @return bool
      */
     public function validateTwoFactorCode(?string $code = null, bool $useRecoveryCodes = true): bool
     {
@@ -187,10 +163,6 @@ trait TwoFactorAuthentication
 
     /**
      * Makes a Two-Factor Code for a given time, and period offset.
-     *
-     * @param  \DateTimeInterface|int|string  $at
-     * @param  int  $offset
-     * @return string
      */
     public function makeTwoFactorCode(DateTimeInterface|int|string $at = 'now', int $offset = 0): string
     {
@@ -199,8 +171,6 @@ trait TwoFactorAuthentication
 
     /**
      * Determines if the User has Recovery Codes available.
-     *
-     * @return bool
      */
     protected function hasRecoveryCodes(): bool
     {
@@ -209,8 +179,6 @@ trait TwoFactorAuthentication
 
     /**
      * Return the current set of Recovery Codes.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getRecoveryCodes(): Collection
     {
@@ -219,8 +187,6 @@ trait TwoFactorAuthentication
 
     /**
      * Generates a new set of Recovery Codes.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function generateRecoveryCodes(): Collection
     {
@@ -242,9 +208,6 @@ trait TwoFactorAuthentication
 
     /**
      * Uses a one-time Recovery Code if there is one available.
-     *
-     * @param  string  $code
-     * @return mixed
      */
     protected function useRecoveryCode(string $code): bool
     {
@@ -263,9 +226,6 @@ trait TwoFactorAuthentication
 
     /**
      * Adds a "safe" Device from the Request, and returns the token used.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return string
      */
     public function addSafeDevice(Request $request): string
     {
@@ -292,8 +252,6 @@ trait TwoFactorAuthentication
 
     /**
      * Generates a Device token to bypass Two-Factor Authentication.
-     *
-     * @return string
      */
     protected function generateTwoFactorRemember(): string
     {
@@ -302,8 +260,6 @@ trait TwoFactorAuthentication
 
     /**
      * Deletes all saved safe devices.
-     *
-     * @return bool
      */
     public function flushSafeDevices(): bool
     {
@@ -312,8 +268,6 @@ trait TwoFactorAuthentication
 
     /**
      * Return all the Safe Devices that bypass Two-Factor Authentication.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function safeDevices(): Collection
     {
@@ -322,9 +276,6 @@ trait TwoFactorAuthentication
 
     /**
      * Determines if the Request has been made through a previously used "safe" device.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
      */
     public function isSafeDevice(Request $request): bool
     {
@@ -339,9 +290,6 @@ trait TwoFactorAuthentication
 
     /**
      * Returns the Two-Factor Remember Token of the request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return string|null
      */
     protected function getTwoFactorRememberFromRequest(Request $request): ?string
     {
@@ -350,12 +298,25 @@ trait TwoFactorAuthentication
 
     /**
      * Determines if the Request has been made through a not-previously-known device.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
      */
     public function isNotSafeDevice(Request $request): bool
     {
         return ! $this->isSafeDevice($request);
+    }
+
+    /**
+     * Sets a flag on the User to signal that a recent Two-Factor challenge has been bypassed under a Safe Device.
+     */
+    public function setTwoFactorBypassedBySafeDevice(bool $condition): void
+    {
+        $this->wasTwoFactorRecentlyBypassedUnderSafeDevice = $condition;
+    }
+
+    /**
+     * Determines if a recent Two-Factor challenge has been bypassed under a Safe Device.
+     */
+    public function wasTwoFactorBypassedBySafeDevice(): bool
+    {
+        return $this->wasTwoFactorRecentlyBypassedUnderSafeDevice;
     }
 }

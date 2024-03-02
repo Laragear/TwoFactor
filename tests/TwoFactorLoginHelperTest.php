@@ -4,7 +4,6 @@ namespace Tests;
 
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Session\Session;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
@@ -15,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ViewErrorBag;
 use InvalidArgumentException;
-use JetBrains\PhpStorm\ArrayShape;
 use Laragear\TwoFactor\Facades\Auth2FA;
 use Mockery;
 use Tests\Stubs\UserStub;
@@ -30,11 +28,9 @@ use function var_dump;
 
 class TwoFactorLoginHelperTest extends TestCase
 {
-    use RefreshDatabase;
     use CreatesTwoFactorUser;
     use WithFaker;
 
-    #[ArrayShape(['email' => 'string', 'password' => 'string'])]
     protected array $credentials;
 
     protected function setUp(): void

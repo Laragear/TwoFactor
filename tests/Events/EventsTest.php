@@ -2,7 +2,6 @@
 
 namespace Tests\Events;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
@@ -15,7 +14,6 @@ use Tests\TestCase;
 
 class EventsTest extends TestCase
 {
-    use RefreshDatabase;
     use CreatesTwoFactorUser;
 
     protected function setUp(): void

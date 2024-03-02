@@ -2,16 +2,16 @@
 
 namespace Tests\Http\Middleware;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
 use Laragear\TwoFactor\Http\Controllers\ConfirmTwoFactorCodeController;
 use Tests\CreatesTwoFactorUser;
 use Tests\Stubs\UserStub;
 use Tests\TestCase;
+use function now;
+use function trans;
 
 class ConfirmTwoFactorEnabledTest extends TestCase
 {
-    use RefreshDatabase;
     use CreatesTwoFactorUser;
 
     protected function setUp(): void
@@ -60,6 +60,22 @@ class ConfirmTwoFactorEnabledTest extends TestCase
 
         $this->followingRedirects()->get('intended')->assertSee('ok');
         $this->getJson('intended')->assertSee('ok');
+    }
+
+    public function test_asks_for_confirmation_if_forced(): void
+    {
+        $this->app['router']->get('intended_force', function () {
+            return 'ok';
+        })->name('intended')->middleware('web', 'auth', '2fa.confirm:2fa.confirm,true');
+
+        $this->actingAs($this->user);
+
+        $sessionKey = $this->app->make('config')->get('two-factor.confirm.key').'confirm.expires_at';
+
+        $this->session([$sessionKey => now()->addHour()->getTimestamp()]);
+
+        $this->getJson('intended_force')->assertJson(['message' => trans('two-factor::messages.required')]);
+        $this->get('intended_force')->assertRedirect('confirm');
     }
 
     public function test_asks_for_confirmation_if_user_2fa_but_not_already_confirmed(): void

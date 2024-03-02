@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -19,7 +18,6 @@ use Tests\Stubs\UserTwoFactorStub;
 
 class TwoFactorAuthenticationTest extends TestCase
 {
-    use RefreshDatabase;
     use CreatesTwoFactorUser;
     use RegistersLoginRoute;
     use WithFaker;
@@ -27,6 +25,7 @@ class TwoFactorAuthenticationTest extends TestCase
     protected function setUp(): void
     {
         $this->afterApplicationCreated([$this, 'createTwoFactorUser']);
+
         parent::setUp();
     }
 
@@ -34,22 +33,22 @@ class TwoFactorAuthenticationTest extends TestCase
     {
         $array = $this->user->toArray();
 
-        $this->assertArrayNotHasKey('two_factor_auth', $array);
-        $this->assertArrayNotHasKey('twoFactorAuth', $array);
+        static::assertArrayNotHasKey('two_factor_auth', $array);
+        static::assertArrayNotHasKey('twoFactorAuth', $array);
     }
 
     public function test_returns_two_factor_relation(): void
     {
-        $this->assertInstanceOf(TwoFactorAuthentication::class, $this->user->twoFactorAuth);
+        static::assertInstanceOf(TwoFactorAuthentication::class, $this->user->twoFactorAuth);
     }
 
     public function test_has_two_factor_enabled(): void
     {
-        $this->assertTrue($this->user->hasTwoFactorEnabled());
+        static::assertTrue($this->user->hasTwoFactorEnabled());
 
         $this->user->disableTwoFactorAuth();
 
-        $this->assertFalse($this->user->hasTwoFactorEnabled());
+        static::assertFalse($this->user->hasTwoFactorEnabled());
     }
 
     public function test_disables_two_factor_authentication(): void
@@ -57,7 +56,7 @@ class TwoFactorAuthenticationTest extends TestCase
         $events = Event::fake();
 
         $this->user->disableTwoFactorAuth();
-        $this->assertFalse($this->user->hasTwoFactorEnabled());
+        static::assertFalse($this->user->hasTwoFactorEnabled());
 
         $events->assertDispatched(TwoFactorDisabled::class, function ($event) {
             return $this->user->is($event->user);
@@ -69,7 +68,7 @@ class TwoFactorAuthenticationTest extends TestCase
         $events = Event::fake();
 
         $this->user->enableTwoFactorAuth();
-        $this->assertTrue($this->user->hasTwoFactorEnabled());
+        static::assertTrue($this->user->hasTwoFactorEnabled());
 
         $events->assertDispatched(TwoFactorEnabled::class, function ($event) {
             return $this->user->is($event->user);
@@ -85,7 +84,7 @@ class TwoFactorAuthenticationTest extends TestCase
             'password' => UserStub::PASSWORD_SECRET,
         ]);
 
-        $this->assertDatabaseMissing('two_factor_authentications', [
+        $this->assertDatabaseMissing(TwoFactorAuthentication::class, [
             ['authenticatable_type', UserTwoFactorStub::class],
             ['authenticatable_id', $user->getKey()],
         ]);
@@ -93,10 +92,10 @@ class TwoFactorAuthenticationTest extends TestCase
         $tfa = $user->createTwoFactorAuth();
 
         $this->assertInstanceOf(TwoFactorAuthentication::class, $tfa);
-        $this->assertTrue($tfa->exists);
-        $this->assertFalse($user->hasTwoFactorEnabled());
+        static::assertTrue($tfa->exists);
+        static::assertFalse($user->hasTwoFactorEnabled());
 
-        $this->assertDatabaseHas('two_factor_authentications', [
+        $this->assertDatabaseHas(TwoFactorAuthentication::class, [
             ['authenticatable_type', UserTwoFactorStub::class],
             ['authenticatable_id', $user->getKey()],
             ['enabled_at', null],
@@ -110,42 +109,42 @@ class TwoFactorAuthenticationTest extends TestCase
         $this->user->twoFactorAuth->safe_devices = collect([1, 2, 3]);
         $this->user->twoFactorAuth->save();
 
-        $this->assertNotEmpty($this->user->getRecoveryCodes());
-        $this->assertNotNull($this->user->twoFactorAuth->recovery_codes_generated_at);
-        $this->assertNotEmpty($this->user->safeDevices());
-        $this->assertNotNull($this->user->twoFactorAuth->enabled_at);
+        static::assertNotEmpty($this->user->getRecoveryCodes());
+        static::assertNotNull($this->user->twoFactorAuth->recovery_codes_generated_at);
+        static::assertNotEmpty($this->user->safeDevices());
+        static::assertNotNull($this->user->twoFactorAuth->enabled_at);
 
         $this->user->createTwoFactorAuth();
 
-        $this->assertEmpty($this->user->getRecoveryCodes());
-        $this->assertNull($this->user->twoFactorAuth->recovery_codes_generated_at);
-        $this->assertEmpty($this->user->safeDevices());
-        $this->assertNull($this->user->twoFactorAuth->enabled_at);
+        static::assertEmpty($this->user->getRecoveryCodes());
+        static::assertNull($this->user->twoFactorAuth->recovery_codes_generated_at);
+        static::assertEmpty($this->user->safeDevices());
+        static::assertNull($this->user->twoFactorAuth->enabled_at);
     }
 
     public function test_rewrites_when_creating_two_factor_authentication(): void
     {
-        $this->assertDatabaseHas('two_factor_authentications', [
+        $this->assertDatabaseHas(TwoFactorAuthentication::class, [
             ['authenticatable_type', UserTwoFactorStub::class],
             ['authenticatable_id', $this->user->getKey()],
             ['enabled_at', '!=', null],
         ]);
 
-        $this->assertTrue($this->user->hasTwoFactorEnabled());
+        static::assertTrue($this->user->hasTwoFactorEnabled());
 
         $old = $this->user->twoFactorAuth->shared_secret;
 
         $this->user->createTwoFactorAuth();
 
-        $this->assertFalse($this->user->hasTwoFactorEnabled());
-        $this->assertNotEquals($old, $this->user->twoFactorAuth->shared_secret);
+        static::assertFalse($this->user->hasTwoFactorEnabled());
+        static::assertNotEquals($old, $this->user->twoFactorAuth->shared_secret);
     }
 
     public function test_new_user_confirms_two_factor_successfully(): void
     {
         $event = Event::fake();
 
-        Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30));
+        $this->travelTo($now = Date::create(2020, 01, 01, 18, 30));
 
         $user = UserTwoFactorStub::create([
             'name' => 'bar',
@@ -157,14 +156,14 @@ class TwoFactorAuthenticationTest extends TestCase
 
         $code = $user->makeTwoFactorCode();
 
-        $this->assertTrue($user->confirmTwoFactorAuth($code));
-        $this->assertTrue($user->hasTwoFactorEnabled());
-        $this->assertFalse($user->validateTwoFactorCode($code));
+        static::assertTrue($user->confirmTwoFactorAuth($code));
+        static::assertTrue($user->hasTwoFactorEnabled());
+        static::assertFalse($user->validateTwoFactorCode($code));
 
         Cache::getStore()->flush();
-        $this->assertTrue($user->validateTwoFactorCode($code));
+        static::assertTrue($user->validateTwoFactorCode($code));
 
-        $this->assertEquals($now, $user->twoFactorAuth->enabled_at);
+        static::assertEquals($now, $user->twoFactorAuth->enabled_at);
 
         $event->assertDispatched(TwoFactorRecoveryCodesGenerated::class, function ($event) use ($user) {
             return $user->is($event->user);
@@ -210,20 +209,20 @@ class TwoFactorAuthenticationTest extends TestCase
 
         $old_now = $this->user->twoFactorAuth->enabled_at;
 
-        Date::setTestNow(Date::create(2020, 01, 01, 18, 30));
+        $this->travelTo(Date::create(2020, 01, 01, 18, 30));
 
         $secret = $this->user->twoFactorAuth->shared_secret;
 
         $code = $this->user->makeTwoFactorCode();
 
-        $this->assertTrue($this->user->confirmTwoFactorAuth($code));
+        static::assertTrue($this->user->confirmTwoFactorAuth($code));
 
         $this->user->refresh();
 
-        $this->assertTrue($this->user->hasTwoFactorEnabled());
-        $this->assertTrue($this->user->validateTwoFactorCode($code));
-        $this->assertEquals($old_now, $this->user->twoFactorAuth->enabled_at);
-        $this->assertEquals($secret, $this->user->twoFactorAuth->shared_secret);
+        static::assertTrue($this->user->hasTwoFactorEnabled());
+        static::assertTrue($this->user->validateTwoFactorCode($code));
+        static::assertEquals($old_now, $this->user->twoFactorAuth->enabled_at);
+        static::assertEquals($secret, $this->user->twoFactorAuth->shared_secret);
 
         $event->assertNotDispatched(TwoFactorRecoveryCodesGenerated::class);
     }
@@ -236,36 +235,36 @@ class TwoFactorAuthenticationTest extends TestCase
 
         $this->user->createTwoFactorAuth();
 
-        $this->assertFalse($this->user->confirmTwoFactorAuth($code));
+        static::assertFalse($this->user->confirmTwoFactorAuth($code));
     }
 
     public function test_old_user_confirms_new_two_factor_successfully(): void
     {
         $event = Event::fake();
 
-        Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30));
+        $this->travelTo($now = Date::create(2020, 01, 01, 18, 30));
 
         $old_code = $this->user->makeTwoFactorCode();
 
-        $this->assertTrue($this->user->validateTwoFactorCode($old_code));
+        static::assertTrue($this->user->validateTwoFactorCode($old_code));
 
         $this->user->createTwoFactorAuth();
 
         $new_code = $this->user->makeTwoFactorCode();
 
-        $this->assertFalse($this->user->confirmTwoFactorAuth($old_code));
-        $this->assertFalse($this->user->hasTwoFactorEnabled());
+        static::assertFalse($this->user->confirmTwoFactorAuth($old_code));
+        static::assertFalse($this->user->hasTwoFactorEnabled());
 
         Cache::getStore()->flush();
-        $this->assertTrue($this->user->confirmTwoFactorAuth($new_code));
-        $this->assertTrue($this->user->hasTwoFactorEnabled());
+        static::assertTrue($this->user->confirmTwoFactorAuth($new_code));
+        static::assertTrue($this->user->hasTwoFactorEnabled());
 
         Cache::getStore()->flush();
-        $this->assertFalse($this->user->validateTwoFactorCode($old_code));
-        $this->assertTrue($this->user->validateTwoFactorCode($new_code));
+        static::assertFalse($this->user->validateTwoFactorCode($old_code));
+        static::assertTrue($this->user->validateTwoFactorCode($new_code));
 
-        $this->assertEquals($now, $this->user->twoFactorAuth->enabled_at);
-        $this->assertEquals($now, $this->user->twoFactorAuth->updated_at);
+        static::assertEquals($now, $this->user->twoFactorAuth->enabled_at);
+        static::assertEquals($now, $this->user->twoFactorAuth->updated_at);
 
         $event->assertDispatched(TwoFactorRecoveryCodesGenerated::class, function ($event) {
             return $this->user->is($event->user);
@@ -274,25 +273,25 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_validates_two_factor_code(): void
     {
-        Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30));
+        $this->travelTo($now = Date::create(2020, 01, 01, 18, 30));
 
         $code = $this->user->makeTwoFactorCode();
 
-        $this->assertTrue($this->user->validateTwoFactorCode($code));
+        static::assertTrue($this->user->validateTwoFactorCode($code));
     }
 
     public function test_validates_two_factor_code_with_recovery_code(): void
     {
-        Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30));
+        $this->travelTo($now = Date::create(2020, 01, 01, 18, 30));
 
         $recovery_code = $this->user->getRecoveryCodes()->random()['code'];
 
         $code = $this->user->makeTwoFactorCode();
 
-        $this->assertTrue($this->user->validateTwoFactorCode($code));
+        static::assertTrue($this->user->validateTwoFactorCode($code));
 
-        $this->assertTrue($this->user->validateTwoFactorCode($recovery_code));
-        $this->assertFalse($this->user->validateTwoFactorCode($recovery_code));
+        static::assertTrue($this->user->validateTwoFactorCode($recovery_code));
+        static::assertFalse($this->user->validateTwoFactorCode($recovery_code));
     }
 
     public function test_doesnt_validates_two_factor_code_with_recovery_code_when_excluded(): void
@@ -309,18 +308,18 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_doesnt_validates_if_two_factor_auth_is_disabled(): void
     {
-        Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30));
+        $this->travelTo($now = Date::create(2020, 01, 01, 18, 30));
 
         $recovery_code = $this->user->getRecoveryCodes()->random()['code'];
 
         $code = $this->user->makeTwoFactorCode();
 
-        $this->assertTrue($this->user->validateTwoFactorCode($code));
+        static::assertTrue($this->user->validateTwoFactorCode($code));
 
         $this->user->disableTwoFactorAuth();
 
-        $this->assertFalse($this->user->validateTwoFactorCode($code));
-        $this->assertFalse($this->user->validateTwoFactorCode($recovery_code));
+        static::assertFalse($this->user->validateTwoFactorCode($code));
+        static::assertFalse($this->user->validateTwoFactorCode($recovery_code));
     }
 
     public function test_fires_recovery_codes_depleted(): void
@@ -328,11 +327,11 @@ class TwoFactorAuthenticationTest extends TestCase
         $event = Event::fake();
 
         foreach ($this->user->getRecoveryCodes() as $item) {
-            $this->assertTrue($this->user->validateTwoFactorCode($item['code']));
+            static::assertTrue($this->user->validateTwoFactorCode($item['code']));
         }
 
         foreach ($this->user->getRecoveryCodes() as $item) {
-            $this->assertFalse($this->user->validateTwoFactorCode($item['code']));
+            static::assertFalse($this->user->validateTwoFactorCode($item['code']));
         }
 
         $event->assertDispatchedTimes(TwoFactorRecoveryCodesDepleted::class, 1);
@@ -343,24 +342,24 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_safe_device(): void
     {
-        Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30));
+        $this->travelTo($now = Date::create(2020, 01, 01, 18, 30));
 
         $request = Request::create('/', 'GET', [], [], [], [
             'REMOTE_ADDR' => $ip = $this->faker->ipv4,
         ]);
 
-        $this->assertEmpty($this->user->safeDevices());
+        static::assertEmpty($this->user->safeDevices());
 
         $this->user->addSafeDevice($request);
 
-        $this->assertCount(1, $this->user->safeDevices());
-        $this->assertEquals($ip, $this->user->safeDevices()->first()['ip']);
-        $this->assertEquals(1577903400, $this->user->safeDevices()->first()['added_at']);
+        static::assertCount(1, $this->user->safeDevices());
+        static::assertEquals($ip, $this->user->safeDevices()->first()['ip']);
+        static::assertEquals(1577903400, $this->user->safeDevices()->first()['added_at']);
     }
 
     public function test_oldest_safe_device_discarded_when_adding_maximum(): void
     {
-        Date::setTestNow(Date::create(2020, 01, 01, 18));
+        $this->travelTo(Date::create(2020, 01, 01, 18));
 
         $this->user->addSafeDevice(
             Request::create('/', 'GET', [], [], [], [
@@ -368,12 +367,12 @@ class TwoFactorAuthenticationTest extends TestCase
             ])
         );
 
-        $this->assertTrue($this->user->safeDevices()->contains('ip', $old_request_ip));
+        static::assertTrue($this->user->safeDevices()->contains('ip', $old_request_ip));
 
         $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices');
 
         for ($i = 0; $i <= $max_devices; $i++) {
-            Date::setTestNow(Date::create(2020, 01, 01, 18, 30, $i));
+            $this->travelTo(Date::create(2020, 01, 01, 18, 30, $i));
 
             $this->user->addSafeDevice(
                 Request::create('/', 'GET', [], [], [], [
@@ -382,9 +381,9 @@ class TwoFactorAuthenticationTest extends TestCase
             );
         }
 
-        $this->assertCount(3, $this->user->safeDevices());
+        static::assertCount(3, $this->user->safeDevices());
 
-        $this->assertFalse($this->user->safeDevices()->contains('ip', $old_request_ip));
+        static::assertFalse($this->user->safeDevices()->contains('ip', $old_request_ip));
     }
 
     public function test_flushes_safe_devices(): void
@@ -392,7 +391,7 @@ class TwoFactorAuthenticationTest extends TestCase
         $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices') + 4;
 
         for ($i = 0; $i < $max_devices; $i++) {
-            Date::setTestNow(Date::create(2020, 01, 01, 18, 30, $i));
+            $this->travelTo(Date::create(2020, 01, 01, 18, 30, $i));
 
             $this->user->addSafeDevice(
                 Request::create('/', 'GET', [], [], [], [
@@ -401,11 +400,11 @@ class TwoFactorAuthenticationTest extends TestCase
             );
         }
 
-        $this->assertCount(3, $this->user->safeDevices());
+        static::assertCount(3, $this->user->safeDevices());
 
         $this->user->flushSafeDevices();
 
-        $this->assertEmpty($this->user->safeDevices());
+        static::assertEmpty($this->user->safeDevices());
     }
 
     public function test_is_safe_device_and_safe_with_other_ip(): void
@@ -413,7 +412,7 @@ class TwoFactorAuthenticationTest extends TestCase
         $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices');
 
         for ($i = 0; $i < $max_devices; $i++) {
-            Date::setTestNow(Date::create(2020, 01, 01, 18, 30, $i));
+            $this->travelTo(Date::create(2020, 01, 01, 18, 30, $i));
 
             $this->user->addSafeDevice(
                 Request::create('/', 'GET', [], [], [], [
@@ -428,8 +427,8 @@ class TwoFactorAuthenticationTest extends TestCase
             'REMOTE_ADDR' => $this->faker->ipv4,
         ]);
 
-        $this->assertTrue($this->user->isSafeDevice($request));
-        $this->assertFalse($this->user->isNotSafeDevice($request));
+        static::assertTrue($this->user->isSafeDevice($request));
+        static::assertFalse($this->user->isNotSafeDevice($request));
     }
 
     public function test_not_safe_device_if_remember_code_doesnt_match(): void
@@ -437,7 +436,7 @@ class TwoFactorAuthenticationTest extends TestCase
         $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices');
 
         for ($i = 0; $i < $max_devices; $i++) {
-            Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30, $i));
+            $this->travelTo($now = Date::create(2020, 01, 01, 18, 30, $i));
 
             $this->user->addSafeDevice(
                 Request::create('/', 'GET', [], [], [], [
@@ -452,15 +451,15 @@ class TwoFactorAuthenticationTest extends TestCase
             'REMOTE_ADDR' => $ip,
         ]);
 
-        $this->assertFalse($this->user->isSafeDevice($request));
-        $this->assertTrue($this->user->isNotSafeDevice($request));
+        static::assertFalse($this->user->isSafeDevice($request));
+        static::assertTrue($this->user->isNotSafeDevice($request));
     }
 
     public function test_not_safe_device_if_expired(): void
     {
         $max_devices = $this->app->make('config')->get('two-factor.safe_devices.max_devices');
 
-        Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30));
+        $this->travelTo($now = Date::create(2020, 01, 01, 18, 30));
 
         for ($i = 0; $i < $max_devices; $i++) {
             $this->user->addSafeDevice(
@@ -476,35 +475,35 @@ class TwoFactorAuthenticationTest extends TestCase
             'REMOTE_ADDR' => $this->faker->ipv4,
         ]);
 
-        $this->assertTrue($this->user->isSafeDevice($request));
-        $this->assertFalse($this->user->isNotSafeDevice($request));
+        static::assertTrue($this->user->isSafeDevice($request));
+        static::assertFalse($this->user->isNotSafeDevice($request));
 
-        Date::setTestNow($now->clone()->addDays($this->app->make('config')->get('two-factor.safe_devices.expiration_days'))->subSecond());
+        $this->travelTo($now->clone()->addDays($this->app->make('config')->get('two-factor.safe_devices.expiration_days'))->subSecond());
 
-        $this->assertTrue($this->user->isSafeDevice($request));
-        $this->assertFalse($this->user->isNotSafeDevice($request));
+        static::assertTrue($this->user->isSafeDevice($request));
+        static::assertFalse($this->user->isNotSafeDevice($request));
 
-        Date::setTestNow($now->clone()->addDays($this->app->make('config')->get('two-factor.safe_devices.expiration_days'))->addSecond());
+        $this->travelTo($now->clone()->addDays($this->app->make('config')->get('two-factor.safe_devices.expiration_days'))->addSecond());
 
-        $this->assertTrue($this->user->isNotSafeDevice($request));
-        $this->assertFalse($this->user->isSafeDevice($request));
+        static::assertTrue($this->user->isNotSafeDevice($request));
+        static::assertFalse($this->user->isSafeDevice($request));
     }
 
     public function test_unique_code_works_only_one_time(): void
     {
-        Date::setTestNow(Date::create(2020, 01, 01, 18, 30, 0));
+        $this->travelTo(Date::create(2020, 01, 01, 18, 30, 0));
 
         $code = $this->user->makeTwoFactorCode();
 
-        $this->assertTrue($this->user->validateTwoFactorCode($code));
-        $this->assertFalse($this->user->validateTwoFactorCode($code));
+        static::assertTrue($this->user->validateTwoFactorCode($code));
+        static::assertFalse($this->user->validateTwoFactorCode($code));
 
-        Date::setTestNow(Date::create(2020, 01, 01, 18, 30, 59));
+        $this->travelTo(Date::create(2020, 01, 01, 18, 30, 59));
 
         $new_code = $this->user->makeTwoFactorCode();
 
-        $this->assertTrue($this->user->validateTwoFactorCode($new_code));
-        $this->assertFalse($this->user->validateTwoFactorCode($code));
+        static::assertTrue($this->user->validateTwoFactorCode($new_code));
+        static::assertFalse($this->user->validateTwoFactorCode($code));
     }
 
     public function test_unique_code_works_only_one_time_with_extended_window(): void
@@ -512,30 +511,30 @@ class TwoFactorAuthenticationTest extends TestCase
         $this->user->twoFactorAuth->window = 5;
         $this->user->twoFactorAuth->save();
 
-        Date::setTestNow(Date::create(2020, 01, 01, 18, 30, 0));
+        $this->travelTo(Date::create(2020, 01, 01, 18, 30, 0));
 
         $old = $this->user->makeTwoFactorCode();
 
-        $this->assertTrue($this->user->validateTwoFactorCode($old));
-        $this->assertFalse($this->user->validateTwoFactorCode($old));
+        static::assertTrue($this->user->validateTwoFactorCode($old));
+        static::assertFalse($this->user->validateTwoFactorCode($old));
 
-        Date::setTestNow(Date::create(2020, 01, 01, 18, 32, 29));
+        $this->travelTo(Date::create(2020, 01, 01, 18, 32, 29));
 
         $new = $this->user->makeTwoFactorCode();
 
-        $this->assertTrue($this->user->validateTwoFactorCode($new));
-        $this->assertFalse($this->user->validateTwoFactorCode($new));
+        static::assertTrue($this->user->validateTwoFactorCode($new));
+        static::assertFalse($this->user->validateTwoFactorCode($new));
     }
 
     public function test_unique_code_works_only_one_time_in_extended_time(): void
     {
-        Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30, 20));
+        $this->travelTo(Date::create(2020, 01, 01, 18, 30, 20));
 
         $code = $this->user->makeTwoFactorCode();
 
-        Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30, 59));
+        $this->travelTo(Date::create(2020, 01, 01, 18, 30, 59));
 
-        $this->assertTrue($this->user->validateTwoFactorCode($code));
-        $this->assertFalse($this->user->validateTwoFactorCode($code));
+        static::assertTrue($this->user->validateTwoFactorCode($code));
+        static::assertFalse($this->user->validateTwoFactorCode($code));
     }
 }

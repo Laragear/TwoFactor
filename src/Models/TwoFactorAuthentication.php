@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Laragear\MetaModel\CustomizableModel;
 use Laragear\TwoFactor\Contracts\TwoFactorTotp;
+use Laragear\TwoFactor\Migrations\TwoFactorAuthenticationMigration;
 use ParagonIE\ConstantTime\Base32;
 use function array_merge;
 use function config;
@@ -43,20 +45,7 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     use Concerns\HandlesSafeDevices;
     use Concerns\SerializesSharedSecret;
     use HasFactory;
-
-    /**
-     * The default table name to use.
-     *
-     * @var string
-     */
-    public const DEFAULT_TABLE_NAME = 'two_factor_authentications';
-
-    /**
-     * The table name to use.
-     *
-     * @var string
-     */
-    public static string $useTable = self::DEFAULT_TABLE_NAME;
+    use CustomizableModel;
 
     /**
      * The attributes that should be cast to native types.
@@ -82,9 +71,15 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     protected $fillable = ['digits', 'seconds', 'window', 'algorithm'];
 
     /**
+     * @inheritDoc
+     */
+    protected static function newFactory(): Factory
+    {
+        return new TwoFactorAuthenticationFactory();
+    }
+
+    /**
      * The model that uses Two-Factor Authentication.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function authenticatable(): MorphTo
     {
@@ -92,34 +87,15 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     }
 
     /**
-     * Get the table associated with the model.
-     *
-     * @return string
-     */
-    public function getTable(): string
-    {
-        if (!$this->table) {
-            $this->table = static::$useTable;
-        }
-
-        return parent::getTable();
-    }
-
-    /**
      * Sets the Algorithm to lowercase.
-     *
-     * @param  $value
-     * @return void
      */
-    protected function setAlgorithmAttribute($value): void
+    protected function setAlgorithmAttribute(string $value): void
     {
         $this->attributes['algorithm'] = strtolower($value);
     }
 
     /**
      * Returns if the Two-Factor Authentication has been enabled.
-     *
-     * @return bool
      */
     public function isEnabled(): bool
     {
@@ -127,9 +103,7 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     }
 
     /**
-     * Returns if the Two-Factor Authentication is not been enabled.
-     *
-     * @return bool
+     * Returns if the Two-Factor Authentication is not enabled.
      */
     public function isDisabled(): bool
     {
@@ -157,8 +131,6 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
 
     /**
      * Creates a new Random Secret.
-     *
-     * @return string
      */
     public static function generateRandomSecret(): string
     {
@@ -168,21 +140,20 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     }
 
     /**
-     * @inheritDoc
-     */
-    protected static function newFactory(): Factory
-    {
-        return new TwoFactorAuthenticationFactory();
-    }
-
-    /**
      * Convert the model instance to JSON.
      *
      * @param  int  $options
-     * @return string
      */
     public function toJson($options = 0): string
     {
         return json_encode($this->toUri(), $options);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected static function migrationClass(): string
+    {
+        return TwoFactorAuthenticationMigration::class;
     }
 }

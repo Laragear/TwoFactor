@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,12 +12,10 @@ use Laragear\TwoFactor\TwoFactor;
 use Mockery;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
-
 use function now;
 
 class TwoFactorTest extends TestCase
 {
-    use RefreshDatabase;
     use CreatesTwoFactorUser;
     use RegistersLoginRoute;
     use WithFaker;
@@ -235,6 +232,10 @@ class TwoFactorTest extends TestCase
 
         static::assertTrue(Auth::attemptWhen($credentials, TwoFactor::hasCode()));
         static::assertCount(1, $this->user->fresh()->safeDevices());
+
+        $this->assertAuthenticatedAs($this->user);
+
+        static::assertFalse($this->app->make('auth')->user()->wasTwoFactorBypassedBySafeDevice());
     }
 
     public function test_doesnt_adds_safe_device_when_input_not_filled(): void
@@ -257,7 +258,7 @@ class TwoFactorTest extends TestCase
         static::assertEmpty($this->user->fresh()->safeDevices());
     }
 
-    public function test_doesnt_bypasses_totp_if_safe_devices(): void
+    public function test_bypasses_totp_if_safe_devices(): void
     {
         $this->app->make('config')->set('two-factor.safe_devices.enabled', true);
 
@@ -273,5 +274,9 @@ class TwoFactorTest extends TestCase
         $request->cookies->set('_2fa_remember', $token);
 
         static::assertTrue(Auth::attemptWhen($credentials, TwoFactor::hasCode()));
+
+        $this->assertAuthenticatedAs($this->user);
+
+        static::assertTrue($this->app->make('auth')->user()->wasTwoFactorBypassedBySafeDevice());
     }
 }

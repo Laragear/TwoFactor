@@ -8,7 +8,6 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\Request;
 use Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
-
 use function app;
 use function trans;
 use function validator;
@@ -16,29 +15,41 @@ use function validator;
 class TwoFactor
 {
     /**
+     * Creates a new Laraguard instance.
+     */
+    public function __construct(
+        protected Repository $config,
+        protected Request $request,
+        protected string $input,
+        protected string $safeDeviceInput,
+    ) {
+        //
+    }
+
+    /**
      * Check if the user uses TOTP and has a valid code when login in.
      *
-     * @param  string  $input
-     * @return \Closure
+     * @return \Closure(\Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable):bool
      */
-    public static function hasCode(string $input = '2fa_code'): Closure
+    public static function hasCode(string $input = '2fa_code', string $safeDeviceInput = 'safe_device'): Closure
     {
-        return static function ($user) use ($input): bool {
-            return app(__CLASS__, ['input' => $input])->validate($user);
+        return static function ($user) use ($input, $safeDeviceInput): bool {
+            return app(__CLASS__, ['input' => $input, 'safeDeviceInput' => $safeDeviceInput])->validate($user);
         };
     }
 
     /**
      * Check if the user uses TOTP and has a valid code when login in.
      *
-     * @param  string  $input
-     * @param  string|null  $message
-     * @return \Closure
+     * @return \Closure(\Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable):bool
      */
-    public static function hasCodeOrFails(string $input = '2fa_code', string $message = null): Closure
-    {
-        return static function ($user) use ($input, $message): bool {
-            return app(__CLASS__, ['input' => $input])->validate($user)
+    public static function hasCodeOrFails(
+        string $input = '2fa_code',
+        string $message = null,
+        string $safeDeviceInput = 'safe_device'
+    ): Closure {
+        return static function ($user) use ($input, $message, $safeDeviceInput): bool {
+            return app(__CLASS__, ['input' => $input, 'safeDeviceInput' => $safeDeviceInput])->validate($user)
                 ?: throw InvalidCodeException::withMessages([
                     $input => $message ?? trans('two-factor::validation.totp_code'),
                 ]);
@@ -46,38 +57,25 @@ class TwoFactor
     }
 
     /**
-     * Creates a new Laraguard instance.
-     *
-     * @param  \Illuminate\Contracts\Config\Repository  $config
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $input
-     */
-    public function __construct(protected Repository $config, protected Request $request, protected string $input)
-    {
-        //
-    }
-
-    /**
      * Check if the user uses TOTP and has a valid code.
      *
      * If the user does not use TOTP, no checks will be done.
-     *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
-     * @return bool
      */
     public function validate(Authenticatable $user): bool
     {
         // If the user does not use 2FA or is not enabled, don't check.
-        if (! $user instanceof TwoFactorAuthenticatable || ! $user->hasTwoFactorEnabled()) {
+        if (!$user instanceof TwoFactorAuthenticatable || !$user->hasTwoFactorEnabled()) {
             return true;
         }
 
         // If safe devices are enabled, and this is a safe device, bypass.
         if ($this->isSafeDevicesEnabled() && $user->isSafeDevice($this->request)) {
+            $user->setTwoFactorBypassedBySafeDevice(true);
+
             return true;
         }
 
-        // If the code is valid, return true after it tries to save the device.
+        // If the code is valid, return true only after we try to save the safe device.
         if ($this->requestHasCode() && $user->validateTwoFactorCode($this->getCode())) {
             if ($this->isSafeDevicesEnabled() && $this->wantsToAddDevice()) {
                 $user->addSafeDevice($this->request);
@@ -91,8 +89,6 @@ class TwoFactor
 
     /**
      * Checks if the app config has Safe Devices enabled.
-     *
-     * @return bool
      */
     protected function isSafeDevicesEnabled(): bool
     {
@@ -101,20 +97,16 @@ class TwoFactor
 
     /**
      * Checks if the Request has a Two-Factor Code and is valid.
-     *
-     * @return bool
      */
     protected function requestHasCode(): bool
     {
-        return ! validator($this->request->only($this->input), [
+        return !validator($this->request->only($this->input), [
             $this->input => 'required|alpha_num',
         ])->fails();
     }
 
     /**
      * Returns the code from the request input.
-     *
-     * @return string
      */
     protected function getCode(): string
     {
@@ -123,11 +115,9 @@ class TwoFactor
 
     /**
      * Checks if the user wants to add this device as "safe".
-     *
-     * @return bool
      */
     protected function wantsToAddDevice(): bool
     {
-        return $this->request->filled('safe_device');
+        return $this->request->filled($this->safeDeviceInput);
     }
 }

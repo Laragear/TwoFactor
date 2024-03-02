@@ -2,14 +2,12 @@
 
 namespace Tests\Http\Middleware;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\CreatesTwoFactorUser;
 use Tests\Stubs\UserStub;
 use Tests\TestCase;
 
 class RequireTwoFactorEnabledTest extends TestCase
 {
-    use RefreshDatabase;
     use CreatesTwoFactorUser;
 
     protected function setUp(): void

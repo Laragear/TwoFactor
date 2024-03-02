@@ -21,22 +21,16 @@ trait HandlesCodes
 {
     /**
      * Current instance of the Cache Repository.
-     *
-     * @var \Illuminate\Contracts\Cache\Repository
      */
     protected Repository $cache;
 
     /**
      * String to prefix the Cache key.
-     *
-     * @var string
      */
     protected string $prefix;
 
     /**
      * Initializes the current trait.
-     *
-     * @throws \Exception
      */
     protected function initializeHandlesCodes(): void
     {
@@ -47,11 +41,6 @@ trait HandlesCodes
 
     /**
      * Returns the Cache Store to use.
-     *
-     * @param  string|null  $store
-     * @return \Illuminate\Contracts\Cache\Repository
-     *
-     * @throws \Exception
      */
     protected function useCacheStore(string $store = null): Repository
     {
@@ -60,11 +49,6 @@ trait HandlesCodes
 
     /**
      * Validates a given code, optionally for a given timestamp and future window.
-     *
-     * @param  string  $code
-     * @param  \DateTimeInterface|int|string  $at
-     * @param  int|null  $window
-     * @return bool
      */
     public function validateCode(string $code, DateTimeInterface|int|string $at = 'now', int $window = null): bool
     {
@@ -87,10 +71,6 @@ trait HandlesCodes
 
     /**
      * Creates a Code for a given timestamp, optionally by a given period offset.
-     *
-     * @param  \DateTimeInterface|int|string  $at
-     * @param  int  $offset
-     * @return string
      */
     public function makeCode(DateTimeInterface|int|string $at = 'now', int $offset = 0): string
     {
@@ -101,9 +81,6 @@ trait HandlesCodes
 
     /**
      * Generates a valid Code for a given timestamp.
-     *
-     * @param  int  $timestamp
-     * @return string
      */
     protected function generateCode(int $timestamp): string
     {
@@ -128,9 +105,6 @@ trait HandlesCodes
 
     /**
      * Return the periods elapsed from the given Timestamp and seconds.
-     *
-     * @param  int  $timestamp
-     * @return int
      */
     protected function getPeriodsFromTimestamp(int $timestamp): int
     {
@@ -139,9 +113,6 @@ trait HandlesCodes
 
     /**
      * Creates a 64-bit raw binary string from a timestamp.
-     *
-     * @param  int  $timestamp
-     * @return string
      */
     protected function timestampToBinary(int $timestamp): string
     {
@@ -150,8 +121,6 @@ trait HandlesCodes
 
     /**
      * Returns the Shared Secret as a raw binary string.
-     *
-     * @return string
      */
     protected function getBinarySecret(): string
     {
@@ -160,10 +129,6 @@ trait HandlesCodes
 
     /**
      * Get the timestamp from a given elapsed "periods" of seconds.
-     *
-     * @param  \DateTimeInterface|int|string|null  $at
-     * @param  int  $period
-     * @return int
      */
     protected function getTimestampFromPeriod(DatetimeInterface|int|string|null $at, int $period): int
     {
@@ -174,9 +139,6 @@ trait HandlesCodes
 
     /**
      * Normalizes the Timestamp from a string, integer or object.
-     *
-     * @param  \DateTimeInterface|int|string  $at
-     * @return int
      */
     protected function parseTimestamp(DatetimeInterface|int|string $at): int
     {
@@ -185,9 +147,6 @@ trait HandlesCodes
 
     /**
      * Returns the cache key string to save the codes into the cache.
-     *
-     * @param  string  $code
-     * @return string
      */
     protected function cacheKey(string $code): string
     {
@@ -196,9 +155,6 @@ trait HandlesCodes
 
     /**
      * Checks if the code has been used.
-     *
-     * @param  string  $code
-     * @return bool
      */
     protected function codeHasBeenUsed(string $code): bool
     {
@@ -207,10 +163,6 @@ trait HandlesCodes
 
     /**
      * Sets the Code has used, so it can't be used again.
-     *
-     * @param  string  $code
-     * @param  \DateTimeInterface|int|string  $at
-     * @return void
      */
     protected function setCodeAsUsed(string $code, DateTimeInterface|int|string $at = 'now'): void
     {

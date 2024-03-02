@@ -4,7 +4,7 @@
 [![Codecov coverage](https://codecov.io/gh/Laragear/TwoFactor/branch/1.x/graph/badge.svg?token=BJMBVZNPM8)](https://codecov.io/gh/Laragear/TwoFactor)
 [![Maintainability](https://api.codeclimate.com/v1/badges/64241e25adb0f55d7ba1/maintainability)](https://codeclimate.com/github/Laragear/TwoFactor/maintainability)
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_TwoFactor&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_TwoFactor)
-[![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/10.x/octane#introduction)
+[![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/11.x/octane#introduction)
 
 On-premises Two-Factor Authentication for all your users out of the box.
 
@@ -26,7 +26,9 @@ public function login(Request $request)
 
 This package enables TOTP authentication using 6 digits codes. No need for external APIs.
 
-> Want to authenticate users with fingerprints, patterns or biometric data? Check out [Laragear WebAuthn](https://github.com/Laragear/WebAuthn).
+> [!TIP]
+>
+> Want to authenticate users with Passkeys? Check out [Laragear WebAuthn](https://github.com/Laragear/WebAuthn).
 
 ## Become a sponsor
 
@@ -36,8 +38,7 @@ Your support allows me to keep this package free, up-to-date and maintainable. A
 
 ## Requirements
 
-* PHP 8 or later
-* Laravel 9, 10 or later
+* Laravel 10 or later
 
 ## Installation
 
@@ -49,26 +50,29 @@ That's it.
 
 ### How this works
 
-This package adds a **Contract** to detect if, after the credentials are deemed valid, should use Two-Factor Authentication as a second layer of authentication.
+This package adds a **Contract** to detect if a user, after the credentials are deemed valid, should use Two-Factor Authentication as a second layer of authentication.
 
-It includes a custom **view** and a **callback** to handle the Two-Factor authentication itself during login attempts.
+It includes a custom **view** and a **helper** to handle the Two-Factor authentication itself during login attempts.
 
 Works without middleware or new guards, but you can go full manual if you want.
 
 ## Set up
 
-1. First, publish the migration, translations, views and config into your application, and use `migrate` to create the table that handles the Two-Factor Authentication information for each model you want to attach to 2FA.
+1. First, install the migration, translations, views and config into your application, with the `two-factor:install` Artisan command.
 
 ```shell
-php artisan vendor:publish --provider="Laragear\TwoFactor\TwoFactorServiceProvider"
-php artisan migrate
+php artisan two-factor:install
 ```
-
-Alternatively, you can use `--tag="migrations"` to only publish the migration files.
 
 > [!TIP]
 >
-> Remember that you can edit the migration by adding new columns before migrating, and also the [table name]()
+> You can [edit the migration](MIGRATIONS.md) by adding new columns before migrating, and also change the [table name](MIGRATIONS.md#custom-table-name).
+
+After that, you may migrate your table like always through the Artisan command.
+
+```shell
+php artisan migrate
+```
 
 2. Add the `TwoFactorAuthenticatable` _contract_ and the `TwoFactorAuthentication` trait to the User model, or any other model you want to make Two-Factor Authentication available. 
 
@@ -89,6 +93,8 @@ class User extends Authenticatable implements TwoFactorAuthenticatable
 }
 ```
 
+> [!TIP]
+>
 > The contract is used to identify the model using Two-Factor Authentication, while the trait conveniently implements the methods required to handle it.
 
 That's it. You're now ready to use 2FA in your application.
@@ -97,7 +103,9 @@ That's it. You're now ready to use 2FA in your application.
 
 To enable Two-Factor Authentication for the User, he must sync the Shared Secret between its Authenticator app and the application. 
 
-> Some free Authenticator Apps are [iOS Authenticator](https://www.apple.com/ios/ios-15-preview/features), [FreeOTP](https://freeotp.github.io/), [Authy](https://authy.com/), [andOTP](https://github.com/andOTP/andOTP), [Google](https://apps.apple.com/app/google-authenticator/id388497605) [Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en), and [Microsoft Authenticator](https://www.microsoft.com/en-us/account/authenticator), to name a few.
+> [!TIP]
+>
+> Free Authenticator Apps, in no particular order, are [iOS Authenticator](https://www.apple.com/ios/), [FreeOTP](https://freeotp.github.io/), [Authy](https://authy.com/), [2FAS](https://2fas.com/), [2Stable Authenticator](https://authenticator.2stable.com/), [Step-two](https://steptwo.app/), [BinaryRoot Authenticator](https://www.binaryboot.com/totp-authenticator), [Google](https://apps.apple.com/app/google-authenticator/id388497605) [Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en), and [Microsoft Authenticator](https://www.microsoft.com/en-us/account/authenticator), to name a few.
 
 To start, generate the needed data using the `createTwoFactorAuth()` method. This returns a serializable _Shared Secret_ that you can show to the User as a string or QR Code (encoded as SVG) in your view.
 
@@ -116,6 +124,8 @@ public function prepareTwoFactor(Request $request)
 }
 ```
 
+> [!TIP]
+> 
 > When you use `createTwoFactorAuth()` on someone with Two-Factor Authentication already enabled, the previous data becomes permanently invalid. This ensures a User **never** has two Shared Secrets enabled at any given time.
 
 Then, the User must confirm the Shared Secret with a Code generated by their Authenticator app. The `confirmTwoFactorAuth()` method will automatically enable it if the code is valid.
@@ -158,6 +168,8 @@ public function confirmTwoFactor(Request $request)
 
 You're free on how to show these codes to the User, but **ensure** you show them at least one time after a successfully enabling Two-Factor Authentication, and ask him to print them somewhere.
 
+> [!TIP]
+>
 > These Recovery Codes are handled automatically when the User sends it instead of a TOTP code. If it's a recovery code, the package will use and mark it as invalid, so it can't be used again.
 
 The User can generate a fresh batch of codes using `generateRecoveryCodes()`, which replaces the previous batch.
@@ -171,7 +183,9 @@ public function showRecoveryCodes(Request $request)
 }
 ```
 
-> If the User depletes his recovery codes without disabling Two-Factor Authentication, or Recovery Codes are deactivated, **he may be locked out forever without his Authenticator app**. Ensure you have countermeasures in these cases.
+> [!IMPORTANT]
+>
+> If the User depletes his recovery codes without disabling Two-Factor Authentication, or Recovery Codes are deactivated, **he may be locked out forever without his Authenticator app**. Ensure you have countermeasures in these cases, like recovery emails.
 
 #### Custom Recovery Codes
 
@@ -239,9 +253,23 @@ You can further customize how to handle the 2FA code authentication procedure wi
 | input($input)     | Sets the input where the TOTP code is in the request. Defaults to `2fa_code`.     |
 | sessionKey($key)  | The key used to flash the encrypted credentials. Defaults to `_2fa_login`.        |
 
+For example, we can change the message to show and the input to use from the login form.
+
+```php
+use Laragear\TwoFactor\Facades\Auth2FA;
+
+Auth2FA::message('You need 2FA set up to access this area')
+    ->redirect('/auth/2fa-required')
+    ->input('2fa-code')
+    ->attempt($request->only('email', 'password'), $request->filled('remember'));
+```
+
+
+> [!TIP]
+> 
 > * For [Laravel UI](https://github.com/laravel/ui), override the `attemptLogin()` method to replace the default guard attempt with `Auth2FA::attempt()` and `validateLogin` method to wrap in the `if ($request->isNotFilled('2fa_code'))` statement in your Login controller.
 > * For [Laravel Breeze](https://laravel.com/docs/starter-kits#laravel-breeze), you may need to extend the `LoginRequest::authenticate()` call.
-> * For [Laravel Fortify](https://laravel.com/docs/fortify) and [Jetstream](https://jetstream.laravel.com/), you may need to set a custom callback with the [`Fortify::authenticateUsing()`](https://laravel.com/docs/10.x/fortify#customizing-user-authentication) method.
+> * For [Laravel Fortify](https://laravel.com/docs/fortify) and [Jetstream](https://jetstream.laravel.com/), you may need to set a custom callback with the [`Fortify::authenticateUsing()`](https://laravel.com/docs/11.x/fortify#customizing-user-authentication) method.
 
 Alternatively, you may use `Auth::attemptWhen()` with TwoFactor helper methods, which returns a callback to check if the user needs a 2FA Code before proceeding using `TwoFactor::hasCode()`.
 
@@ -255,6 +283,23 @@ $attempt = Auth::attemptWhen(
 ```
 
 You can use the `hasCodeOrFails()` method that does the same, but throws a validation exception, which is handled gracefully by the framework. It even accepts a custom message in case of failure, otherwise a default [translation](#translations) line will be used.
+
+#### Determining Safe Device bypass
+
+When the user is under a [safe device](#safe-devices), which is determined by cookie, no 2FA code will be required to log in. To check if this was the case on the current request, use the `wasTwoFactorBypassedBySafeDevice()` method on the user.
+
+```php
+use Illuminate\Http\Request;
+
+public function changeServerSetting(Request $request)
+{
+    if ($request->user()->wasTwoFactorBypassedBySafeDevice()) {
+        // Do something ...
+    }
+    
+    // ...
+}
+```
 
 ### Deactivation
 
@@ -278,12 +323,16 @@ The following events are fired in addition to the default Authentication events.
 * `TwoFactorRecoveryCodesGenerated`: An User has generated a new set of Recovery Codes.
 * `TwoFactorDisabled`: An User has disabled Two-Factor Authentication.
 
+> [!TIP]
+>
 > You can use `TwoFactorRecoveryCodesDepleted` to tell the User to create more Recovery Codes or mail them some more.
 
 ## Middleware
 
 TwoFactor comes with two middleware for your routes: `2fa.enabled` and `2fa.confirm`.
 
+> [!IMPORTANT]
+>
 > To avoid unexpected results, middleware only act on your users models implementing the `TwoFactorAuthenticatable` contract. If a user model doesn't implement it, the middleware will bypass any 2FA logic.
 
 ### Require 2FA
@@ -342,6 +391,24 @@ Route::get('api/token', function () {
 })->middleware('2fa.require', '2fa.confirm');
 ```
 
+#### Force confirmation
+
+When user confirm with their TOTP code, the middleware will [remember the confirmation](#confirmation-middleware) for a set amount of time.
+
+You may _always_ force a confirmation, even if the user already confirmed, setting the first or second parameter as "force" or "true".
+
+```php
+use Illuminate\Support\Facades\Route;
+
+Route::get('api/token', function () {
+    // ...
+})->middleware('2fa.require', '2fa.confirm:force');
+
+Route::get('api/important-token', function () {
+    // ...
+})->middleware('2fa.require', '2fa.confirm:my-redirect-route-name,true');
+```
+
 ## Validation
 
 Sometimes you may want to manually trigger a TOTP validation in any part of your application for the authenticated user. You can validate a TOTP code for the authenticated user using the `topt` rule.
@@ -359,6 +426,8 @@ public function checkTotp(Request $request)
 
 This rule will succeed only if  the user is authenticated, it has Two-Factor Authentication enabled, and the code is correct or is a recovery code.
 
+> [!TIP]
+>
 > You can enforce the rule to NOT use recovery codes using `totp:code`.
 
 ## Translations
@@ -483,7 +552,9 @@ There is a limit of devices that can be saved, but usually three is enough (phon
 
 You can change the maximum number of devices saved and the amount of days of validity once they're registered. More devices and more expiration days will make the Two-Factor Authentication less secure.
 
-> When disabling Two-Factor Authentication, the list of devices is flushed.
+> [!TIP]
+>
+> When disabling Two-Factor Authentication, the list of safe devices is always flushed.
 
 ### Confirmation Middleware
 
@@ -554,6 +625,8 @@ This configuration values are always URL-encoded and passed down to the authenti
 
 These values are printed to each 2FA data record inside the application. Changes will only take effect for new activations.
 
+> [!WARNING]
+>
 > Do not edit these parameters if you plan to use publicly available Authenticator apps, since some of them **may not support non-standard configuration**, like more digits, different period of seconds or other algorithms.
 
 ### QR Code Configuration 
@@ -591,23 +664,71 @@ public function getTwoFactorUserIdentifier(): string
 
 The above will render `users.myapp.com:john@gmail.com` or `admin.myapp.com:John Doe`.
 
+## Migration
+
+This packages comes with a very hands-off approach for migrations. If you check the migration `...create_two_factor_authentications_table.php`, you will see something like this:
+
+```php
+use Illuminate\Database\Schema\Blueprint;
+use Laragear\TwoFactor\Migrations\TwoFactorAuthenticationMigration;
+
+return new class extends TwoFactorAuthenticationMigration
+{
+    /**
+     * Add additional columns to the table
+     */
+    public function addCustomColumns(Blueprint $table): void
+    {
+        // Here you can add custom columns to the Two Factor table.
+        //
+        // $table->string('alias')->nullable();
+    }
+};
+```
+
+The schema of the table is handled internally. The `addCustomColumns()` method gives you the opportunity to add more columns to the table.
+
+If you need to execute logic after creating the table, or before dropping it, use the `afterUp()` and `beforeDown()` methods, respectively.
+
+```php
+use Illuminate\Database\Schema\Blueprint;
+
+public function afterUp(Blueprint $table)
+{
+    $table->foreignId('authenticatable_id')->references('id')->on('users');
+}
+
+public function beforeDown(Blueprint $table)
+{
+    $table->dropForeign('authenticatable_id');
+}
+```
+
+### Morphs
+
+By default, the table uses the default id of the Query Builder, `Builder::$defaultMorphKeyType`. If you want to change the morph key type for only this table, you may set the `$morphsType` property of the migration to `uuid` or `ulid`.
+
+```php
+use Illuminate\Database\Schema\Blueprint;
+use Laragear\TwoFactor\Migrations\TwoFactorAuthenticationMigration;
+
+return new class extends TwoFactorAuthenticationMigration
+{
+    protected string $morphsType = 'ulid'
+};
+```
+
 ## Custom table name
 
-By default, the `TwoFactorAuthentication` model will use the `two_factor_authentications` table. If you want to change the table name for whatever reason, set the table using the `$useTable` static property. You should do this on the `boot()` method of your `AppServiceProvider`.
+By default, the `TwoFactorAuthentication` model will use the `two_factor_authentications` name for the table. If you want to change the name for whatever reason, set the table using the `$useTable` static property of the `TwoFactorAuthentication` model. You should do this on the `register()` method of your `AppServiceProvider`.
 
 ```php
 use Laragear\TwoFactor\Models\TwoFactorAuthentication;
 
-public function boot(): void
+public function register(): void
 {
     TwoFactorAuthentication::$useTable = 'my_custom_table';
 }
-```
-
-After that, you may migrate your table like always through the Artisan command. The migration will automatically pick up the table name change.
-
-```shell
-php artisan migrate
 ```
 
 ## Laravel Octane Compatibility
@@ -621,7 +742,9 @@ There should be no problems using this package with Laravel Octane.
 
 ## Security
 
-When using the [Login Helper](#logging-in), credentials are saved encrypted into the session. This can be undesirable for some applications. While this tool exists for convenience, you are welcome to create your own 2FA authentication flow.
+When using the [Login Helper](#logging-in), credentials are saved encrypted into the session. This can be undesirable for some applications. While this mechanism exists for convenience, you are welcome to create your own 2FA authentication flow with this package to avoid _flashing_ the credentials.
+
+One alternative is to use the `2fa.confirm` site-wide, and set the config key `two-factor.confirm.time` to `INF`.
 
 If you discover any security related issues, please email darkghosthunter@gmail.com instead of using the issue tracker.
 
@@ -629,4 +752,4 @@ If you discover any security related issues, please email darkghosthunter@gmail.
 
 This specific package version is licensed under the terms of the [MIT License](LICENSE.md), at time of publishing.
 
-[Laravel](https://laravel.com) is a Trademark of [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011-2023 Laravel LLC.
+[Laravel](https://laravel.com) is a Trademark of [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011-2024 Laravel LLC.
