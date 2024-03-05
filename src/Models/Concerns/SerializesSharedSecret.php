@@ -29,11 +29,11 @@ trait SerializesSharedSecret
                 ?: config('app.name')
                 ?: throw new InvalidArgumentException('The TOTP issuer cannot be empty.');
         $query = http_build_query([
-            'issuer'    => $issuer,
-            'label'     => $this->attributes['label'],
-            'secret'    => $this->shared_secret,
+            'issuer' => $issuer,
+            'label' => $this->attributes['label'],
+            'secret' => $this->shared_secret,
             'algorithm' => strtoupper($this->attributes['algorithm']),
-            'digits'     => $this->attributes['digits'],
+            'digits' => $this->attributes['digits'],
         ], '', '&', PHP_QUERY_RFC3986);
 
         return 'otpauth://totp/'.rawurlencode($issuer).'%3A'.$this->attributes['label']."?$query";

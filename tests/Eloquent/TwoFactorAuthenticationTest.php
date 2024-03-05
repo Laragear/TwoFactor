@@ -22,8 +22,8 @@ class TwoFactorAuthenticationTest extends TestCase
     public function test_returns_authenticatable(): void
     {
         $user = UserTwoFactorStub::create([
-            'name'     => 'foo',
-            'email'    => 'foo@test.com',
+            'name' => 'foo',
+            'email' => 'foo@test.com',
             'password' => UserStub::PASSWORD_SECRET,
         ]);
 
@@ -65,7 +65,7 @@ class TwoFactorAuthenticationTest extends TestCase
             ->withRecovery()->withSafeDevices()
             ->create([
                 'authenticatable_type' => 'test',
-                'authenticatable_id'   => 9,
+                'authenticatable_id' => 9,
             ]);
 
         static::assertNotNull($old = $tfa->shared_secret);
@@ -142,7 +142,7 @@ class TwoFactorAuthenticationTest extends TestCase
     {
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
             'shared_secret' => static::SECRET,
-            'window'        => 0,
+            'window' => 0,
         ]);
 
         $this->travelTo(Date::create(2020, 1, 1, 20, 30, 0));
@@ -161,7 +161,7 @@ class TwoFactorAuthenticationTest extends TestCase
     {
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
             'shared_secret' => static::SECRET,
-            'window'        => 1,
+            'window' => 1,
         ]);
 
         $this->travelTo(Date::create(2020, 1, 1, 20, 30, 0));
@@ -201,7 +201,7 @@ class TwoFactorAuthenticationTest extends TestCase
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
             'recovery_codes' => collect([
                 [
-                    'code'    => '2G5oP36',
+                    'code' => '2G5oP36',
                     'used_at' => 'anything not null',
                 ],
             ]),
@@ -252,10 +252,10 @@ class TwoFactorAuthenticationTest extends TestCase
         $this->app->make('config')->set('two-factor.issuer', 'quz');
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label'         => 'test@foo.com',
+            'label' => 'test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         $uri = 'otpauth://totp/quz%3Atest@foo.com?issuer=quz&label=test%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14';
@@ -268,10 +268,10 @@ class TwoFactorAuthenticationTest extends TestCase
         $this->app->make('config')->set('two-factor.issuer', 'quz');
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label'         => 'test@foo.com',
+            'label' => 'test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         static::assertStringEqualsFile(__DIR__.'/../Stubs/QrStub.svg', $tfa->toQr());
@@ -289,10 +289,10 @@ class TwoFactorAuthenticationTest extends TestCase
         ]);
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label'         => 'test@foo.com',
+            'label' => 'test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         static::assertStringEqualsFile(__DIR__.'/../Stubs/CustomQrStub.svg', $tfa->toQr());
@@ -304,10 +304,10 @@ class TwoFactorAuthenticationTest extends TestCase
         $this->app->make('config')->set('two-factor.issuer', 'quz');
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label'         => 'test@foo.com',
+            'label' => 'test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         $uri = '"otpauth:\/\/totp\/quz%3Atest@foo.com?issuer=quz&label=test%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14"';
@@ -319,10 +319,10 @@ class TwoFactorAuthenticationTest extends TestCase
     public function test_uses_app_name_as_issuer(): void
     {
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label'         => 'test@foo.com',
+            'label' => 'test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         $uri = 'otpauth://totp/Laravel%3Atest@foo.com?issuer=Laravel&label=test%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14';
@@ -335,10 +335,10 @@ class TwoFactorAuthenticationTest extends TestCase
         $this->app->make('config')->set('two-factor.issuer', 'foo bar');
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label'         => 'test@foo.com',
+            'label' => 'test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         $uri = 'otpauth://totp/foo%20bar%3Atest@foo.com?issuer=foo%20bar&label=test%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14';
@@ -352,10 +352,10 @@ class TwoFactorAuthenticationTest extends TestCase
         $this->app->make('config')->set('two-factor.issuer', '');
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label'         => 'test@foo.com',
+            'label' => 'test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         $this->expectException(InvalidArgumentException::class);
