@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
-
 use function collect;
 use function config;
 use function cookie;
@@ -99,18 +98,26 @@ trait TwoFactorAuthentication
     }
 
     /**
+     * Returns the user identifier to use as part of the Two Factor credential label.
+     *
+     * @return string
+     */
+    protected function getTwoFactorUserIdentifier(): string
+    {
+        return $this->getAttribute('email');
+    }
+
+    /**
      * Returns the label for TOTP URI.
      *
      * @return string
      */
     protected function twoFactorLabel(): string
     {
-        // If the developer has set acustom label for the app, use that. When not,
-        // we will fallback to the issuer name. We will use that string to append
-        // it to the user email so the authenticator shows the TOTP origin name.
-        $issuer = config('two-factor.label') ?? config('two-factor.issuer');
+        // Use the OTP issuer config, or back down to the application name.
+        $issuer = config('two-factor.issuer') ?: config('app.name');
 
-        return $issuer.':'.$this->getAttribute('email');
+        return $issuer.':'.$this->getTwoFactorUserIdentifier();
     }
 
     /**

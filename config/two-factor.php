@@ -22,9 +22,9 @@ return [
     | Recovery Codes
     |--------------------------------------------------------------------------
     |
-    | This option controls the recovery codes generation. By default is enabled
-    | so users have a way to authenticate without a code generator. The length
-    | of the codes, as their quantity, can be configured to tighten security.
+    | This controls the Recovery Codes generation. Since is enabled by default,
+    | users can always authenticate without their code generator. The length
+    | and quantity of the codes can be configured to keep security tight.
     |
     */
 
@@ -100,6 +100,8 @@ return [
     | RFC 4226. This makes it compatible with most 2FA apps. You can change it
     | freely but consider the standard allows shared secrets down to 128-bit.
     |
+    | @see https://www.rfc-editor.org/rfc/rfc4226#section-4
+    |
     */
 
     'secret_length' => 20,
@@ -112,6 +114,8 @@ return [
     | While this package uses recommended RFC 4226 and RDC 6238 settings, you
     | can further configure how TOTP should work. These settings are saved
     | for each 2FA authentication, so it will only affect new accounts.
+    |
+    | @see https://www.rfc-editor.org/rfc/rfc6238#section-5.1
     |
     */
 
@@ -130,8 +134,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | This package uses the BaconQrCode generator package to generate QR codes
-    | as SVG. These size and image margin values are used to create them. You
-    | can always your own code to create personalized QR Codes from the URI.
+    | as SVG. These are size and image margin values that are used to create
+    | them for your user. Alternatively, you can create your own QR Codes.
     |
     */
 

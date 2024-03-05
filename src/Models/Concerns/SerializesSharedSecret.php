@@ -6,8 +6,8 @@ use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
+use Illuminate\Support\Str;
 use InvalidArgumentException;
-
 use function array_values;
 use function chunk_split;
 use function config;
@@ -25,18 +25,19 @@ trait SerializesSharedSecret
      */
     public function toUri(): string
     {
-        $issuer = config('two-factor.issuer')
-                ?: config('app.name')
-                ?: throw new InvalidArgumentException('The TOTP issuer cannot be empty.');
+        if (!$issuer = Str::before($this->attributes['label'], ':')) {
+            throw new InvalidArgumentException('The TOTP issuer cannot be empty.');
+        }
+
         $query = http_build_query([
-            'issuer'    => $issuer,
-            'label'     => $this->attributes['label'],
-            'secret'    => $this->shared_secret,
+            'issuer' => $issuer,
+            'label' => $this->attributes['label'],
+            'secret' => $this->shared_secret,
             'algorithm' => strtoupper($this->attributes['algorithm']),
-            'digits'     => $this->attributes['digits'],
+            'digits' => $this->attributes['digits'],
         ], '', '&', PHP_QUERY_RFC3986);
 
-        return 'otpauth://totp/'.rawurlencode($issuer).'%3A'.$this->attributes['label']."?$query";
+        return 'otpauth://totp/'.rawurlencode($this->attributes['label'])."?$query";
     }
 
     /**
@@ -74,7 +75,7 @@ trait SerializesSharedSecret
     }
 
     /**
-     * Returns the Shared Secret as a string of 4-character groups.
+     * Returns the Shared Secret as a string of 4-character groups separated by whitespace.
      *
      * @return string
      */
