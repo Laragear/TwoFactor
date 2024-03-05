@@ -79,8 +79,8 @@ class TwoFactorAuthenticationTest extends TestCase
     {
         $events = Event::fake();
         $user = UserTwoFactorStub::create([
-            'name'     => 'bar',
-            'email'    => 'bar@test.com',
+            'name' => 'bar',
+            'email' => 'bar@test.com',
             'password' => UserStub::PASSWORD_SECRET,
         ]);
 
@@ -147,8 +147,8 @@ class TwoFactorAuthenticationTest extends TestCase
         Date::setTestNow($now = Date::create(2020, 01, 01, 18, 30));
 
         $user = UserTwoFactorStub::create([
-            'name'     => 'bar',
-            'email'    => 'bar@test.com',
+            'name' => 'bar',
+            'email' => 'bar@test.com',
             'password' => UserStub::PASSWORD_SECRET,
         ]);
 

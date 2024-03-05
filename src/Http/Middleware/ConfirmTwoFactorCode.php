@@ -5,6 +5,7 @@ namespace Laragear\TwoFactor\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable as TwoFactor;
+
 use function config;
 use function now;
 use function response;
