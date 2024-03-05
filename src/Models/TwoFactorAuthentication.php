@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Laragear\TwoFactor\Contracts\TwoFactorTotp;
 use ParagonIE\ConstantTime\Base32;
-
 use function array_merge;
 use function config;
 use function json_encode;
@@ -99,7 +98,11 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
      */
     public function getTable(): string
     {
-        return $this->table ??= static::$useTable;
+        if (!$this->table) {
+            $this->table = static::$useTable;
+        }
+
+        return parent::getTable();
     }
 
     /**
