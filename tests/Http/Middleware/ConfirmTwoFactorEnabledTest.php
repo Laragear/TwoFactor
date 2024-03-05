@@ -45,8 +45,8 @@ class ConfirmTwoFactorEnabledTest extends TestCase
     public function test_continues_if_user_is_not_2fa_instance(): void
     {
         $this->actingAs(UserStub::create([
-            'name'     => 'test',
-            'email'    => 'bar@test.com',
+            'name' => 'test',
+            'email' => 'bar@test.com',
             'password' => UserStub::PASSWORD_SECRET,
         ]));
 
