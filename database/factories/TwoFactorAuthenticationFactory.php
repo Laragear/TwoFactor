@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Laragear\TwoFactor\Models\TwoFactorAuthentication;
+
 use function config;
 
 /**
@@ -33,7 +34,7 @@ class TwoFactorAuthenticationFactory extends Factory
         $array = array_merge([
             'shared_secret' => TwoFactorAuthentication::generateRandomSecret(),
             'enabled_at' => $this->faker->dateTimeBetween('-1 year'),
-            'label' => $config['issuer'] . ':' . $this->faker->freeEmail,
+            'label' => $config['issuer'].':'.$this->faker->freeEmail,
         ], $config['totp']);
 
         [$enabled, $amount, $length] = array_values($config['recovery']);
