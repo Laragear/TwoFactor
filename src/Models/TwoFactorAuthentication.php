@@ -52,7 +52,6 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
      */
     protected $casts = [
         'shared_secret' => 'encrypted',
-        'authenticatable_id' => 'int',
         'digits' => 'int',
         'seconds' => 'int',
         'window' => 'int',

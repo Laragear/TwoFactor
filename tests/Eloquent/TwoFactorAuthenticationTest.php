@@ -287,7 +287,7 @@ class TwoFactorAuthenticationTest extends TestCase
             ],
         ]);
 
-        $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
+        $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make
             'label' => 'quz:test@foo.com',
             'shared_secret' => static::SECRET,
             'algorithm' => 'sHa256',
@@ -300,7 +300,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_serializes_uri_to_json(): void
     {
-        $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
+        $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make
             'label' => 'quz:test@foo.com',
             'shared_secret' => static::SECRET,
             'algorithm' => 'sHa256',
@@ -338,7 +338,6 @@ class TwoFactorAuthenticationTest extends TestCase
         ]);
 
         $encode = rawurlencode($tfa->label);
-
         $uri = "otpauth://totp/$encode?issuer=foo%20bar&label=$encode&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14";
 
         static::assertSame($uri, $tfa->toUri());
