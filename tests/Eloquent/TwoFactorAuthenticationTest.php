@@ -11,7 +11,6 @@ use ParagonIE\ConstantTime\Base32;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
 use Tests\TestCase;
-
 use function rawurlencode;
 
 class TwoFactorAuthenticationTest extends TestCase
@@ -287,7 +286,7 @@ class TwoFactorAuthenticationTest extends TestCase
             ],
         ]);
 
-        $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make
+        $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
             'label' => 'quz:test@foo.com',
             'shared_secret' => static::SECRET,
             'algorithm' => 'sHa256',
@@ -300,7 +299,7 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_serializes_uri_to_json(): void
     {
-        $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make
+        $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
             'label' => 'quz:test@foo.com',
             'shared_secret' => static::SECRET,
             'algorithm' => 'sHa256',
