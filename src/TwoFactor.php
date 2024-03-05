@@ -8,7 +8,6 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\Request;
 use Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
-
 use function app;
 use function trans;
 use function validator;

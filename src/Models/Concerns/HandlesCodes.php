@@ -6,7 +6,6 @@ use DateTimeInterface;
 use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\Carbon;
 use ParagonIE\ConstantTime\Base32;
-
 use function cache;
 use function config;
 use function floor;

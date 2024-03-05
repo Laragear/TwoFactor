@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Laragear\TwoFactor\Contracts\TwoFactorTotp;
 use ParagonIE\ConstantTime\Base32;
-
 use function array_merge;
 use function config;
 use function json_encode;
@@ -28,7 +27,7 @@ use function strtolower;
  * @property int $window
  * @property string $algorithm
  * @property array $totp_config
- * @property \Illuminate\Support\Collection<int, array{code: string, used_at: \Illuminate\Support\Carbon}>|null $recovery_codes
+ * @property \Illuminate\Support\Collection<int, array{code: string, used_at: \Illuminate\Support\Carbon|null}>|null $recovery_codes
  * @property \Illuminate\Support\Collection<int, array{"2fa_remember": string, ip: string, added_at: integer}>|null $safe_devices
  * @property \Illuminate\Support\Carbon|\DateTimeInterface|null $enabled_at
  * @property \Illuminate\Support\Carbon|\DateTimeInterface|null $recovery_codes_generated_at
@@ -51,21 +50,21 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
      * @var array
      */
     protected $casts = [
-        'shared_secret' => 'encrypted',
-        'authenticatable_id' => 'int',
-        'digits' => 'int',
-        'seconds' => 'int',
-        'window' => 'int',
-        'recovery_codes' => 'encrypted:collection',
-        'safe_devices' => 'collection',
-        'enabled_at' => 'datetime',
+        'shared_secret'               => 'encrypted',
+        'authenticatable_id'          => 'int',
+        'digits'                      => 'int',
+        'seconds'                     => 'int',
+        'window'                      => 'int',
+        'recovery_codes'              => 'encrypted:collection',
+        'safe_devices'                => 'collection',
+        'enabled_at'                  => 'datetime',
         'recovery_codes_generated_at' => 'datetime',
     ];
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<string>
+     * @var array<int, string>
      */
     protected $fillable = ['digits', 'seconds', 'window', 'algorithm'];
 

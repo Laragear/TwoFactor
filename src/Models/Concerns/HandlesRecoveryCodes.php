@@ -4,7 +4,6 @@ namespace Laragear\TwoFactor\Models\Concerns;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-
 use function is_int;
 use function now;
 use function strtoupper;

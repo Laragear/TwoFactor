@@ -7,7 +7,6 @@ use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use InvalidArgumentException;
-
 use function array_values;
 use function chunk_split;
 use function config;
