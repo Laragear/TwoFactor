@@ -175,7 +175,7 @@ public function showRecoveryCodes(Request $request)
 
 While it's not recommended, as the included logic will suffice for the vast majority of situations, you can create your own generator for recovery codes. Just add a callback using the  `generateRecoveryCodesUsing()` of the `TwoFactorAuthentication` model.
 
-This method receives a callback that should return a random alphanumeric code, and is invoked on each code to generate.
+This method receives a callback that should return a random alphanumeric code, and will be invoked on each code to generate.
 
 ```php
 use Laragear\TwoFactor\Models\TwoFactorAuthentication;
@@ -545,9 +545,9 @@ This controls TOTP code generation and verification mechanisms:
 * TOTP Window: Additional steps of seconds to keep a code as valid.
 * TOTP Algorithm: The system-supported algorithm to handle code generation.
 
-This configuration values are always passed down to the authentication app as URI parameters:
+This configuration values are always URL-encoded and passed down to the authentication app as URI parameters:
 
-    otpauth://totp/Laravel:taylor@laravel.com?secret=THISISMYSECRETPLEASEDONOTSHAREIT&issuer=Laravel&label=taylor%40laravel.com&algorithm=SHA1&digits=6&period=30
+    otpauth://totp/Laravel%30taylor%40laravel.com?secret=THISISMYSECRETPLEASEDONOTSHAREIT&issuer=Laravel&label=Laravel%30taylor%40laravel.com&algorithm=SHA1&digits=6&period=30
 
 These values are printed to each 2FA data record inside the application. Changes will only take effect for new activations.
 
@@ -565,6 +565,28 @@ return [
 ```
 
 This controls the size and margin used to create the QR Code, which are created as SVG.
+
+## Custom TOTP Label
+
+You may change how your model creates a TOTP Label, which is shown to the user on its authenticator, using the `getTwoFactorIssuer()` and `getTwoFactorUserIdentifier()` methods of your user.
+
+For example, we can change the issuer and identifier depending on which domain the user is visiting.
+
+```php
+public function getTwoFactorIssuer(): string
+{
+    return request()->getHost();
+}
+
+public function getTwoFactorUserIdentifier(): string
+{
+    return request()->getHost() === 'admin.myapp.com'
+        ? $this->getAttribute('name')
+        : $this->getAttribute('email');
+}
+```
+
+The above will render `users.myapp.com:john@gmail.com` or `admin.myapp.com:John Doe`.
 
 ## Laravel Octane Compatibility
 
