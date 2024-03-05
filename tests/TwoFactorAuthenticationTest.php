@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Event;
+use InvalidArgumentException;
 use Laragear\TwoFactor\Events\TwoFactorDisabled;
 use Laragear\TwoFactor\Events\TwoFactorEnabled;
 use Laragear\TwoFactor\Events\TwoFactorRecoveryCodesDepleted;
@@ -168,6 +169,39 @@ class TwoFactorAuthenticationTest extends TestCase
         $event->assertDispatched(TwoFactorRecoveryCodesGenerated::class, function ($event) use ($user) {
             return $user->is($event->user);
         });
+    }
+
+    public function test_issuer_falls_back_to_application_name(): void
+    {
+        $this->app->make('config')->set([
+            'app.name' => 'foo',
+            'two-factor.issuer' => '',
+        ]);
+
+        static::assertSame('foo:foo@test.com', $this->user->createTwoFactorAuth()->label);
+    }
+
+    public function test_throws_if_issuer_is_empty(): void
+    {
+        $this->app->make('config')->set([
+            'app.name' => '',
+            'two-factor.issuer' => '',
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The TOTP issuer cannot be empty.');
+
+        $this->user->createTwoFactorAuth();
+    }
+
+    public function test_throws_if_user_identifier_is_empty(): void
+    {
+        $this->user->email = '';
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The TOTP User Identifier cannot be empty.');
+
+        $this->user->createTwoFactorAuth();
     }
 
     public function test_confirms_twice_but_doesnt_change_the_secret(): void

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Laragear\TwoFactor\Models\TwoFactorAuthentication;
 
+use function config;
+
 /**
  * @method \Laragear\TwoFactor\Models\TwoFactorAuthentication make($attributes = [], ?Model $parent = null)
  * @method \Laragear\TwoFactor\Models\TwoFactorAuthentication create($attributes = [], ?Model $parent = null)
@@ -32,7 +34,7 @@ class TwoFactorAuthenticationFactory extends Factory
         $array = array_merge([
             'shared_secret' => TwoFactorAuthentication::generateRandomSecret(),
             'enabled_at' => $this->faker->dateTimeBetween('-1 year'),
-            'label' => $this->faker->freeEmail,
+            'label' => $config['issuer'].':'.$this->faker->freeEmail,
         ], $config['totp']);
 
         [$enabled, $amount, $length] = array_values($config['recovery']);
