@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
+
 use function collect;
 use function config;
 use function cookie;
@@ -258,8 +259,8 @@ trait TwoFactorAuthentication
         $this->twoFactorAuth->safe_devices = $this->safeDevices()
             ->push([
                 '2fa_remember' => $token = $this->generateTwoFactorRemember(),
-                'ip'           => $request->ip(),
-                'added_at'     => $this->freshTimestamp()->getTimestamp(),
+                'ip' => $request->ip(),
+                'added_at' => $this->freshTimestamp()->getTimestamp(),
             ])
             ->sortByDesc('added_at') // Ensure the last is the first, so we can slice it.
             ->slice(0, config('two-factor.safe_devices.max_devices', 3))
