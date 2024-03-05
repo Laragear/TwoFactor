@@ -6,6 +6,7 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
 
 use function collect;
@@ -99,11 +100,22 @@ trait TwoFactorAuthentication
     }
 
     /**
-     * Returns the user identifier to use as part of the Two Factor credential label.
+     * Returns the issuer name to use as part of the Two-Factor credential label.
      *
      * @return string
      */
-    protected function getTwoFactorUserIdentifier(): string
+    public function getTwoFactorIssuer(): string
+    {
+        // Use the OTP issuer config, or back down to the application name.
+        return config('two-factor.issuer') ?: config('app.name');
+    }
+
+    /**
+     * Returns the user identifier to use as part of the Two-Factor credential label.
+     *
+     * @return string
+     */
+    public function getTwoFactorUserIdentifier(): string
     {
         return $this->getAttribute('email');
     }
@@ -115,10 +127,15 @@ trait TwoFactorAuthentication
      */
     protected function twoFactorLabel(): string
     {
-        // Use the OTP issuer config, or back down to the application name.
-        $issuer = config('two-factor.issuer') ?: config('app.name');
+        if (!$issuer = $this->getTwoFactorIssuer()) {
+            throw new InvalidArgumentException('The TOTP issuer cannot be empty.');
+        }
 
-        return $issuer.':'.$this->getTwoFactorUserIdentifier();
+        if (!$identifier = $this->getTwoFactorUserIdentifier()) {
+            throw new InvalidArgumentException('The TOTP User Identifier cannot be empty.');
+        }
+
+        return $issuer.':'.$identifier;
     }
 
     /**

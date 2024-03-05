@@ -7,8 +7,6 @@ use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use Illuminate\Support\Str;
-use InvalidArgumentException;
-
 use function array_values;
 use function chunk_split;
 use function config;
@@ -26,12 +24,8 @@ trait SerializesSharedSecret
      */
     public function toUri(): string
     {
-        if (! $issuer = Str::before($this->attributes['label'], ':')) {
-            throw new InvalidArgumentException('The TOTP issuer cannot be empty.');
-        }
-
         $query = http_build_query([
-            'issuer' => $issuer,
+            'issuer' => Str::before($this->attributes['label'], ':'),
             'label' => $this->attributes['label'],
             'secret' => $this->shared_secret,
             'algorithm' => strtoupper($this->attributes['algorithm']),

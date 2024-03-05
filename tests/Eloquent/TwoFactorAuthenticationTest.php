@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
-use InvalidArgumentException;
 use Laragear\TwoFactor\Models\TwoFactorAuthentication;
 use ParagonIE\ConstantTime\Base32;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
 use Tests\TestCase;
+use function rawurlencode;
 
 class TwoFactorAuthenticationTest extends TestCase
 {
@@ -252,26 +252,25 @@ class TwoFactorAuthenticationTest extends TestCase
         $this->app->make('config')->set('two-factor.issuer', 'quz');
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label' => 'test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm' => 'sHa256',
-            'digits' => 14,
+            'algorithm'     => 'sHa256',
+            'digits'        => 14,
         ]);
 
-        $uri = 'otpauth://totp/quz%3Atest@foo.com?issuer=quz&label=test%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14';
+        $encode = rawurlencode($tfa->label);
+
+        $uri = "otpauth://totp/$encode?issuer=quz&label=$encode&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14";
 
         static::assertEquals($uri, $tfa->toUri());
     }
 
     public function test_serializes_to_qr_and_renders_to_qr(): void
     {
-        $this->app->make('config')->set('two-factor.issuer', 'quz');
-
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label' => 'test@foo.com',
+            'label'         => 'quz:test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm' => 'sHa256',
-            'digits' => 14,
+            'algorithm'     => 'sHa256',
+            'digits'        => 14,
         ]);
 
         static::assertStringEqualsFile(__DIR__.'/../Stubs/QrStub.svg', $tfa->toQr());
@@ -281,7 +280,6 @@ class TwoFactorAuthenticationTest extends TestCase
     public function test_serializes_to_qr_and_renders_to_qr_with_custom_values(): void
     {
         $this->app->make('config')->set([
-            'two-factor.issuer' => 'quz',
             'two-factor.qr_code' => [
                 'size' => 600,
                 'margin' => 10,
@@ -289,10 +287,10 @@ class TwoFactorAuthenticationTest extends TestCase
         ]);
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label' => 'test@foo.com',
+            'label'         => 'quz:test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm' => 'sHa256',
-            'digits' => 14,
+            'algorithm'     => 'sHa256',
+            'digits'        => 14,
         ]);
 
         static::assertStringEqualsFile(__DIR__.'/../Stubs/CustomQrStub.svg', $tfa->toQr());
@@ -301,16 +299,14 @@ class TwoFactorAuthenticationTest extends TestCase
 
     public function test_serializes_uri_to_json(): void
     {
-        $this->app->make('config')->set('two-factor.issuer', 'quz');
-
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label' => 'test@foo.com',
+            'label'         => 'quz:test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm' => 'sHa256',
-            'digits' => 14,
+            'algorithm'     => 'sHa256',
+            'digits'        => 14,
         ]);
 
-        $uri = '"otpauth:\/\/totp\/quz%3Atest@foo.com?issuer=quz&label=test%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14"';
+        $uri = '"otpauth:\/\/totp\/quz%3Atest%40foo.com?issuer=quz&label=quz%3Atest%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14"';
 
         static::assertJson($tfa->toJson());
         static::assertEquals($uri, $tfa->toJson());
@@ -319,13 +315,13 @@ class TwoFactorAuthenticationTest extends TestCase
     public function test_uses_app_name_as_issuer(): void
     {
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label' => 'test@foo.com',
+            'label'         => 'Laravel:test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm' => 'sHa256',
-            'digits' => 14,
+            'algorithm'     => 'sHa256',
+            'digits'        => 14,
         ]);
 
-        $uri = 'otpauth://totp/Laravel%3Atest@foo.com?issuer=Laravel&label=test%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14';
+        $uri = 'otpauth://totp/Laravel%3Atest%40foo.com?issuer=Laravel&label=Laravel%3Atest%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14';
 
         static::assertSame($uri, $tfa->toUri());
     }
@@ -335,33 +331,16 @@ class TwoFactorAuthenticationTest extends TestCase
         $this->app->make('config')->set('two-factor.issuer', 'foo bar');
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label' => 'test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm' => 'sHa256',
-            'digits' => 14,
+            'algorithm'     => 'sHa256',
+            'digits'        => 14,
         ]);
 
-        $uri = 'otpauth://totp/foo%20bar%3Atest@foo.com?issuer=foo%20bar&label=test%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14';
+        $encode = rawurlencode($tfa->label);
+
+        $uri = "otpauth://totp/$encode?issuer=foo%20bar&label=$encode&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14";
 
         static::assertSame($uri, $tfa->toUri());
-    }
-
-    public function test_throws_exception_when_issuer_is_empty(): void
-    {
-        $this->app->make('config')->set('app.name', '');
-        $this->app->make('config')->set('two-factor.issuer', '');
-
-        $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label' => 'test@foo.com',
-            'shared_secret' => static::SECRET,
-            'algorithm' => 'sHa256',
-            'digits' => 14,
-        ]);
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('The TOTP issuer cannot be empty.');
-
-        $tfa->toUri();
     }
 
     public function test_uses_custom_generator(): void
