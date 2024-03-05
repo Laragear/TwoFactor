@@ -2,17 +2,16 @@
 
 namespace Tests\Rules;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Date;
+use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\CreatesTwoFactorUser;
 use Tests\Stubs\UserStub;
 use Tests\TestCase;
-
 use function validator;
 
+#[WithMigration]
 class TotpRuleTest extends TestCase
 {
-    use RefreshDatabase;
     use CreatesTwoFactorUser;
 
     protected function setUp(): void

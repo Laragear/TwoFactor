@@ -2,14 +2,14 @@
 
 namespace Tests\Http\Middleware;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\CreatesTwoFactorUser;
 use Tests\Stubs\UserStub;
 use Tests\TestCase;
 
+#[WithMigration]
 class RequireTwoFactorEnabledTest extends TestCase
 {
-    use RefreshDatabase;
     use CreatesTwoFactorUser;
 
     protected function setUp(): void

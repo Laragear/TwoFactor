@@ -6,8 +6,6 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use JetBrains\PhpStorm\Pure;
-
 use function collect;
 use function config;
 use function cookie;
@@ -21,8 +19,6 @@ trait TwoFactorAuthentication
 {
     /**
      * Initialize the current Trait.
-     *
-     * @return void
      */
     public function initializeTwoFactorAuthentication(): void
     {
@@ -32,8 +28,6 @@ trait TwoFactorAuthentication
 
     /**
      * This connects the current Model to the Two-Factor Authentication model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
     public function twoFactorAuth(): MorphOne
     {
@@ -45,10 +39,7 @@ trait TwoFactorAuthentication
 
     /**
      * Determines if the User has Two-Factor Authentication enabled.
-     *
-     * @return bool
      */
-    #[Pure]
     public function hasTwoFactorEnabled(): bool
     {
         return $this->twoFactorAuth->isEnabled();
@@ -56,8 +47,6 @@ trait TwoFactorAuthentication
 
     /**
      * Enables Two-Factor Authentication for the given user.
-     *
-     * @return void
      */
     public function enableTwoFactorAuth(): void
     {
@@ -74,8 +63,6 @@ trait TwoFactorAuthentication
 
     /**
      * Disables Two-Factor Authentication for the given user.
-     *
-     * @return void
      */
     public function disableTwoFactorAuth(): void
     {
@@ -86,8 +73,6 @@ trait TwoFactorAuthentication
 
     /**
      * Creates a new Two-Factor Auth mechanisms from scratch, and returns a new Shared Secret.
-     *
-     * @return \Laragear\TwoFactor\Contracts\TwoFactorTotp
      */
     public function createTwoFactorAuth(): Contracts\TwoFactorTotp
     {
@@ -100,8 +85,6 @@ trait TwoFactorAuthentication
 
     /**
      * Returns the label for TOTP URI.
-     *
-     * @return string
      */
     protected function twoFactorLabel(): string
     {
@@ -115,9 +98,6 @@ trait TwoFactorAuthentication
 
     /**
      * Confirms the Shared Secret and fully enables the Two-Factor Authentication.
-     *
-     * @param  string  $code
-     * @return bool
      */
     public function confirmTwoFactorAuth(string $code): bool
     {
@@ -137,9 +117,6 @@ trait TwoFactorAuthentication
 
     /**
      * Verifies the Code against the Shared Secret.
-     *
-     * @param  string|int  $code
-     * @return bool
      */
     protected function validateCode(string|int $code): bool
     {
@@ -148,10 +125,6 @@ trait TwoFactorAuthentication
 
     /**
      * Validates the TOTP Code or Recovery Code.
-     *
-     * @param  string|null  $code
-     * @param  bool  $useRecoveryCodes
-     * @return bool
      */
     public function validateTwoFactorCode(?string $code = null, bool $useRecoveryCodes = true): bool
     {
@@ -162,10 +135,6 @@ trait TwoFactorAuthentication
 
     /**
      * Makes a Two-Factor Code for a given time, and period offset.
-     *
-     * @param  \DateTimeInterface|int|string  $at
-     * @param  int  $offset
-     * @return string
      */
     public function makeTwoFactorCode(DateTimeInterface|int|string $at = 'now', int $offset = 0): string
     {
@@ -174,8 +143,6 @@ trait TwoFactorAuthentication
 
     /**
      * Determines if the User has Recovery Codes available.
-     *
-     * @return bool
      */
     protected function hasRecoveryCodes(): bool
     {
@@ -195,7 +162,7 @@ trait TwoFactorAuthentication
     /**
      * Generates a new set of Recovery Codes.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection<int, array{code: string, used_at: \Illuminate\Support\Carbon}
      */
     public function generateRecoveryCodes(): Collection
     {
@@ -217,9 +184,6 @@ trait TwoFactorAuthentication
 
     /**
      * Uses a one-time Recovery Code if there is one available.
-     *
-     * @param  string  $code
-     * @return mixed
      */
     protected function useRecoveryCode(string $code): bool
     {
@@ -238,9 +202,6 @@ trait TwoFactorAuthentication
 
     /**
      * Adds a "safe" Device from the Request, and returns the token used.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return string
      */
     public function addSafeDevice(Request $request): string
     {

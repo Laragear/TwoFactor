@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -13,12 +12,13 @@ use Laragear\TwoFactor\Events\TwoFactorEnabled;
 use Laragear\TwoFactor\Events\TwoFactorRecoveryCodesDepleted;
 use Laragear\TwoFactor\Events\TwoFactorRecoveryCodesGenerated;
 use Laragear\TwoFactor\Models\TwoFactorAuthentication;
+use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
 
+#[WithMigration]
 class TwoFactorAuthenticationTest extends TestCase
 {
-    use RefreshDatabase;
     use CreatesTwoFactorUser;
     use RegistersLoginRoute;
     use WithFaker;

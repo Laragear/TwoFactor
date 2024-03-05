@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,14 +10,14 @@ use Illuminate\Validation\ValidationException;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
 use Laragear\TwoFactor\TwoFactor;
 use Mockery;
+use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
-
 use function now;
 
+#[WithMigration]
 class TwoFactorTest extends TestCase
 {
-    use RefreshDatabase;
     use CreatesTwoFactorUser;
     use RegistersLoginRoute;
     use WithFaker;

@@ -3,21 +3,20 @@
 namespace Tests\Eloquent;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
 use InvalidArgumentException;
 use Laragear\TwoFactor\Models\TwoFactorAuthentication;
+use Orchestra\Testbench\Attributes\WithMigration;
 use ParagonIE\ConstantTime\Base32;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
 use Tests\TestCase;
 
+#[WithMigration]
 class TwoFactorAuthenticationTest extends TestCase
 {
     protected const SECRET = 'KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3';
-
-    use RefreshDatabase;
 
     public function test_returns_authenticatable(): void
     {

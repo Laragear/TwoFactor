@@ -5,7 +5,6 @@ namespace Laragear\TwoFactor\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable as TwoFactor;
-
 use function config;
 use function now;
 use function response;
@@ -15,11 +14,6 @@ class ConfirmTwoFactorCode
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string  $route
-     * @return mixed
      */
     public function handle(Request $request, Closure $next, string $route = '2fa.confirm'): mixed
     {
@@ -36,9 +30,6 @@ class ConfirmTwoFactorCode
 
     /**
      * Determine if the confirmation timeout has expired.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
      */
     protected function recentlyConfirmed(Request $request): bool
     {

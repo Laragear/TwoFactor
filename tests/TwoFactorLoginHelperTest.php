@@ -4,7 +4,6 @@ namespace Tests;
 
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Session\Session;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
@@ -18,9 +17,9 @@ use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use Laragear\TwoFactor\Facades\Auth2FA;
 use Mockery;
+use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
-
 use function app;
 use function config;
 use function get_class;
@@ -29,9 +28,9 @@ use function today;
 use function trans;
 use function var_dump;
 
+#[WithMigration]
 class TwoFactorLoginHelperTest extends TestCase
 {
-    use RefreshDatabase;
     use CreatesTwoFactorUser;
     use WithFaker;
 

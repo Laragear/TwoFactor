@@ -2,7 +2,6 @@
 
 namespace Tests\Events;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
@@ -10,12 +9,13 @@ use Laragear\TwoFactor\Events\TwoFactorDisabled;
 use Laragear\TwoFactor\Events\TwoFactorEnabled;
 use Laragear\TwoFactor\Events\TwoFactorRecoveryCodesDepleted;
 use Laragear\TwoFactor\Events\TwoFactorRecoveryCodesGenerated;
+use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\CreatesTwoFactorUser;
 use Tests\TestCase;
 
+#[WithMigration]
 class EventsTest extends TestCase
 {
-    use RefreshDatabase;
     use CreatesTwoFactorUser;
 
     protected function setUp(): void

@@ -4,7 +4,7 @@
 [![Codecov coverage](https://codecov.io/gh/Laragear/TwoFactor/branch/1.x/graph/badge.svg?token=BJMBVZNPM8)](https://codecov.io/gh/Laragear/TwoFactor)
 [![Maintainability](https://api.codeclimate.com/v1/badges/64241e25adb0f55d7ba1/maintainability)](https://codeclimate.com/github/Laragear/TwoFactor/maintainability)
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_TwoFactor&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_TwoFactor)
-[![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/10.x/octane#introduction)
+[![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/11.x/octane#introduction)
 
 On-premises Two-Factor Authentication for all your users out of the box.
 
@@ -36,8 +36,7 @@ Your support allows me to keep this package free, up-to-date and maintainable. A
 
 ## Requirements
 
-* PHP 8 or later
-* Laravel 9, 10 or later
+* Laravel 10 or later
 
 ## Installation
 
@@ -238,7 +237,7 @@ You can further customize how to handle the 2FA code authentication procedure wi
 
 > * For [Laravel UI](https://github.com/laravel/ui), override the `attemptLogin()` method to replace the default guard attempt with `Auth2FA::attempt()` and `validateLogin` method to wrap in the `if ($request->isNotFilled('2fa_code'))` statement in your Login controller.
 > * For [Laravel Breeze](https://laravel.com/docs/starter-kits#laravel-breeze), you may need to extend the `LoginRequest::authenticate()` call.
-> * For [Laravel Fortify](https://laravel.com/docs/fortify) and [Jetstream](https://jetstream.laravel.com/), you may need to set a custom callback with the [`Fortify::authenticateUsing()`](https://laravel.com/docs/10.x/fortify#customizing-user-authentication) method.
+> * For [Laravel Fortify](https://laravel.com/docs/fortify) and [Jetstream](https://jetstream.laravel.com/), you may need to set a custom callback with the [`Fortify::authenticateUsing()`](https://laravel.com/docs/11.x/fortify#customizing-user-authentication) method.
 
 Alternatively, you may use `Auth::attemptWhen()` with TwoFactor helper methods, which returns a callback to check if the user needs a 2FA Code before proceeding using `TwoFactor::hasCode()`.
 
@@ -585,4 +584,4 @@ If you discover any security related issues, please email darkghosthunter@gmail.
 
 This specific package version is licensed under the terms of the [MIT License](LICENSE.md), at time of publishing.
 
-[Laravel](https://laravel.com) is a Trademark of [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011-2023 Laravel LLC.
+[Laravel](https://laravel.com) is a Trademark of [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011-2024 Laravel LLC.

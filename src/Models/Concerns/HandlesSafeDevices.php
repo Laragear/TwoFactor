@@ -9,9 +9,6 @@ trait HandlesSafeDevices
 {
     /**
      * Returns the timestamp of the Safe Device.
-     *
-     * @param  null|string  $token
-     * @return null|\Illuminate\Support\Carbon
      */
     public function getSafeDeviceTimestamp(string $token = null): ?Carbon
     {
@@ -24,8 +21,6 @@ trait HandlesSafeDevices
 
     /**
      * Generates a Device token to bypass Two-Factor Authentication.
-     *
-     * @return string
      */
     public static function generateDefaultTwoFactorRemember(): string
     {

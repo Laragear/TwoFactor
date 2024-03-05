@@ -4,7 +4,6 @@ namespace Laragear\TwoFactor\Models\Concerns;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-
 use function is_int;
 use function now;
 use function strtoupper;
@@ -20,8 +19,6 @@ trait HandlesRecoveryCodes
 
     /**
      * Returns if there are Recovery Codes available.
-     *
-     * @return bool
      */
     public function containsUnusedRecoveryCodes(): bool
     {
@@ -30,9 +27,6 @@ trait HandlesRecoveryCodes
 
     /**
      * Returns the key of the not-used Recovery Code.
-     *
-     * @param  string  $code
-     * @return int|bool|null
      */
     protected function getUnusedRecoveryCodeIndex(string $code): int|null|bool
     {
@@ -44,9 +38,6 @@ trait HandlesRecoveryCodes
 
     /**
      * Sets a Recovery Code as used.
-     *
-     * @param  string  $code
-     * @return bool
      */
     public function setRecoveryCodeAsUsed(string $code): bool
     {
@@ -68,7 +59,6 @@ trait HandlesRecoveryCodes
      * Registers a callback to generate recovery codes.
      *
      * @param  (callable(int $length, int $iteration, int $amount): \Illuminate\Support\Collection<int, int|string>)|null  $callback
-     * @return void
      */
     public static function generateRecoveryCodesUsing(callable $callback = null): void
     {
@@ -77,10 +67,6 @@ trait HandlesRecoveryCodes
 
     /**
      * Generates a new batch of Recovery Codes.
-     *
-     * @param  int  $amount
-     * @param  int  $length
-     * @return \Illuminate\Support\Collection
      */
     public static function generateRecoveryCodes(int $amount, int $length): Collection
     {
