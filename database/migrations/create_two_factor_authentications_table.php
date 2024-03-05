@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Laragear\TwoFactor\Models\TwoFactorAuthentication;
 
 return new class extends Migration
 {
@@ -13,8 +14,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (! Schema::hasTable('two_factor_authentications')) {
-            Schema::create('two_factor_authentications', function (Blueprint $table) {
+        if (! Schema::hasTable(TwoFactorAuthentication::$useTable)) {
+            Schema::create(TwoFactorAuthentication::$useTable, function (Blueprint $table) {
                 $table->id();
                 $table->morphs('authenticatable', '2fa_auth_type_auth_id_index');
                 $table->text('shared_secret');
@@ -39,6 +40,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('two_factor_authentications');
+        Schema::dropIfExists(TwoFactorAuthentication::$useTable);
     }
 };

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Laragear\TwoFactor\Contracts\TwoFactorTotp;
 use ParagonIE\ConstantTime\Base32;
-
 use function array_merge;
 use function config;
 use function json_encode;
@@ -46,6 +45,20 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     use HasFactory;
 
     /**
+     * The default table name to use.
+     *
+     * @var string
+     */
+    public const DEFAULT_TABLE_NAME = 'two_factor_authentications';
+
+    /**
+     * The table name to use.
+     *
+     * @var string
+     */
+    public static string $useTable = self::DEFAULT_TABLE_NAME;
+
+    /**
      * The attributes that should be cast to native types.
      *
      * @var array
@@ -76,6 +89,16 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     public function authenticatable(): MorphTo
     {
         return $this->morphTo('authenticatable');
+    }
+
+    /**
+     * Get the table associated with the model.
+     *
+     * @return string
+     */
+    public function getTable(): string
+    {
+        return $this->table ??= static::$useTable;
     }
 
     /**

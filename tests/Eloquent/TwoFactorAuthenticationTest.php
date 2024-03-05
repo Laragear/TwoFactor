@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Schema;
 use Laragear\TwoFactor\Models\TwoFactorAuthentication;
 use ParagonIE\ConstantTime\Base32;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
 use Tests\TestCase;
-
 use function rawurlencode;
 
 class TwoFactorAuthenticationTest extends TestCase
@@ -19,6 +19,15 @@ class TwoFactorAuthenticationTest extends TestCase
     protected const SECRET = 'KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3';
 
     use RefreshDatabase;
+
+    protected function tearDown(): void
+    {
+        TwoFactorAuthentication::generateRecoveryCodesUsing();
+
+        TwoFactorAuthentication::$useTable = TwoFactorAuthentication::DEFAULT_TABLE_NAME;
+
+        parent::tearDown();
+    }
 
     public function test_returns_authenticatable(): void
     {
@@ -360,10 +369,19 @@ class TwoFactorAuthenticationTest extends TestCase
         });
     }
 
-    protected function tearDown(): void
+    public function changeTableName(): void
     {
-        TwoFactorAuthentication::generateRecoveryCodesUsing();
+        TwoFactorAuthentication::$useTable = 'custom_table';
+    }
 
-        parent::tearDown();
+    /**
+     * @define-env changeTableName
+     */
+    public function test_changes_table_name_for_migration()
+    {
+        $model = new TwoFactorAuthentication();
+
+        static::assertSame('custom_table', $model->getTable());
+        static::assertTrue(Schema::hasTable('custom_table'));
     }
 }
