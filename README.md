@@ -66,7 +66,9 @@ php artisan migrate
 
 Alternatively, you can use `--tag="migrations"` to only publish the migration files.
 
-> Remember that you can edit the migration by adding new columns before migrating.
+> [!TIP]
+>
+> Remember that you can edit the migration by adding new columns before migrating, and also the [table name]()
 
 2. Add the `TwoFactorAuthenticatable` _contract_ and the `TwoFactorAuthentication` trait to the User model, or any other model you want to make Two-Factor Authentication available. 
 
@@ -587,6 +589,25 @@ public function getTwoFactorUserIdentifier(): string
 ```
 
 The above will render `users.myapp.com:john@gmail.com` or `admin.myapp.com:John Doe`.
+
+## Custom table name
+
+By default, the `TwoFactorAuthentication` model will use the `two_factor_authentications` table. If you want to change the table name for whatever reason, set the table using the `$useTable` static property. You should do this on the `boot()` method of your `AppServiceProvider`.
+
+```php
+use Laragear\TwoFactor\Models\TwoFactorAuthentication;
+
+public function boot(): void
+{
+    TwoFactorAuthentication::$useTable = 'my_custom_table';
+}
+```
+
+After that, you may migrate your table like always through the Artisan command. The migration will automatically pick up the table name change.
+
+```shell
+php artisan migrate
+```
 
 ## Laravel Octane Compatibility
 
