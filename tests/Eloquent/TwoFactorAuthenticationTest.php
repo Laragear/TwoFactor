@@ -11,6 +11,7 @@ use ParagonIE\ConstantTime\Base32;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
 use Tests\TestCase;
+
 use function rawurlencode;
 
 class TwoFactorAuthenticationTest extends TestCase
@@ -253,8 +254,8 @@ class TwoFactorAuthenticationTest extends TestCase
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         $encode = rawurlencode($tfa->label);
@@ -267,10 +268,10 @@ class TwoFactorAuthenticationTest extends TestCase
     public function test_serializes_to_qr_and_renders_to_qr(): void
     {
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label'         => 'quz:test@foo.com',
+            'label' => 'quz:test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         static::assertStringEqualsFile(__DIR__.'/../Stubs/QrStub.svg', $tfa->toQr());
@@ -287,10 +288,10 @@ class TwoFactorAuthenticationTest extends TestCase
         ]);
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label'         => 'quz:test@foo.com',
+            'label' => 'quz:test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         static::assertStringEqualsFile(__DIR__.'/../Stubs/CustomQrStub.svg', $tfa->toQr());
@@ -300,10 +301,10 @@ class TwoFactorAuthenticationTest extends TestCase
     public function test_serializes_uri_to_json(): void
     {
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label'         => 'quz:test@foo.com',
+            'label' => 'quz:test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         $uri = '"otpauth:\/\/totp\/quz%3Atest%40foo.com?issuer=quz&label=quz%3Atest%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14"';
@@ -315,10 +316,10 @@ class TwoFactorAuthenticationTest extends TestCase
     public function test_uses_app_name_as_issuer(): void
     {
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
-            'label'         => 'Laravel:test@foo.com',
+            'label' => 'Laravel:test@foo.com',
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         $uri = 'otpauth://totp/Laravel%3Atest%40foo.com?issuer=Laravel&label=Laravel%3Atest%40foo.com&secret=KS72XBTN5PEBGX2IWBMVW44LXHPAQ7L3&algorithm=SHA256&digits=14';
@@ -332,8 +333,8 @@ class TwoFactorAuthenticationTest extends TestCase
 
         $tfa = TwoFactorAuthentication::factory()->withRecovery()->withSafeDevices()->make([
             'shared_secret' => static::SECRET,
-            'algorithm'     => 'sHa256',
-            'digits'        => 14,
+            'algorithm' => 'sHa256',
+            'digits' => 14,
         ]);
 
         $encode = rawurlencode($tfa->label);

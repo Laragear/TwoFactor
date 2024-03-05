@@ -127,11 +127,11 @@ trait TwoFactorAuthentication
      */
     protected function twoFactorLabel(): string
     {
-        if (!$issuer = $this->getTwoFactorIssuer()) {
+        if (! $issuer = $this->getTwoFactorIssuer()) {
             throw new InvalidArgumentException('The TOTP issuer cannot be empty.');
         }
 
-        if (!$identifier = $this->getTwoFactorUserIdentifier()) {
+        if (! $identifier = $this->getTwoFactorUserIdentifier()) {
             throw new InvalidArgumentException('The TOTP User Identifier cannot be empty.');
         }
 
