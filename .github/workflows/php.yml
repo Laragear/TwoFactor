@@ -8,31 +8,15 @@ jobs:
   byte_level:
     name: 0️⃣ Byte-level
 
-
-
-
-
     runs-on: ubuntu-latest
-
-
-
-
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
-
-
-
+        uses: actions/checkout@v4
 
       - name: Check file permissions
         run: |
           test "$(find . -type f -not -path './.git/*' -executable)" == ""
-
-
-
-
 
       - name: Find non-printable ASCII characters
         run: |
@@ -41,75 +25,45 @@ jobs:
   syntax_errors:
     name: 1️⃣ Syntax errors
 
-
-
-
-
     runs-on: ubuntu-latest
-
-
-
-
 
     steps:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: latest
           tools: parallel-lint
 
-
-
-
-
       - name: Checkout code
-        uses: actions/checkout@v3
-
-
-
-
+        uses: actions/checkout@v4
 
       - name: Validate Composer configuration
         run: composer validate --strict
-
-
-
-
 
       - name: Check source code for syntax errors
         run: composer exec -- parallel-lint src/
 
   unit_tests:
     name: 2️⃣ Unit and Feature tests
-
-
-
     needs:
       - byte_level
       - syntax_errors
-
-
-
-
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        php-version: ['8.0', '8.1', '8.2']
-        laravel-constraint: ['9.*', '10.*', '11.*']
-        dependencies: [lowest, highest]
+        php-version:
+          - 8.1
+          - 8.2
+          - 8.3
+        laravel-constraint:
+          - 10.*
+          - 11.*
+        dependencies: [ lowest, highest ]
         exclude:
-          - php-version: '8.0'
-            laravel-constraint: 10.*
           - laravel-constraint: 11.*
-            php-version: '8.0'
-          - laravel-constraint: 11.*
-            php-version: '8.1'
-
-
-
-
+            php-version: 8.1
 
     steps:
       - name: Set up PHP
@@ -119,55 +73,28 @@ jobs:
           extensions: mbstring, intl
           coverage: xdebug
 
-
-
-
-
       - name: Checkout code
-        uses: actions/checkout@v3
-
-
-
-
+        uses: actions/checkout@v4
 
       - name: Install dependencies
-        uses: ramsey/composer-install@v2
+        uses: ramsey/composer-install@v3
         with:
           dependency-versions: ${{ matrix.dependencies }}
           composer-options: --with=laravel/framework:${{ matrix.laravel-constraint }}
 
-
-
-
-
       - name: Execute unit tests
         run: composer run-script test
 
-
-
-
-
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
 
   static_analysis:
     name: 3️⃣ Static Analysis
-
-
-
     needs:
       - byte_level
       - syntax_errors
 
-
-
-
-
     runs-on: ubuntu-latest
-
-
-
-
 
     steps:
       - name: Set up PHP
@@ -177,53 +104,26 @@ jobs:
           php-version: latest
           coverage: none
 
-
-
-
-
       - name: Checkout code
-        uses: actions/checkout@v3
-
-
-
-
+        uses: actions/checkout@v4
 
       - name: Install dependencies
-        uses: ramsey/composer-install@v2
-
-
-
-
+        uses: ramsey/composer-install@v3
 
       - name: Execute static analysis
         run: composer exec -- phpstan analyze -l 5 src/
 
   exported_files:
     name: 4️⃣ Exported files
-
-
-
     needs:
       - byte_level
       - syntax_errors
 
-
-
-
-
     runs-on: ubuntu-latest
-
-
-
-
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
-
-
-
+        uses: actions/checkout@v4
 
       - name: Check exported files
         run: |

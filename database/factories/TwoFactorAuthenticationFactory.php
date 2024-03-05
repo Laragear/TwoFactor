@@ -16,14 +16,12 @@ class TwoFactorAuthenticationFactory extends Factory
     /**
      * The name of the factory's corresponding model.
      *
-     * @var string
+     * @var class-string<\Illuminate\Database\Eloquent\Model>|string
      */
     protected $model = TwoFactorAuthentication::class;
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
     public function definition(): array
     {
@@ -47,8 +45,6 @@ class TwoFactorAuthenticationFactory extends Factory
 
     /**
      * Returns a model with unused recovery codes.
-     *
-     * @return \Database\Factories\Laragear\TwoFactor\TwoFactorAuthenticationFactory
      */
     public function withRecovery(): static
     {
@@ -65,8 +61,6 @@ class TwoFactorAuthenticationFactory extends Factory
 
     /**
      * Returns an authentication with a list of safe devices.
-     *
-     * @return \Database\Factories\Laragear\TwoFactor\TwoFactorAuthenticationFactory
      */
     public function withSafeDevices(): static
     {
@@ -92,8 +86,6 @@ class TwoFactorAuthenticationFactory extends Factory
 
     /**
      * Returns an enabled authentication.
-     *
-     * @return \Database\Factories\Laragear\TwoFactor\TwoFactorAuthenticationFactory
      */
     public function enabled(): static
     {

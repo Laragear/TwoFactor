@@ -3,24 +3,24 @@
 namespace Laragear\TwoFactor;
 
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Laragear\Meta\BootHelpers;
-use Laragear\Meta\PublishesMigrations;
+use SplFileInfo;
 
 class TwoFactorServiceProvider extends ServiceProvider
 {
-    use PublishesMigrations;
     use BootHelpers;
 
     public const CONFIG = __DIR__.'/../config/two-factor.php';
     public const VIEWS = __DIR__.'/../resources/views';
     public const LANG = __DIR__.'/../lang';
-    public const DB = __DIR__.'/../database/migrations';
+    public const MIGRATIONS = __DIR__.'/../database/migrations';
 
     /**
      * Register the application services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -42,8 +42,6 @@ class TwoFactorServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap the application services.
-     *
-     * @return void
      */
     public function boot(): void
     {
@@ -66,16 +64,41 @@ class TwoFactorServiceProvider extends ServiceProvider
 
     /**
      * Publish config, view and migrations files.
-     *
-     * @return void
      */
     protected function publishFiles(): void
     {
-        $this->publishesMigrations(static::DB);
+        $this->publishMigrations();
 
         $this->publishes([static::CONFIG => $this->app->configPath('two-factor.php')], 'config');
         // @phpstan-ignore-next-line
         $this->publishes([static::VIEWS => $this->app->viewPath('vendor/two-factor')], 'views');
         $this->publishes([static::LANG => $this->app->langPath('vendor/two-factor')], 'translations');
+    }
+
+    /**
+     * Small helper to publish migrations from the paths.
+     */
+    protected function publishMigrations(): void
+    {
+        if (method_exists($this, 'publishesMigrations')) {
+            $this->publishesMigrations([static::MIGRATIONS => $this->app->databasePath('migrations')], 'migrations');
+
+            return;
+        }
+
+        $now = now();
+
+        $files = Collection::make(File::files(static::MIGRATIONS))
+            ->mapWithKeys(fn (SplFileInfo $file): array => [
+                $file->getRealPath() =>
+                    Str::of($file->getFileName())
+                        ->after('0000_00_00_000000')
+                        ->prepend($now->addSecond()->format('Y_m_d_His'))
+                        ->prepend('/')
+                        ->prepend($this->app->databasePath('migrations'))
+                        ->toString()
+            ]);
+
+        $this->publishes($files->toArray(), 'migrations');
     }
 }

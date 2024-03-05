@@ -7,7 +7,6 @@ use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use InvalidArgumentException;
-
 use function array_values;
 use function chunk_split;
 use function config;
@@ -20,14 +19,13 @@ trait SerializesSharedSecret
 {
     /**
      * Returns the Shared Secret as a URI.
-     *
-     * @return string
      */
     public function toUri(): string
     {
         $issuer = config('two-factor.issuer')
                 ?: config('app.name')
                 ?: throw new InvalidArgumentException('The TOTP issuer cannot be empty.');
+
         $query = http_build_query([
             'issuer'    => $issuer,
             'label'     => $this->attributes['label'],
@@ -41,8 +39,6 @@ trait SerializesSharedSecret
 
     /**
      * Returns the Shared Secret as a QR Code in SVG format.
-     *
-     * @return string
      */
     public function toQr(): string
     {
@@ -55,8 +51,6 @@ trait SerializesSharedSecret
 
     /**
      * Returns the current object instance as a string representation.
-     *
-     * @return string
      */
     public function __toString(): string
     {
@@ -65,8 +59,6 @@ trait SerializesSharedSecret
 
     /**
      * Returns the Shared Secret as a string.
-     *
-     * @return string
      */
     public function toString(): string
     {
@@ -75,8 +67,6 @@ trait SerializesSharedSecret
 
     /**
      * Returns the Shared Secret as a string of 4-character groups.
-     *
-     * @return string
      */
     public function toGroupedString(): string
     {

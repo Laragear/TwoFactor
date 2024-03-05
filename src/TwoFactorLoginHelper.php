@@ -10,7 +10,6 @@ use Illuminate\Session\EncryptedStore;
 use Illuminate\Support\Facades\Crypt;
 use InvalidArgumentException;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
-
 use function array_merge;
 use function response;
 use function view;
@@ -18,29 +17,7 @@ use function view;
 class TwoFactorLoginHelper
 {
     /**
-     * The Authentication Guard to use, if any.
-     *
-     * @var string|null
-     */
-    protected ?string $guard = null;
-
-    /**
-     * Optional message to send as error.
-     *
-     * @var string|null
-     */
-    protected ?string $message = null;
-
-    /**
      * Create a new Two-Factor Login Helper instance.
-     *
-     * @param  \Illuminate\Auth\AuthManager  $auth
-     * @param  \Illuminate\Contracts\Session\Session  $session
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $view
-     * @param  string  $sessionKey
-     * @param  bool  $useFlash
-     * @param  string  $input
      */
     public function __construct(
         protected AuthManager $auth,
@@ -50,6 +27,8 @@ class TwoFactorLoginHelper
         protected string $sessionKey,
         protected bool $useFlash,
         protected string $input = '2fa_code',
+        protected ?string $guard = null,
+        protected ?string $message = null
     ) {
         //
     }
@@ -57,7 +36,6 @@ class TwoFactorLoginHelper
     /**
      * Return a custom view to handle the 2FA Code retry.
      *
-     * @param  string  $view
      * @return $this
      */
     public function view(string $view): static
@@ -70,7 +48,6 @@ class TwoFactorLoginHelper
     /**
      * Return a custom view to handle the 2FA Code retry.
      *
-     * @param  string  $message
      * @return $this
      */
     public function message(string $message): static
@@ -83,7 +60,6 @@ class TwoFactorLoginHelper
     /**
      * Sets the input where the TOTP code is in the credentials array. Defaults to `2fa_code`.
      *
-     * @param  string  $input
      * @return $this
      */
     public function input(string $input): static
@@ -96,7 +72,6 @@ class TwoFactorLoginHelper
     /**
      *  The key used to flash the encrypted credentials.
      *
-     * @param  string  $sessionKey
      * @return $this
      */
     public function sessionKey(string $sessionKey): static
@@ -109,7 +84,6 @@ class TwoFactorLoginHelper
     /**
      * Set the guard to use for authentication.
      *
-     * @param  string  $guard
      * @return $this
      */
     public function guard(string $guard): static
@@ -122,11 +96,7 @@ class TwoFactorLoginHelper
     /**
      * Attempt to authenticate a user using the given credentials.
      *
-     * If the user receives
-     *
-     * @param  array  $credentials
      * @param  bool  $remember
-     * @return bool
      */
     public function attempt(array $credentials = [], $remember = false): bool
     {
@@ -155,8 +125,6 @@ class TwoFactorLoginHelper
 
     /**
      * Return the Session Guard of Laravel.
-     *
-     * @return \Illuminate\Auth\SessionGuard
      */
     protected function getSessionGuard(): SessionGuard
     {
@@ -173,8 +141,6 @@ class TwoFactorLoginHelper
      * Retrieve the flashed credentials in the session, and merges with the new on top.
      *
      * @param  array{credentials:array, remember:bool}  $credentials
-     * @param  mixed  $remember
-     * @return array
      */
     protected function getFlashedData(array $credentials, mixed $remember): array
     {
@@ -193,10 +159,6 @@ class TwoFactorLoginHelper
 
     /**
      * Flashes the credentials into the session, encrypted.
-     *
-     * @param  array  $credentials
-     * @param  bool  $remember
-     * @return void
      */
     protected function flashData(array $credentials, bool $remember): void
     {
@@ -220,10 +182,6 @@ class TwoFactorLoginHelper
 
     /**
      * Throw a response with an invalid TOTP code.
-     *
-     * @param  string  $input
-     * @param  array  $errors
-     * @return void
      */
     protected function throwConfirmView(string $input, array $errors): void
     {

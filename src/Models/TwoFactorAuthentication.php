@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Laragear\TwoFactor\Contracts\TwoFactorTotp;
 use ParagonIE\ConstantTime\Base32;
-
 use function array_merge;
 use function config;
 use function json_encode;
@@ -28,12 +27,12 @@ use function strtolower;
  * @property int $window
  * @property string $algorithm
  * @property array $totp_config
- * @property null|\Illuminate\Support\Collection $recovery_codes
- * @property null|\Illuminate\Support\Collection $safe_devices
- * @property null|\Illuminate\Support\Carbon|\DateTime $enabled_at
- * @property null|\Illuminate\Support\Carbon|\DateTime $recovery_codes_generated_at
- * @property null|\Illuminate\Support\Carbon|\DateTime $updated_at
- * @property null|\Illuminate\Support\Carbon|\DateTime $created_at
+ * @property \Illuminate\Support\Collection<int, array{code: string, used_at: \Illuminate\Support\Carbon}|null $recovery_codes
+ * @property \Illuminate\Support\Collection<int, array{"2fa_remember": string, ip: string, added_at: integer}>|null $safe_devices
+ * @property \Illuminate\Support\Carbon|\DateTimeInterface|null $enabled_at
+ * @property \Illuminate\Support\Carbon|\DateTimeInterface|null $recovery_codes_generated_at
+ * @property \Illuminate\Support\Carbon|\DateTimeInterface|null $updated_at
+ * @property \Illuminate\Support\Carbon|\DateTimeInterface|null $created_at
  *
  * @method static \Database\Factories\Laragear\TwoFactor\TwoFactorAuthenticationFactory<static> factory($count = null, $state = [])
  */
@@ -81,19 +80,14 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
 
     /**
      * Sets the Algorithm to lowercase.
-     *
-     * @param  $value
-     * @return void
      */
-    protected function setAlgorithmAttribute($value): void
+    protected function setAlgorithmAttribute(string $value): void
     {
         $this->attributes['algorithm'] = strtolower($value);
     }
 
     /**
      * Returns if the Two-Factor Authentication has been enabled.
-     *
-     * @return bool
      */
     public function isEnabled(): bool
     {
@@ -101,9 +95,7 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     }
 
     /**
-     * Returns if the Two-Factor Authentication is not been enabled.
-     *
-     * @return bool
+     * Returns if the Two-Factor Authentication is not being enabled.
      */
     public function isDisabled(): bool
     {
@@ -131,8 +123,6 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
 
     /**
      * Creates a new Random Secret.
-     *
-     * @return string
      */
     public static function generateRandomSecret(): string
     {
@@ -151,9 +141,6 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
 
     /**
      * Convert the model instance to JSON.
-     *
-     * @param  int  $options
-     * @return string
      */
     public function toJson($options = 0): string
     {

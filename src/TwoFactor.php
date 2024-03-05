@@ -8,7 +8,6 @@ use Illuminate\Contracts\Config\Repository;
 use Illuminate\Http\Request;
 use Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
-
 use function app;
 use function trans;
 use function validator;
@@ -18,8 +17,7 @@ class TwoFactor
     /**
      * Check if the user uses TOTP and has a valid code when login in.
      *
-     * @param  string  $input
-     * @return \Closure
+     * @return \Closure(\Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable):bool
      */
     public static function hasCode(string $input = '2fa_code'): Closure
     {
@@ -31,9 +29,7 @@ class TwoFactor
     /**
      * Check if the user uses TOTP and has a valid code when login in.
      *
-     * @param  string  $input
-     * @param  string|null  $message
-     * @return \Closure
+     * @return \Closure(\Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable):bool
      */
     public static function hasCodeOrFails(string $input = '2fa_code', string $message = null): Closure
     {
@@ -47,10 +43,6 @@ class TwoFactor
 
     /**
      * Creates a new Laraguard instance.
-     *
-     * @param  \Illuminate\Contracts\Config\Repository  $config
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $input
      */
     public function __construct(protected Repository $config, protected Request $request, protected string $input)
     {
@@ -61,9 +53,6 @@ class TwoFactor
      * Check if the user uses TOTP and has a valid code.
      *
      * If the user does not use TOTP, no checks will be done.
-     *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
-     * @return bool
      */
     public function validate(Authenticatable $user): bool
     {
@@ -91,8 +80,6 @@ class TwoFactor
 
     /**
      * Checks if the app config has Safe Devices enabled.
-     *
-     * @return bool
      */
     protected function isSafeDevicesEnabled(): bool
     {
@@ -101,8 +88,6 @@ class TwoFactor
 
     /**
      * Checks if the Request has a Two-Factor Code and is valid.
-     *
-     * @return bool
      */
     protected function requestHasCode(): bool
     {
@@ -113,8 +98,6 @@ class TwoFactor
 
     /**
      * Returns the code from the request input.
-     *
-     * @return string
      */
     protected function getCode(): string
     {
@@ -123,8 +106,6 @@ class TwoFactor
 
     /**
      * Checks if the user wants to add this device as "safe".
-     *
-     * @return bool
      */
     protected function wantsToAddDevice(): bool
     {
