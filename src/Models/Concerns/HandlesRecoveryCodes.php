@@ -37,7 +37,7 @@ trait HandlesRecoveryCodes
     protected function getUnusedRecoveryCodeIndex(string $code): int|null|bool
     {
         return $this->recovery_codes?->search([
-            'code'    => $code,
+            'code' => $code,
             'used_at' => null,
         ], true);
     }
@@ -57,7 +57,7 @@ trait HandlesRecoveryCodes
         }
 
         $this->recovery_codes = $this->recovery_codes->put($index, [
-            'code'    => $code,
+            'code' => $code,
             'used_at' => now(),
         ]);
 
@@ -90,7 +90,7 @@ trait HandlesRecoveryCodes
 
         return Collection::times($amount, static function (int $iteration) use ($generator, $amount, $length): array {
             return [
-                'code'    => $generator($length, $iteration, $amount),
+                'code' => $generator($length, $iteration, $amount),
                 'used_at' => null,
             ];
         });

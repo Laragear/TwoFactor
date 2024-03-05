@@ -13,7 +13,7 @@ return [
     */
 
     'cache' => [
-        'store'  => null,
+        'store' => null,
         'prefix' => '2fa.code',
     ],
 
@@ -30,8 +30,8 @@ return [
 
     'recovery' => [
         'enabled' => true,
-        'codes'   => 10,
-        'length'  => 8,
+        'codes' => 10,
+        'length' => 8,
     ],
 
     /*
@@ -46,9 +46,9 @@ return [
     */
 
     'safe_devices' => [
-        'enabled'         => false,
-        'cookie'          => '_2fa_remember',
-        'max_devices'     => 3,
+        'enabled' => false,
+        'cookie' => '_2fa_remember',
+        'max_devices' => 3,
         'expiration_days' => 14,
     ],
 
@@ -118,9 +118,9 @@ return [
     'issuer' => env('OTP_TOTP_ISSUER'),
 
     'totp' => [
-        'digits'    => 6,
-        'seconds'   => 30,
-        'window'    => 1,
+        'digits' => 6,
+        'seconds' => 30,
+        'window' => 1,
         'algorithm' => 'sha1',
     ],
 
@@ -136,7 +136,7 @@ return [
     */
 
     'qr_code' => [
-        'size'   => 400,
+        'size' => 400,
         'margin' => 4,
     ],
 ];

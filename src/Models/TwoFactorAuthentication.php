@@ -51,14 +51,13 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
      * @var array
      */
     protected $casts = [
-        'shared_secret'               => 'encrypted',
-        'authenticatable_id'          => 'int',
-        'digits'                      => 'int',
-        'seconds'                     => 'int',
-        'window'                      => 'int',
-        'recovery_codes'              => 'encrypted:collection',
-        'safe_devices'                => 'collection',
-        'enabled_at'                  => 'datetime',
+        'shared_secret' => 'encrypted',
+        'digits' => 'int',
+        'seconds' => 'int',
+        'window' => 'int',
+        'recovery_codes' => 'encrypted:collection',
+        'safe_devices' => 'collection',
+        'enabled_at' => 'datetime',
         'recovery_codes_generated_at' => 'datetime',
     ];
 
