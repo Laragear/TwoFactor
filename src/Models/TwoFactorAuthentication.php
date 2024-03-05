@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Laragear\TwoFactor\Contracts\TwoFactorTotp;
 use ParagonIE\ConstantTime\Base32;
-
 use function array_merge;
 use function config;
 use function json_encode;
@@ -52,7 +51,6 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
      */
     protected $casts = [
         'shared_secret'               => 'encrypted',
-        'authenticatable_id'          => 'int',
         'digits'                      => 'int',
         'seconds'                     => 'int',
         'window'                      => 'int',
