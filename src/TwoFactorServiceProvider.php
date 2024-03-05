@@ -90,13 +90,12 @@ class TwoFactorServiceProvider extends ServiceProvider
 
         $files = Collection::make(File::files(static::MIGRATIONS))
             ->mapWithKeys(fn (SplFileInfo $file): array => [
-                $file->getRealPath() =>
-                    Str::of($file->getFileName())
+                $file->getRealPath() => Str::of($file->getFileName())
                         ->after('0000_00_00_000000')
                         ->prepend($now->addSecond()->format('Y_m_d_His'))
                         ->prepend('/')
                         ->prepend($this->app->databasePath('migrations'))
-                        ->toString()
+                        ->toString(),
             ]);
 
         $this->publishes($files->toArray(), 'migrations');

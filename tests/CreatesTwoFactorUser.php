@@ -13,8 +13,8 @@ trait CreatesTwoFactorUser
     protected function createTwoFactorUser(): void
     {
         $this->user = UserTwoFactorStub::create([
-            'name'     => 'foo',
-            'email'    => 'foo@test.com',
+            'name' => 'foo',
+            'email' => 'foo@test.com',
             'password' => UserStub::PASSWORD_SECRET,
         ]);
 

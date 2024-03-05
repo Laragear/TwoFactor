@@ -58,7 +58,7 @@ class EventsTest extends TestCase
 
         $this->user->twoFactorAuth->recovery_codes = Collection::times(1, static function () use ($code): array {
             return [
-                'code'    => $code,
+                'code' => $code,
                 'used_at' => null,
             ];
         });

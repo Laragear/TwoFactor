@@ -47,8 +47,8 @@ class RequireTwoFactorEnabledTest extends TestCase
     public function test_user_no_2fa_can_access(): void
     {
         $this->actingAs(UserStub::create([
-            'name'     => 'test',
-            'email'    => 'bar@test.com',
+            'name' => 'test',
+            'email' => 'bar@test.com',
             'password' => UserStub::PASSWORD_SECRET,
         ]));
 
