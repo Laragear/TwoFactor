@@ -20,6 +20,7 @@ use Mockery;
 use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
+
 use function app;
 use function config;
 use function get_class;

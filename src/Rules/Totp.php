@@ -5,6 +5,7 @@ namespace Laragear\TwoFactor\Rules;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Arr;
 use Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable;
+
 use function is_string;
 
 /**

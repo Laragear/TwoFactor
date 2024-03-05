@@ -7,6 +7,7 @@ use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\CreatesTwoFactorUser;
 use Tests\Stubs\UserStub;
 use Tests\TestCase;
+
 use function validator;
 
 #[WithMigration]

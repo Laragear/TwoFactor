@@ -13,6 +13,7 @@ use Mockery;
 use Orchestra\Testbench\Attributes\WithMigration;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
+
 use function now;
 
 #[WithMigration]
