@@ -175,7 +175,7 @@ class TwoFactorAuthenticationTest extends TestCase
     {
         $this->app->make('config')->set([
             'app.name' => 'foo',
-            'two-factor.issuer' => ''
+            'two-factor.issuer' => '',
         ]);
 
         static::assertSame('foo:foo@test.com', $this->user->createTwoFactorAuth()->label);
@@ -185,7 +185,7 @@ class TwoFactorAuthenticationTest extends TestCase
     {
         $this->app->make('config')->set([
             'app.name' => '',
-            'two-factor.issuer' => ''
+            'two-factor.issuer' => '',
         ]);
 
         $this->expectException(InvalidArgumentException::class);
