@@ -20,7 +20,6 @@ use Laragear\TwoFactor\Facades\Auth2FA;
 use Mockery;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
-
 use function app;
 use function config;
 use function get_class;
@@ -299,6 +298,44 @@ class TwoFactorLoginHelperTest extends TestCase
                 return true;
             })
             ->assertSessionHas('_2fa_login');
+
+        $this->assertGuest();
+    }
+
+    public function test_throws_redirection_on_failure(): void
+    {
+        $this->app->make('router')->post('login-with-redirect', function (Request $request) {
+            try {
+                return Auth2FA::redirect('foo')->attempt($request->only('email', 'password'))
+                    ? 'is authenticated'
+                    : 'is unauthenticated';
+            } catch (\Throwable $exception) {
+                if (! $exception instanceof HttpResponseException) {
+                    var_dump([get_class($exception), $exception->getMessage()]);
+                }
+
+                throw $exception;
+            }
+        });
+
+        $this->post('login-with-redirect', $this->credentials)
+            ->assertRedirect('foo')
+            ->assertSessionHasInput('input', '2fa_code')
+            ->assertSessionHas('_2fa_login.credentials.email', function (string $email): bool {
+                static::assertSame($this->user->email, Crypt::decryptString($email));
+
+                return true;
+            })
+            ->assertSessionHas('_2fa_login.credentials.password', static function (string $password): bool {
+                static::assertSame('secret', Crypt::decryptString($password));
+
+                return true;
+            })
+            ->assertSessionHas('_2fa_login.remember', static function ($remember) {
+                static::assertFalse($remember);
+
+                return true;
+            });
 
         $this->assertGuest();
     }

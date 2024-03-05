@@ -12,6 +12,7 @@ use Laragear\TwoFactor\TwoFactorLoginHelper;
  * @method static \Laragear\TwoFactor\TwoFactorLoginHelper input(string $input)
  * @method static \Laragear\TwoFactor\TwoFactorLoginHelper sessionKey(string $sessionKey)
  * @method static \Laragear\TwoFactor\TwoFactorLoginHelper guard(string $guard)
+ * @method static \Laragear\TwoFactor\TwoFactorLoginHelper redirect(string $route)
  *
  * @see \Laragear\TwoFactor\TwoFactorLoginHelper
  */
