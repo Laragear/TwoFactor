@@ -10,8 +10,8 @@ use Illuminate\Session\EncryptedStore;
 use Illuminate\Support\Facades\Crypt;
 use InvalidArgumentException;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
-
 use function array_merge;
+use function redirect;
 use function response;
 use function view;
 
@@ -50,6 +50,7 @@ class TwoFactorLoginHelper
         protected string $sessionKey,
         protected bool $useFlash,
         protected string $input = '2fa_code',
+        protected string $redirect = '',
     ) {
         //
     }
@@ -120,6 +121,19 @@ class TwoFactorLoginHelper
     }
 
     /**
+     * Set the route to redirect the user on failed authentication.
+     *
+     * @param  string  $route
+     * @return $this
+     */
+    public function redirect(string $route): static
+    {
+        $this->redirect = $route;
+
+        return $this;
+    }
+
+    /**
      * Attempt to authenticate a user using the given credentials.
      *
      * If the user receives
@@ -145,7 +159,7 @@ class TwoFactorLoginHelper
         } catch (InvalidCodeException $e) {
             $this->flashData($credentials, $remember);
 
-            $this->throwConfirmView($this->input, $this->request->has($this->input) ? $e->errors() : []);
+            $this->throwResponse($this->input, $this->request->has($this->input) ? $e->errors() : []);
         }
 
         // @codeCoverageIgnoreStart
@@ -225,9 +239,13 @@ class TwoFactorLoginHelper
      * @param  array  $errors
      * @return void
      */
-    protected function throwConfirmView(string $input, array $errors): void
+    protected function throwResponse(string $input, array $errors): void
     {
-        // @phpstan-ignore-next-line
-        response(view($this->view, ['input' => $input])->withErrors($errors))->throwResponse();
+        $response = $this->redirect
+            ? redirect($this->redirect)->withInput(['input' => $input])->withErrors($errors)
+            // @phpstan-ignore-next-line
+            : response(view($this->view, ['input' => $input])->withErrors($errors));
+
+        $response->throwResponse();
     }
 }

@@ -234,6 +234,7 @@ You can further customize how to handle the 2FA code authentication procedure wi
 |-------------------|-----------------------------------------------------------------------------------|
 | guard($guard)     | The guard to use for authentication. Defaults to the application default (`web`). |
 | view($view)       | Return a custom view to handle the 2FA Code retry.                                |
+| redirect($route)  | Redirect to a location to handle the 2FA Code retry.                              |
 | message($message) | Return a custom message when the 2FA code fails or is not present.                |
 | input($input)     | Sets the input where the TOTP code is in the request. Defaults to `2fa_code`.     |
 | sessionKey($key)  | The key used to flash the encrypted credentials. Defaults to `_2fa_login`.        |
