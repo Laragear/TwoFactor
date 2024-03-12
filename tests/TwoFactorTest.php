@@ -12,6 +12,7 @@ use Laragear\TwoFactor\TwoFactor;
 use Mockery;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
+
 use function now;
 
 class TwoFactorTest extends TestCase

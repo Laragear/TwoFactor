@@ -11,6 +11,7 @@ use Laragear\MetaModel\CustomizableModel;
 use Laragear\TwoFactor\Contracts\TwoFactorTotp;
 use Laragear\TwoFactor\Migrations\TwoFactorAuthenticationMigration;
 use ParagonIE\ConstantTime\Base32;
+
 use function array_merge;
 use function config;
 use function json_encode;

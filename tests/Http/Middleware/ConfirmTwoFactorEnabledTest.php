@@ -7,6 +7,7 @@ use Laragear\TwoFactor\Http\Controllers\ConfirmTwoFactorCodeController;
 use Tests\CreatesTwoFactorUser;
 use Tests\Stubs\UserStub;
 use Tests\TestCase;
+
 use function now;
 use function trans;
 

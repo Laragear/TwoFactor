@@ -11,6 +11,7 @@ use Illuminate\Session\EncryptedStore;
 use Illuminate\Support\Facades\Crypt;
 use InvalidArgumentException;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
+
 use function array_merge;
 use function redirect;
 use function response;
