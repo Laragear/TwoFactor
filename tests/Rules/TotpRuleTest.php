@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Date;
 use Tests\CreatesTwoFactorUser;
 use Tests\Stubs\UserStub;
 use Tests\TestCase;
+
 use function validator;
 
 class TotpRuleTest extends TestCase

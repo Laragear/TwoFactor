@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
+
 use function collect;
 use function config;
 use function cookie;

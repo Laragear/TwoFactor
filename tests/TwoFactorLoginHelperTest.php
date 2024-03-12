@@ -18,6 +18,7 @@ use Laragear\TwoFactor\Facades\Auth2FA;
 use Mockery;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
+
 use function app;
 use function config;
 use function get_class;

@@ -10,6 +10,7 @@ use ParagonIE\ConstantTime\Base32;
 use Tests\Stubs\UserStub;
 use Tests\Stubs\UserTwoFactorStub;
 use Tests\TestCase;
+
 use function rawurlencode;
 
 class TwoFactorAuthenticationTest extends TestCase
