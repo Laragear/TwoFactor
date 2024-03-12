@@ -24,8 +24,8 @@ class ConfirmTwoFactorCode
         $user = $request->user();
 
         if (
-            !$user instanceof TwoFactor ||
-            !$user->hasTwoFactorEnabled() ||
+            ! $user instanceof TwoFactor ||
+            ! $user->hasTwoFactorEnabled() ||
             $this->recentlyConfirmed($request, $route, $force)
         ) {
             return $next($request);

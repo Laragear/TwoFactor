@@ -64,7 +64,7 @@ class TwoFactor
     public function validate(Authenticatable $user): bool
     {
         // If the user does not use 2FA or is not enabled, don't check.
-        if (!$user instanceof TwoFactorAuthenticatable || !$user->hasTwoFactorEnabled()) {
+        if (! $user instanceof TwoFactorAuthenticatable || ! $user->hasTwoFactorEnabled()) {
             return true;
         }
 
@@ -100,7 +100,7 @@ class TwoFactor
      */
     protected function requestHasCode(): bool
     {
-        return !validator($this->request->only($this->input), [
+        return ! validator($this->request->only($this->input), [
             $this->input => 'required|alpha_num',
         ])->fails();
     }
