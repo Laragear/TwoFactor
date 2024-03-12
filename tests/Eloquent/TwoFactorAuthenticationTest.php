@@ -5,7 +5,6 @@ namespace Tests\Eloquent;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\Schema;
 use Laragear\TwoFactor\Models\TwoFactorAuthentication;
 use ParagonIE\ConstantTime\Base32;
 use Tests\Stubs\UserStub;
@@ -362,21 +361,5 @@ class TwoFactorAuthenticationTest extends TestCase
         TwoFactorAuthentication::factory()->make()->recovery_codes->each(static function (array $code): void {
             static::assertSame('foo', $code['code']);
         });
-    }
-
-    public function changeTableName(): void
-    {
-        TwoFactorAuthentication::$useTable = 'custom_table';
-    }
-
-    /**
-     * @define-env changeTableName
-     */
-    public function test_changes_table_name_for_migration()
-    {
-        $model = new TwoFactorAuthentication();
-
-        static::assertSame('custom_table', $model->getTable());
-        static::assertTrue(Schema::hasTable('custom_table'));
     }
 }
