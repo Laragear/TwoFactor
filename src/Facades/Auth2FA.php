@@ -7,6 +7,7 @@ use Laragear\TwoFactor\TwoFactorLoginHelper;
 
 /**
  * @method static bool attempt(array $credentials = [], mixed $remember = false)
+ * @method static bool attemptWhen(array $credentials = [], array|callable|null  $callbacks = null, mixed $remember = false)
  * @method static \Laragear\TwoFactor\TwoFactorLoginHelper view(string $view)
  * @method static \Laragear\TwoFactor\TwoFactorLoginHelper message(string $message)
  * @method static \Laragear\TwoFactor\TwoFactorLoginHelper input(string $input)
