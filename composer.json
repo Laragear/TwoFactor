@@ -28,7 +28,7 @@
         "ext-json": "*",
         "laragear/meta-model": "^1.1",
         "laragear/meta": "3.*",
-        "bacon/bacon-qr-code": "2.*",
+        "bacon/bacon-qr-code": "2.*|3.*",
         "paragonie/constant_time_encoding": "^2.6",
         "illuminate/config": "10.*|11.*",
         "illuminate/validation": "10.*|11.*",
