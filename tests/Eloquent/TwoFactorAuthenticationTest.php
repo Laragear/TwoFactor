@@ -278,8 +278,12 @@ class TwoFactorAuthenticationTest extends TestCase
             'digits' => 14,
         ]);
 
-        static::assertStringEqualsFile(__DIR__.'/../Stubs/QrStub.svg', $tfa->toQr());
-        static::assertStringEqualsFile(__DIR__.'/../Stubs/QrStub.svg', $tfa->render());
+        $stub = class_exists('\BaconQrCode\Renderer\Eye\PointyEye')
+            ? __DIR__.'/../Stubs/QrStub-v3.svg'
+            : __DIR__.'/../Stubs/QrStub.svg';
+
+        static::assertStringEqualsFile($stub, $tfa->toQr());
+        static::assertStringEqualsFile($stub, $tfa->render());
     }
 
     public function test_serializes_to_qr_and_renders_to_qr_with_custom_values(): void
@@ -298,8 +302,12 @@ class TwoFactorAuthenticationTest extends TestCase
             'digits' => 14,
         ]);
 
-        static::assertStringEqualsFile(__DIR__.'/../Stubs/CustomQrStub.svg', $tfa->toQr());
-        static::assertStringEqualsFile(__DIR__.'/../Stubs/CustomQrStub.svg', $tfa->render());
+        $stub = class_exists('\BaconQrCode\Renderer\Eye\PointyEye')
+            ? __DIR__.'/../Stubs/CustomQrStub-v3.svg'
+            : __DIR__.'/../Stubs/CustomQrStub.svg';
+
+        static::assertStringEqualsFile($stub, $tfa->toQr());
+        static::assertStringEqualsFile($stub, $tfa->render());
     }
 
     public function test_serializes_uri_to_json(): void

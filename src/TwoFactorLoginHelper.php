@@ -8,6 +8,7 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 use Illuminate\Session\EncryptedStore;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Crypt;
 use InvalidArgumentException;
 use Laragear\TwoFactor\Exceptions\InvalidCodeException;
@@ -114,6 +115,17 @@ class TwoFactorLoginHelper
      */
     public function attempt(array $credentials = [], $remember = false): bool
     {
+        return $this->attemptWhen($credentials, null, $remember);
+    }
+
+    /**
+     * Attempt to authenticate a user with credentials and additional callbacks.
+     *
+     * @param  array|callable|null  $callbacks
+     * @param  bool  $remember
+     */
+    public function attemptWhen(array $credentials = [], $callbacks = null, $remember = false): bool
+    {
         $guard = $this->getSessionGuard();
 
         // Always try to get the existing credentials, and merge them with the new.
@@ -124,7 +136,7 @@ class TwoFactorLoginHelper
         // a custom exception to know if the 2FA Code was the one that failed.
         try {
             return $guard->attemptWhen(
-                $credentials, TwoFactor::hasCodeOrFails($this->input, $this->message), $remember
+                $credentials, array_merge(Arr::wrap($callbacks), [TwoFactor::hasCodeOrFails($this->input, $this->message)]), $remember
             );
         } catch (InvalidCodeException $e) {
             $this->flashData($credentials, $remember);
