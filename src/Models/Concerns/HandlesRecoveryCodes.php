@@ -61,7 +61,7 @@ trait HandlesRecoveryCodes
      *
      * @param  (callable(int $length, int $iteration, int $amount): \Illuminate\Support\Collection<int, int|string>)|null  $callback
      */
-    public static function generateRecoveryCodesUsing(callable $callback = null): void
+    public static function generateRecoveryCodesUsing(?callable $callback = null): void
     {
         static::$generator = $callback;
     }

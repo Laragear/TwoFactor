@@ -46,7 +46,7 @@ class TwoFactor
      */
     public static function hasCodeOrFails(
         string $input = '2fa_code',
-        string $message = null,
+        ?string $message = null,
         string $safeDeviceInput = 'safe_device'
     ): Closure {
         return static function ($user) use ($input, $message, $safeDeviceInput): bool {

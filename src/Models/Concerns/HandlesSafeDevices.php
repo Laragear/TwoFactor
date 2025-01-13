@@ -10,7 +10,7 @@ trait HandlesSafeDevices
     /**
      * Returns the timestamp of the Safe Device.
      */
-    public function getSafeDeviceTimestamp(string $token = null): ?Carbon
+    public function getSafeDeviceTimestamp(?string $token = null): ?Carbon
     {
         if ($token && $device = $this->safe_devices?->firstWhere('2fa_remember', $token)) {
             return Carbon::createFromTimestamp($device['added_at']);

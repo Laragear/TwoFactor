@@ -42,7 +42,7 @@ trait HandlesCodes
     /**
      * Returns the Cache Store to use.
      */
-    protected function useCacheStore(string $store = null): Repository
+    protected function useCacheStore(?string $store = null): Repository
     {
         return cache()->store($store);
     }
@@ -50,7 +50,7 @@ trait HandlesCodes
     /**
      * Validates a given code, optionally for a given timestamp and future window.
      */
-    public function validateCode(string $code, DateTimeInterface|int|string $at = 'now', int $window = null): bool
+    public function validateCode(string $code, DateTimeInterface|int|string $at = 'now', ?int $window = null): bool
     {
         if ($this->codeHasBeenUsed($code)) {
             return false;

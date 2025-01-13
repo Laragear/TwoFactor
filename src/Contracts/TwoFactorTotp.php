@@ -11,7 +11,7 @@ interface TwoFactorTotp extends Renderable, Stringable
     /**
      * Validates a given code, optionally for a given timestamp and future window.
      */
-    public function validateCode(string $code, DateTimeInterface|int|string $at = 'now', int $window = null): bool;
+    public function validateCode(string $code, DateTimeInterface|int|string $at = 'now', ?int $window = null): bool;
 
     /**
      * Creates a Code for a given timestamp, optionally by a given period offset.
