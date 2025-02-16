@@ -8,11 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Schema\Blueprint;
-use Laragear\MetaModel\CustomizableModel;
 use Laragear\MetaModel\CustomMigration;
 use Laragear\MetaModel\HasCustomization;
 use Laragear\TwoFactor\Contracts\TwoFactorTotp;
-use Laragear\TwoFactor\Migrations\TwoFactorAuthenticationMigration;
 use ParagonIE\ConstantTime\Base32;
 
 use function array_merge;
@@ -158,7 +156,7 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
      */
     protected static function migration(): CustomMigration
     {
-        return (new CustomMigration(new static, function (Blueprint $table): void { // @phpstan-ignore-line
+        return new CustomMigration(new static, function (Blueprint $table): void { // @phpstan-ignore-line
             $table->id();
 
             $this->createMorph($table, 'authenticatable', 'two_factor_authenticatable_index');  // @phpstan-ignore-line
@@ -175,6 +173,6 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
             $table->json('safe_devices')->nullable();
 
             $table->timestampsTz();
-        }));
+        });
     }
 }
