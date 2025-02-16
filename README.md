@@ -34,11 +34,11 @@ This package enables TOTP authentication using 6 digits codes. No need for exter
 
 [![](.github/assets/support.png)](https://github.com/sponsors/DarkGhostHunter)
 
-Your support allows me to keep this package free, up-to-date and maintainable. Alternatively, you can **[spread the word!](http://twitter.com/share?text=I%20am%20using%20this%20cool%20PHP%20package&url=https://github.com%2FLaragear%2FTwoFactor&hashtags=PHP,Laravel)**
+Your support allows me to keep this package free, up-to-date and maintainable. Alternatively, you can **spread the word on social media!**
 
 ## Requirements
 
-* Laravel 10 or later
+* Laravel 11 or later
 
 ## Installation
 
@@ -66,7 +66,7 @@ php artisan two-factor:install
 
 > [!TIP]
 >
-> You can [edit the migration](MIGRATIONS.md) by adding new columns before migrating, and also change the [table name](MIGRATIONS.md#custom-table-name).
+> You can [edit the migration](DATABASE.md) by adding new columns before migrating, and also change the [table name](DATABASE.md#model-customization).
 
 After that, you may migrate your table like always through the Artisan command.
 
@@ -244,14 +244,14 @@ public function login(Request $request)
 
 You can further customize how to handle the 2FA code authentication procedure with the following fluent methods:
 
-| Method            | Description                                                                       |
-|-------------------|-----------------------------------------------------------------------------------|
-| guard($guard)     | The guard to use for authentication. Defaults to the application default (`web`). |
-| view($view)       | Return a custom view to handle the 2FA Code retry.                                |
-| redirect($route)  | Redirect to a location to handle the 2FA Code retry.                              |
-| message($message) | Return a custom message when the 2FA code fails or is not present.                |
-| input($input)     | Sets the input where the TOTP code is in the request. Defaults to `2fa_code`.     |
-| sessionKey($key)  | The key used to flash the encrypted credentials. Defaults to `_2fa_login`.        |
+| Method              | Description                                                                       |
+|---------------------|-----------------------------------------------------------------------------------|
+| `guard($guard)`     | The guard to use for authentication. Defaults to the application default (`web`). |
+| `view($view)`       | Return a custom view to handle the 2FA Code retry.                                |
+| `redirect($route)`  | Redirect to a location to handle the 2FA Code retry.                              |
+| `message($message)` | Return a custom message when the 2FA code fails or is not present.                |
+| `input($input)`     | Sets the input where the TOTP code is in the request. Defaults to `2fa_code`.     |
+| `sessionKey($key)`  | The key used to flash the encrypted credentials. Defaults to `_2fa_login`.        |
 
 For example, we can change the message to show and the input to use from the login form.
 
@@ -264,12 +264,9 @@ Auth2FA::message('You need 2FA set up to access this area')
     ->attempt($request->only('email', 'password'), $request->filled('remember'));
 ```
 
-
-> [!TIP]
+> [!NOTE]
 > 
-> * For [Laravel UI](https://github.com/laravel/ui), override the `attemptLogin()` method to replace the default guard attempt with `Auth2FA::attempt()` and `validateLogin` method to wrap in the `if ($request->isNotFilled('2fa_code'))` statement in your Login controller.
-> * For [Laravel Breeze](https://laravel.com/docs/starter-kits#laravel-breeze), you may need to extend the `LoginRequest::authenticate()` call.
-> * For [Laravel Fortify](https://laravel.com/docs/fortify) and [Jetstream](https://jetstream.laravel.com/), you may need to set a custom callback with the [`Fortify::authenticateUsing()`](https://laravel.com/docs/11.x/fortify#customizing-user-authentication) method.
+> If you're using scaffolding packages like Laravel UI, Breeze, Fortify, JetStream, Inertia or Livewire, to name some, you may require to change or alter their proper authentication flow. Refer to their documentation for further details.
 
 Alternatively, you may use `Auth::attemptWhen()` with TwoFactor helper methods, which returns a callback to check if the user needs a 2FA Code before proceeding using `TwoFactor::hasCode()`.
 
@@ -752,4 +749,4 @@ If you discover any security related issues, please email darkghosthunter@gmail.
 
 This specific package version is licensed under the terms of the [MIT License](LICENSE.md), at time of publishing.
 
-[Laravel](https://laravel.com) is a Trademark of [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011-2024 Laravel LLC.
+[Laravel](https://laravel.com) is a Trademark of [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011-2025 Laravel LLC.

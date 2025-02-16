@@ -54,17 +54,16 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 8.1
           - 8.2
           - 8.3
           - 8.4
         laravel-constraint:
-          - 10.*
           - 11.*
+          - 12.*
         dependencies: [ lowest, highest ]
         exclude:
-          - laravel-constraint: 11.*
-            php-version: 8.1
+          - laravel-constraint: 12.*
+            php-version: 8.2
 
     steps:
       - name: Set up PHP
@@ -87,7 +86,10 @@ jobs:
         run: composer run-script test
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: Laragear/TwoFactor
 
   static_analysis:
     name: 3️⃣ Static Analysis
@@ -128,7 +130,7 @@ jobs:
 
       - name: Check exported files
         run: |
-          EXPECTED="LICENSE.md,MIGRATIONS.md,README.md,composer.json"
+          EXPECTED="DATABASE.md,LICENSE.md,README.md,composer.json"
           CURRENT="$(git archive HEAD | tar --list --exclude="src" --exclude="src/*" --exclude=".stubs" --exclude=".stubs/*"  --exclude="routes" --exclude="routes/*" --exclude="stubs" --exclude="stubs/*" --exclude="lang" --exclude="lang/*" --exclude="config" --exclude="config/*" --exclude="database" --exclude="database/*" --exclude="resources" --exclude="resources/*" | paste -s -d ",")"
           echo "CURRENT =${CURRENT}"
           echo "EXPECTED=${EXPECTED}"

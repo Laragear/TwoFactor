@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Schema\Blueprint;
 use Laragear\MetaModel\CustomizableModel;
+use Laragear\MetaModel\CustomMigration;
+use Laragear\MetaModel\HasCustomization;
 use Laragear\TwoFactor\Contracts\TwoFactorTotp;
 use Laragear\TwoFactor\Migrations\TwoFactorAuthenticationMigration;
 use ParagonIE\ConstantTime\Base32;
@@ -46,7 +49,7 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     use Concerns\HandlesSafeDevices;
     use Concerns\SerializesSharedSecret;
     use HasFactory;
-    use CustomizableModel;
+    use HasCustomization;
 
     /**
      * The attributes that should be cast to native types.
@@ -153,8 +156,25 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     /**
      * @inheritDoc
      */
-    protected static function migrationClass(): string
+    protected static function migration(): CustomMigration
     {
-        return TwoFactorAuthenticationMigration::class;
+        return (new CustomMigration(new static, function (Blueprint $table): void { // @phpstan-ignore-line
+            $table->id();
+
+            $this->createMorph($table, 'authenticatable', 'two_factor_authenticatable_index');  // @phpstan-ignore-line
+
+            $table->text('shared_secret');
+            $table->timestampTz('enabled_at')->nullable();
+            $table->string('label');
+            $table->unsignedTinyInteger('digits')->default(6);
+            $table->unsignedTinyInteger('seconds')->default(30);
+            $table->unsignedTinyInteger('window')->default(0);
+            $table->string('algorithm', 16)->default('sha1');
+            $table->text('recovery_codes')->nullable();
+            $table->timestampTz('recovery_codes_generated_at')->nullable();
+            $table->json('safe_devices')->nullable();
+
+            $table->timestampsTz();
+        }));
     }
 }
