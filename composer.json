@@ -38,7 +38,7 @@
         "illuminate/auth": "11.*|12.*"
     },
     "require-dev": {
-        "laragear/meta-testing": "2.*",
+        "laragear/meta-testing": "2.* || 3.*",
         "orchestra/testbench": "9.*|10.*"
     },
     "autoload": {
