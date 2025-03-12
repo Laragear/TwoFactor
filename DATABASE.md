@@ -131,3 +131,16 @@ return Car::migration()->morphUuid;
 
 return Car::migration()->morph('uuid', 'shorter_morph_index_name');
 ```
+
+
+
+> [!NOTE]
+>
+> Migrating from 2.x to 3.x: The property `TwoFactorAuthentication::$useTable = 'my_custom_table';` is deprecated. Instead, set the custom table name using the `customize` method inside the `->booted(...)` callback in `bootstrap/app.php` or within the `boot` method of a `ServiceProvider`.
+
+```php
+TwoFactorAuthentication::customize(function (TwoFactorAuthentication $model) {
+    $model->setTable('my_custom_table');
+});
+```
+
