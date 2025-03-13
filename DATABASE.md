@@ -24,6 +24,21 @@ return Application::configure(basePath: dirname(__DIR__))
 >
 > For your convenience, the Migration will automatically pick up the table and connection you set in the Model.
 
+## Changing the table name
+
+To change the table the model should use, use the customize method inside the `->booted(...)` callback in `bootstrap/app.php` or within the `boot` method of a `ServiceProvider`.
+
+```php
+TwoFactorAuthentication::customize(function (TwoFactorAuthentication $model) {
+    $model->setTable('my_custom_table');
+});
+```
+
+> [!NOTE]
+>
+> If you're migrating from 2.x to 3.x, the property `TwoFactorAuthentication::$useTable = 'my_custom_table';` is deprecated. Instead, set the custom table name using the `customize` method as shown above.
+
+
 # Migration customization
 
 The library you have installed comes with a very hands-off approach for migrations. If you check the new migrations published at `database/migrations`, you will find something very similar to this:
@@ -131,16 +146,3 @@ return Car::migration()->morphUuid;
 
 return Car::migration()->morph('uuid', 'shorter_morph_index_name');
 ```
-
-
-
-> [!NOTE]
->
-> Migrating from 2.x to 3.x: The property `TwoFactorAuthentication::$useTable = 'my_custom_table';` is deprecated. Instead, set the custom table name using the `customize` method inside the `->booted(...)` callback in `bootstrap/app.php` or within the `boot` method of a `ServiceProvider`.
-
-```php
-TwoFactorAuthentication::customize(function (TwoFactorAuthentication $model) {
-    $model->setTable('my_custom_table');
-});
-```
-
