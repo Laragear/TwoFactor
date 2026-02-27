@@ -30,16 +30,16 @@
         "laragear/meta": "4.*",
         "bacon/bacon-qr-code": "3.*",
         "paragonie/constant_time_encoding": "3.*",
-        "illuminate/config": "11.*|12.*",
-        "illuminate/validation": "11.*|12.*",
-        "illuminate/database": "11.*|12.*",
-        "illuminate/support": "11.*|12.*",
-        "illuminate/http": "11.*|12.*",
-        "illuminate/auth": "11.*|12.*"
+        "illuminate/config": "11.*|12.*|^13.0",
+        "illuminate/validation": "11.*|12.*|^13.0",
+        "illuminate/database": "11.*|12.*|^13.0",
+        "illuminate/support": "11.*|12.*|^13.0",
+        "illuminate/http": "11.*|12.*|^13.0",
+        "illuminate/auth": "11.*|12.*|^13.0"
     },
     "require-dev": {
         "laragear/meta-testing": "3.*",
-        "orchestra/testbench": "9.*|10.*"
+        "orchestra/testbench": "9.*|10.*|^11.0"
     },
     "autoload": {
         "psr-4": {
