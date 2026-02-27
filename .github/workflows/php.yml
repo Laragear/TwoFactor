@@ -45,6 +45,7 @@ jobs:
 
   unit_tests:
     name: 2️⃣ Unit and Feature tests
+
     needs:
       - byte_level
       - syntax_errors
@@ -53,16 +54,13 @@ jobs:
 
     strategy:
       matrix:
-        php-version:
-          - 8.2
-          - 8.3
-          - 8.4
-        laravel-constraint:
-          - 11.*
-          - 12.*
-        dependencies: [ lowest, highest ]
+        php-version: [8.2, 8.3, 8.4]
+        laravel-constraint: ['11.*', '12.*', '13.*']
+        dependencies: [lowest, highest]
         exclude:
           - laravel-constraint: 12.*
+            php-version: 8.2
+          - laravel-constraint: 13.*
             php-version: 8.2
 
     steps:
@@ -93,6 +91,7 @@ jobs:
 
   static_analysis:
     name: 3️⃣ Static Analysis
+
     needs:
       - byte_level
       - syntax_errors
@@ -118,6 +117,7 @@ jobs:
 
   exported_files:
     name: 4️⃣ Exported files
+
     needs:
       - byte_level
       - syntax_errors
