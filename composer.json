@@ -27,7 +27,7 @@
         "php": "^8.2",
         "ext-json": "*",
         "laragear/meta-model": "2.*",
-        "laragear/meta": "4.*",
+        "laragear/meta": "4.* || 5.*",
         "bacon/bacon-qr-code": "3.*",
         "paragonie/constant_time_encoding": "3.*",
         "illuminate/config": "11.*|12.*",
