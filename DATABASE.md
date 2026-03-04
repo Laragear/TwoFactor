@@ -1,50 +1,44 @@
 # Model customization
 
-You can further customize the package Models using the `customize()` method with a callback that receives the freshly instanced model instance. For example, you may want to hide some attributes, or change the table and connection the Model by default. Preferably, you would do this in your `bootstrap/app.php`.
+Most of the time you will want to change the table name of the Model, maybe because it collides with another. Use the `customize()` method with the table name. Preferably, you would do this in your `bootstrap/app.php`.
 
 ```php
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Foundation\Configuration\Middleware;
-use Vendor\Package\Models\Driver;
+use Vendor\Package\Models\Car;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->booted(function () {
-        // Customize the model
-        Car::customize(function (Car $model) {
-            $model->setTable('my_custom_car');
-            $model->setConnection('readonly-mysql');
-            
-            $model->setHidden('private_notes');
-        })
+        // Customize the model table name.
+        Car::customize('vehicles');
     })->create();
+```
+
+You can further customize the Models included in this package with a callback that receives a Model instance. This method is always executed when instancing a Model.
+
+For example, you may hide some attributes or change the table and connection the Model by default.
+
+```php
+use Vendor\Package\Models\Car;
+
+Car::customize(function (Car $model) {
+    $model->setTable('vehicles');
+    $model->setConnection('readonly-mysql');
+            
+    $model->setHidden('private_notes');
+});
 ```
 
 > [!TIP]
 >
-> For your convenience, the Migration will automatically pick up the table and connection you set in the Model.
-
-## Changing the table name
-
-To change the table the model should use, use the customize method inside the `->booted(...)` callback in `bootstrap/app.php` or within the `boot` method of a `ServiceProvider`.
-
-```php
-TwoFactorAuthentication::customize(function (TwoFactorAuthentication $model) {
-    $model->setTable('my_custom_table');
-});
-```
-
-> [!NOTE]
+> There is no need to alter the Model migration if you change the table. The migration automatically picks up the table and connection you set in through the `customize()` method.
 >
-> If you're migrating from 2.x to 3.x, the property `TwoFactorAuthentication::$useTable = 'my_custom_table';` is deprecated. Instead, set the custom table name using the `customize` method as shown above.
-
 
 # Migration customization
 
 The library you have installed comes with a very hands-off approach for migrations. If you check the new migrations published at `database/migrations`, you will find something very similar to this:
 
 ```php
-// database/migrations/2022_01_01_193000_create_cars_migration.php
+// database/migrations/2027_01_01_193000_create_cars_table.php
 use Vendor\Package\Models\Car;
 
 return Car::migration();
@@ -54,7 +48,7 @@ Worry not, the migration will still work. It has been _simplified_ for easy cust
 
 ## Adding columns
 
-To add columns to the migration, add a callback to the `with()` method. The callback will receive the table blueprint so you can modify the table while it's being created.
+To add columns to the migration, add a callback to the `with()` method. The callback will receive the table blueprint, so you can modify the table before it is created. New columns will be appended to the table blueprint.
 
 ```php
 use Illuminate\Database\Schema\Blueprint;
@@ -66,50 +60,45 @@ return Car::migration()->with(function (Blueprint $table) {
 });
 ```
 
-> [!NOTE]
->
-> The columns you add will be created _after_ the package adds its own columns. In other words, these will be set at the end of the table.
-
 ### Relationships
 
-If the package supports it, you may add relationships through their proper migration columns. For example, if we want to add the `driver` relationship to the model, we can use the native `resolveRelationUsing()` on your `bootstrap/app.php()`.
+If the package supports it, you may add relationships through their proper migration columns. For example, if we want to add the `car` relationship to the package Model, we can use the native `resolveRelationUsing()` on your `bootstrap/app.php()`.
 
 ```php
+use App\Models\Driver;
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
-use Illuminate\Foundation\Configuration\Middleware;
-use Vendor\Package\Models\Driver;
+use Vendor\Package\Models\Car;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->booted(function () {
         // Add the relationship.
-        Car::resolveRelationUsing('driver', function (Car $car) {
-            return $car->belongsTo(Driver::class, 'driver_id')
+        Car::resolveRelationUsing('driver', function (Driver $driver) {
+            return $driver->belongsTo(Driver::class, 'driver_id');
         })
     })->create();
 ```
 
-In the published package migration, you should be able to add the required column to connect your model like normal. In this case, we can use the [`foreignIdFor()`](https://laravel.com/docs/migrations#column-method-foreignIdFor) method to safely set the proper column type.
+In the published package migration, you should be able to add the required column to connect your model like usual. In this case, we can use the [`foreignIdFor()`](https://laravel.com/docs/migrations#column-method-foreignIdFor) method to safely set the proper column name and type.
 
 ```php
 use App\Models\Driver;
 use Illuminate\Database\Schema\Blueprint;
-use Laragear\Package\Models\Car;
+use Vendor\Package\Models\Car;
 
-return Car::migration(function (Blueprint $table) {
+return Car::migration()->with(function (Blueprint $table) {
     // ...
     
-    $table->foreignIdFor(Driver::class);
+    $table->foreignIdFor(Driver::class, 'driver_id');
 });
 ```
 
 ## After Up & Before Down
 
-If you need to execute logic after creating the table, or before dropping it, use the `afterUp()` and `beforeDown()` methods, respectively.
+If you need to execute logic _after_ creating the table, or _before_ dropping it, use the `afterUp()` and `beforeDown()` methods, respectively.
 
 ```php
 use Illuminate\Database\Schema\Blueprint;
-use Laragear\Package\Models\Car;
+use Vendor\Package\Models\Car;
 
 return Car::migration()
     ->afterUp(function (Blueprint $table) {
@@ -120,27 +109,25 @@ return Car::migration()
     });
 ```
 
-## Morphs
+### Morphs
 
-This package _may_ create a morph relation automatically, with the intent to easily handle default relationship across multiple models. For example, a morph migration to support an `owner` being either one of your models `Company` or `Person`.
+Some packages will create a morph relation automatically to easily handle the default relationship across multiple models. For example, a morph migration to support an `owner` being either one of your models `user` or `business`.
 
 ```php
-use Laragear\Package\Models\Car;
+use Vendor\Package\Models\Car;
 
 $car = Car::find(1);
 
-$owners = $car->owner; // App/Models/Company or App/Models/Person
+$owner = $driver->owner; // App/Models/User or App/Models/Business
 ```
 
-You may find yourself with youur models using a primary key type, different to the type used by the library models. For example, your `Company` or `Person` models using UUID, while the migration morph type uses integers.
+You may find yourself with models that use UUID, ULID or other types of primary keys, but with a migration that creates morphs for integer primary keys.
 
-If that's your case, you can change the library morph type with the `morph...` property access (preferably), or the `morph()` method with `numeric`, `uuid` or `ulid` if you need to also set an index name (in case your database engine doesn't play nice with large ones).
-
-For example, you can change the morph type of the `Car` migration to match the UUID type for the `Company` and `Person` models.
+You can change the morph type with the `morph...` property access preferably, or the `morph()` method with `numeric`, `uuid` or `ulid` if you need to also set an index name (in case your database engine doesn't play nice with large ones).
 
 ```php
 use Illuminate\Database\Schema\Blueprint;
-use Laragear\Package\Models\Car;
+use Vendor\Package\Models\Car;
 
 return Car::migration()->morphUuid;
 

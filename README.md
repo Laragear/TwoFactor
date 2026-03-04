@@ -38,13 +38,16 @@ Your support allows me to keep this package free, up-to-date and maintainable. A
 
 ## Requirements
 
-* Laravel 11 or later
+* PHP 8.3 or later
+* Laravel 12 or later
 
 ## Installation
 
 Fire up Composer and require this package in your project.
 
-    composer require laragear/two-factor
+```shell
+composer require laragear/two-factor
+```
 
 That's it.
 
@@ -105,9 +108,9 @@ To enable Two-Factor Authentication for the User, he must sync the Shared Secret
 
 > [!TIP]
 >
-> Free Authenticator Apps, in no particular order, are [iOS Authenticator](https://www.apple.com/ios/), [FreeOTP](https://freeotp.github.io/), [Authy](https://authy.com/), [2FAS](https://2fas.com/), [2Stable Authenticator](https://authenticator.2stable.com/), [Step-two](https://steptwo.app/), [BinaryRoot Authenticator](https://www.binaryboot.com/totp-authenticator), [Google](https://apps.apple.com/app/google-authenticator/id388497605) [Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en), and [Microsoft Authenticator](https://www.microsoft.com/en-us/account/authenticator), to name a few.
+> Free Authenticator Apps, in no particular order, are [iOS Authenticator](https://www.apple.com/ios/), [FreeOTP](https://freeotp.github.io/), [Authy](https://authy.com/), [2FAS](https://2fas.com/), [2Stable Authenticator](https://authenticator.2stable.com/), [Step-two](https://steptwo.app/), [BinaryRoot Authenticator](https://www.binaryboot.com/totp-authenticator) and [Google](https://apps.apple.com/app/google-authenticator/id388497605) [Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en).
 
-To start, generate the needed data using the `createTwoFactorAuth()` method. This returns a serializable _Shared Secret_ that you can show to the User as a string or QR Code (encoded as SVG) in your view.
+To start, generate the necessary data using the `createTwoFactorAuth()` method. This returns a serializable _Shared Secret_ that you can show to the User as a string or QR Code (encoded as SVG) in your view.
 
 ```php
 use Illuminate\Http\Request;
@@ -406,6 +409,109 @@ Route::get('api/important-token', function () {
 })->middleware('2fa.require', '2fa.confirm:my-redirect-route-name,true');
 ```
 
+### Throttling Middleware
+
+This library includes a global throttling middleware. It will trigger a TOTP confirmation once a number of Requests done to the application exceed a default threshold. 
+
+To enable the global middleware, set the `OTP_THROTTLE` environment variable to `true`.
+
+```dotenv
+OTP_THROTTLE
+```
+
+Alternatively, you can enable it globally and also set the threshold using `{tries},{decay}` notation. For example, to change the threshold to a maximum of 3 requests each 15 seconds.
+
+```dotenv
+OTP_THROTTLE=3,15
+```
+
+You may configure the global throttling additional features in the [configuration file](#throttling).
+
+> [!IMPORTANT]
+> 
+> The Throttling Middleware uses your application [Rate Limiter](https://laravel.com/docs/12.x/rate-limiting).
+
+#### Using a custom throttle key
+
+By default, the key to throttle the request is generated using the IP.
+
+You may want to create your own key based on the request by setting a callback in the `$key` static property of the  `Laragear\TwoFactor\Http\Middleware\ThrottleWithTwoFactor` class, in your `bootstrap/app.php` file. For example, you may add a string to differentiate multiple users from the same IP. 
+
+```php
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+use Laragear\TwoFactor\Http\Middleware\ThrottleWithTwoFactor;
+
+return Application::configure()
+    ->booted(function () {
+        ThrottleWithTwoFactor::$key = function (Request $request) {
+            return $request->ip() . '|' . $request->user()->getKey(); 
+        }
+    })
+    ->create();
+```
+
+#### Determining if the request should be throttled
+
+You may programmatically throttle requests by setting a callback in the `$shouldThrottle` static property of the  `Laragear\TwoFactor\Http\Middleware\ThrottleWithTwoFactor` class, in your `bootstrap/app.php` file.
+
+```php
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+use Laragear\TwoFactor\Http\Middleware\ThrottleWithTwoFactor;
+
+return Application::configure()
+    ->booted(function () {
+        ThrottleWithTwoFactor::$shouldThrottle = function (Request $request) {
+            return $request->user()->isNotVip(); 
+        }
+    })
+    ->create();
+```
+
+Inside the function, you can use the method `clearAttempts()` of the middleware instance present as a second parameter in the callback to clear the attempts of the given request.
+
+```php
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+use Laragear\TwoFactor\Http\Middleware\ThrottleWithTwoFactor;
+
+return Application::configure()
+    ->booted(function () {
+        ThrottleWithTwoFactor::$shouldThrottle = function (Request $request, ThrottleWithTwoFactor $instance) {
+            if ($request->user()->impersontedByAdmin()) {
+                $instance->clearAttempts($request);
+            }
+        
+            return $request->user()->isNotVip(); 
+        }
+    })
+    ->create();
+```
+
+
+#### Custom Rate Limiter Cache
+
+You may want to use a custom Cache Store to use with the middleware. This requires instructing the Container to give a custom Rate Limiter created by you when resolving the `Laragear\TwoFactor\Http\Middleware\ThrottleWithTwoFactor` class.
+
+This can be done in the `bootstrap/app.php` with the `registered()` method and [Contextual Binding](https://laravel.com/docs/12.x/container#contextual-binding).
+
+```php
+use Illuminate\Cache\RateLimiter;
+use Illuminate\Foundation\Application;
+use Laragear\TwoFactor\Http\Middleware\ThrottleWithTwoFactor;
+
+return Application::configure()
+    ->registered(function (Application $app) {
+        $app->when(ThrottleWithTwoFactor::class)
+            ->needs(RateLimiter::class)
+            ->give(function () use ($app) {
+                return new RateLimiter(cache()->store('memcached'))
+            });
+    })
+    ->create();
+```
+
 ## Validation
 
 Sometimes you may want to manually trigger a TOTP validation in any part of your application for the authenticated user. You can validate a TOTP code for the authenticated user using the `topt` rule.
@@ -421,7 +527,7 @@ public function checkTotp(Request $request)
 }
 ```
 
-This rule will succeed only if  the user is authenticated, it has Two-Factor Authentication enabled, and the code is correct or is a recovery code.
+This rule will succeed only if the user is authenticated, it has Two-Factor Authentication enabled, and the code is correct or is a recovery code.
 
 > [!TIP]
 >
@@ -495,6 +601,11 @@ return [
         'size' => 400,
         'margin' => 4
     ],
+    'throttle' => [
+        'enable' => env('OTP_THROTTLE'),
+        'amount' => [6, 60],
+        'route' => '2fa.confirm'
+    ]
 ];
 ```
 
@@ -638,6 +749,24 @@ return [
 ```
 
 This controls the size and margin used to create the QR Code, which are created as SVG.
+
+### Throttling
+
+```php
+return [
+    'throttle' => [
+        'enable' => env('OTP_THROTTLE', false),
+        'tries' => [6, 60],
+        'session_key' => '_totp_throttle',
+        'route' => '2fa.throttle'
+        'lifetime' => 10
+    ],
+];
+```
+
+This configures the [throttling global middleware](#throttling-middleware). The most important part is the route to redirect the user once the application throttles the user request, and where in the session to save this data.
+
+The `lifetime` key sets how many minutes to "bypass" the throttler after the user has been already throttled.
 
 ## Custom TOTP Label
 

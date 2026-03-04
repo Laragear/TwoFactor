@@ -2,12 +2,15 @@
 
 namespace Laragear\TwoFactor;
 
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laragear\Meta\BootHelpers;
+use Laragear\TwoFactor\Http\Middleware\ThrottleWithTwoFactor;
 
 class TwoFactorServiceProvider extends ServiceProvider
 {
@@ -36,15 +39,23 @@ class TwoFactorServiceProvider extends ServiceProvider
                 $app->make('request'),
                 $config->get('two-factor.login.view'),
                 $config->get('two-factor.login.key'),
-                $config->get('two-factor.login.flash')
+                $config->get('two-factor.login.flash'),
             );
         });
+
+        ThrottleWithTwoFactor::$key = static function (Request $request): string {
+            return $request->ip();
+        };
+
+        ThrottleWithTwoFactor::$shouldThrottle = static function (): bool {
+            return true;
+        };
     }
 
     /**
      * Bootstrap the application services.
      */
-    public function boot(): void
+    public function boot(Repository $config): void
     {
         $this->loadViewsFrom(static::VIEWS, 'two-factor');
         $this->loadTranslationsFrom(static::LANG, 'two-factor');
@@ -52,10 +63,14 @@ class TwoFactorServiceProvider extends ServiceProvider
         $this->withMiddleware(Http\Middleware\RequireTwoFactorEnabled::class)->as('2fa.enabled');
         $this->withMiddleware(Http\Middleware\ConfirmTwoFactorCode::class)->as('2fa.confirm');
 
+        if ($config->get('two-factor.throttle.enabled')) {
+            $this->withMiddleware(Http\Middleware\ThrottleWithTwoFactor::class)->globally();
+        }
+
         $this->withValidationRule('totp',
             Rules\Totp::class, static function ($validator, Application $app): string {
                 return $app->make('translator')->get('two-factor::validation.totp_code');
-            }
+            },
         );
 
         if ($this->app->runningInConsole()) {

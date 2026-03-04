@@ -81,7 +81,7 @@ trait TwoFactorAuthentication
     }
 
     /**
-     * Creates a new Two-Factor Auth mechanisms from scratch, and returns a new Shared Secret.
+     * Creates a new Two-Factor Auth mechanism from scratch and returns a fresh Shared Secret.
      */
     public function createTwoFactorAuth(): Contracts\TwoFactorTotp
     {

@@ -154,9 +154,9 @@ class TwoFactorAuthentication extends Model implements TwoFactorTotp
     /**
      * @inheritDoc
      */
-    protected static function migration(): CustomMigration
+    protected static function makeMigration(): CustomMigration
     {
-        return new CustomMigration(new static, function (Blueprint $table): void { // @phpstan-ignore-line
+        return CustomMigration::make(function (Blueprint $table): void {
             $table->id();
 
             $this->createMorph($table, 'authenticatable', 'two_factor_authenticatable_index');  // @phpstan-ignore-line

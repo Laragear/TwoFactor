@@ -192,10 +192,9 @@ class TwoFactorLoginHelper
         }
 
         // If the developer has set the login helper to use flash, we will use that.
-        // It may disable this, which in turn will use put. This wil fix some apps
-        // like Livewire or Inertia, but it may keep this request input forever.
+        // It may disable this, which in turn will use put. This will fix some apps
+        // running Livewire or Inertia but it may keep this request input forever.
         if ($this->useFlash) {
-            // @phpstan-ignore-next-line
             $this->session->flash($this->sessionKey, ['credentials' => $credentials, 'remember' => $remember]);
         } else {
             $this->session->put($this->sessionKey, ['credentials' => $credentials, 'remember' => $remember]);

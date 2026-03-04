@@ -24,22 +24,22 @@
         "issues": "https://github.com/Laragear/TwoFactor/issues"
     },
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "ext-json": "*",
-        "laragear/meta-model": "2.*",
-        "laragear/meta": "4.*",
+        "laragear/meta-model": "3.*",
+        "laragear/meta": "5.*",
         "bacon/bacon-qr-code": "3.*",
         "paragonie/constant_time_encoding": "3.*",
-        "illuminate/config": "11.*|12.*",
-        "illuminate/validation": "11.*|12.*",
-        "illuminate/database": "11.*|12.*",
-        "illuminate/support": "11.*|12.*",
-        "illuminate/http": "11.*|12.*",
-        "illuminate/auth": "11.*|12.*"
+        "illuminate/config": "12.*|13.*",
+        "illuminate/validation": "12.*|13.*",
+        "illuminate/database": "12.*|13.*",
+        "illuminate/support": "12.*|13.*",
+        "illuminate/http": "12.*|13.*",
+        "illuminate/auth": "12.*|13.*"
     },
     "require-dev": {
-        "laragear/meta-testing": "3.*",
-        "orchestra/testbench": "9.*|10.*"
+        "laragear/meta-testing": "4.*",
+        "orchestra/testbench": "10.*|11.*"
     },
     "autoload": {
         "psr-4": {
