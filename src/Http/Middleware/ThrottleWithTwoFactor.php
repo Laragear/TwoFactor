@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\DateFactory;
 use Laragear\TwoFactor\Contracts\TwoFactorAuthenticatable as TwoFactor;
+
 use function array_pad;
 use function explode;
 use function is_string;
@@ -142,6 +143,6 @@ class ThrottleWithTwoFactor
      */
     protected function getRateLimiterKey(Request $request): string
     {
-        return $this->config->get('two-factor.throttle.prefix', 'totp.throttle') . (static::$key)($request);
+        return $this->config->get('two-factor.throttle.prefix', 'totp.throttle').(static::$key)($request);
     }
 }

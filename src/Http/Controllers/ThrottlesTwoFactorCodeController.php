@@ -12,11 +12,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Laragear\TwoFactor\Http\Middleware\ThrottleWithTwoFactor;
+
 use function trans;
 
 class ThrottlesTwoFactorCodeController extends Controller
 {
-
     /**
      * Create a new controller instance.
      */
@@ -25,7 +25,7 @@ class ThrottlesTwoFactorCodeController extends Controller
         $this->middleware('auth');
         $this->middleware(function (Request $request, Closure $next) {
             $hasKey = $request->session()->has(
-                $this->config->get('two-factor.throttle.session_key') . ThrottleWithTwoFactor::EXPIRES_AT_KEY
+                $this->config->get('two-factor.throttle.session_key').ThrottleWithTwoFactor::EXPIRES_AT_KEY
             );
 
             if ($hasKey) {
@@ -37,13 +37,12 @@ class ThrottlesTwoFactorCodeController extends Controller
         });
     }
 
-
     /**
      * Return the value used to check if the user should or not be throttled.
      */
     protected function getThrottleValuePath(): string
     {
-        return $this->config->get('two-factor.throttle.key') .ThrottleWithTwoFactor::THROTTLED_KEY;
+        return $this->config->get('two-factor.throttle.key').ThrottleWithTwoFactor::THROTTLED_KEY;
     }
 
     /**
